@@ -1,0 +1,1803 @@
+"id_empresa","programa","fecha_inicio","horas_intervencion","cobertura_trabajadores"
+"E00004","Riesgo cardiovascular",2021-04-01,44,0.75
+"E00005","Riesgo cardiovascular",2020-10-01,109,0.75
+"E00008","Higiene industrial",2019-07-01,193,0.93
+"E00015","Trabajo en alturas",2021-07-01,182,0.98
+"E00016","Ergonomia",2019-01-01,126,0.94
+"E00019","Ergonomia",2020-10-01,118,0.69
+"E00021","PESV",2022-10-01,140,0.42
+"E00022","Riesgo cardiovascular",2019-01-01,61,0.92
+"E00027","Trabajo en alturas",2022-07-01,139,0.76
+"E00032","Riesgo psicosocial",2021-04-01,21,0.41
+"E00034","PESV",2020-07-01,32,0.92
+"E00035","Riesgo cardiovascular",2019-10-01,132,0.53
+"E00037","Riesgo cardiovascular",2020-01-01,150,0.82
+"E00039","Riesgo psicosocial",2022-01-01,70,0.47
+"E00040","Riesgo cardiovascular",2022-04-01,80,0.46
+"E00041","Higiene industrial",2021-07-01,197,0.82
+"E00043","Ergonomia",2020-10-01,108,0.94
+"E00045","PESV",2019-10-01,193,0.41
+"E00049","Riesgo psicosocial",2021-10-01,83,0.45
+"E00050","Higiene industrial",2019-01-01,163,0.94
+"E00054","Higiene industrial",2022-04-01,24,0.41
+"E00055","Higiene industrial",2022-07-01,184,0.64
+"E00066","Riesgo psicosocial",2020-10-01,91,0.75
+"E00070","Riesgo cardiovascular",2021-04-01,40,0.79
+"E00071","Riesgo cardiovascular",2019-07-01,67,0.59
+"E00073","Higiene industrial",2019-01-01,188,0.69
+"E00075","Riesgo cardiovascular",2019-07-01,27,0.43
+"E00077","Riesgo psicosocial",2020-07-01,52,0.79
+"E00078","Ergonomia",2022-01-01,139,0.93
+"E00079","Riesgo psicosocial",2020-10-01,103,0.68
+"E00082","Riesgo cardiovascular",2019-01-01,31,0.68
+"E00086","Riesgo cardiovascular",2021-10-01,91,0.98
+"E00090","Higiene industrial",2021-07-01,137,0.79
+"E00094","Ergonomia",2020-07-01,36,0.51
+"E00097","Riesgo psicosocial",2020-07-01,102,0.77
+"E00102","Riesgo cardiovascular",2021-01-01,164,0.42
+"E00103","Ergonomia",2022-07-01,115,0.71
+"E00105","Riesgo psicosocial",2021-10-01,112,0.65
+"E00108","Trabajo en alturas",2020-07-01,180,0.93
+"E00109","Trabajo en alturas",2020-10-01,132,0.65
+"E00112","PESV",2021-10-01,109,0.92
+"E00114","Riesgo psicosocial",2020-01-01,81,0.44
+"E00117","Trabajo en alturas",2019-01-01,61,0.83
+"E00122","Ergonomia",2022-10-01,113,0.86
+"E00126","Riesgo psicosocial",2022-07-01,50,0.54
+"E00128","PESV",2020-01-01,129,0.46
+"E00130","Riesgo psicosocial",2019-07-01,128,0.63
+"E00131","PESV",2020-04-01,82,0.47
+"E00132","Riesgo psicosocial",2021-10-01,32,0.91
+"E00135","Ergonomia",2021-07-01,184,0.7
+"E00137","Trabajo en alturas",2019-07-01,176,0.44
+"E00138","Riesgo psicosocial",2022-01-01,158,0.47
+"E00139","Higiene industrial",2019-01-01,53,0.84
+"E00140","Higiene industrial",2019-07-01,156,0.72
+"E00142","Ergonomia",2021-10-01,109,0.53
+"E00146","Higiene industrial",2020-01-01,51,0.43
+"E00148","Ergonomia",2020-01-01,175,0.84
+"E00152","PESV",2022-01-01,162,0.99
+"E00153","Higiene industrial",2022-07-01,151,0.92
+"E00159","Trabajo en alturas",2019-07-01,130,0.79
+"E00167","PESV",2020-04-01,196,0.66
+"E00169","PESV",2022-04-01,173,0.53
+"E00173","Ergonomia",2022-01-01,40,0.84
+"E00178","Higiene industrial",2019-01-01,118,0.85
+"E00185","Ergonomia",2020-07-01,185,0.95
+"E00186","Higiene industrial",2021-07-01,97,0.69
+"E00192","Riesgo cardiovascular",2021-10-01,142,0.59
+"E00196","Trabajo en alturas",2022-07-01,159,0.87
+"E00198","Trabajo en alturas",2019-10-01,23,0.49
+"E00200","Ergonomia",2021-10-01,118,0.62
+"E00209","PESV",2022-01-01,139,0.89
+"E00211","Higiene industrial",2020-10-01,76,0.67
+"E00213","Riesgo psicosocial",2022-07-01,123,0.76
+"E00214","Riesgo psicosocial",2019-04-01,170,0.85
+"E00216","Ergonomia",2021-10-01,119,0.87
+"E00220","Trabajo en alturas",2019-04-01,123,0.89
+"E00221","Higiene industrial",2021-07-01,189,0.51
+"E00224","Riesgo cardiovascular",2021-04-01,112,0.75
+"E00225","Riesgo psicosocial",2021-07-01,152,0.62
+"E00226","Ergonomia",2019-07-01,123,0.81
+"E00228","Ergonomia",2021-10-01,136,0.59
+"E00230","Higiene industrial",2022-01-01,167,0.41
+"E00231","Riesgo cardiovascular",2020-10-01,177,0.63
+"E00232","Riesgo psicosocial",2022-10-01,83,0.41
+"E00233","PESV",2021-01-01,156,0.97
+"E00235","Trabajo en alturas",2019-10-01,27,0.59
+"E00239","Trabajo en alturas",2021-10-01,159,0.95
+"E00242","Riesgo psicosocial",2022-01-01,137,0.69
+"E00245","Riesgo cardiovascular",2022-10-01,78,0.74
+"E00246","Riesgo cardiovascular",2021-04-01,57,0.5
+"E00248","Riesgo cardiovascular",2019-04-01,159,0.92
+"E00250","Trabajo en alturas",2022-10-01,66,0.95
+"E00251","Trabajo en alturas",2022-01-01,165,0.82
+"E00257","PESV",2021-04-01,72,0.64
+"E00258","Trabajo en alturas",2020-01-01,193,0.93
+"E00261","Ergonomia",2021-10-01,66,0.72
+"E00265","Riesgo cardiovascular",2021-01-01,153,0.43
+"E00271","PESV",2020-07-01,50,0.54
+"E00273","Riesgo psicosocial",2020-10-01,109,0.95
+"E00276","Riesgo cardiovascular",2019-04-01,74,0.86
+"E00284","PESV",2020-07-01,154,0.46
+"E00285","Trabajo en alturas",2022-04-01,84,0.44
+"E00290","Riesgo cardiovascular",2021-10-01,177,0.67
+"E00292","Higiene industrial",2021-04-01,173,0.55
+"E00294","Ergonomia",2020-01-01,54,0.57
+"E00295","Higiene industrial",2019-04-01,66,0.8
+"E00300","Riesgo psicosocial",2020-10-01,24,0.82
+"E00302","Ergonomia",2022-07-01,157,0.56
+"E00308","Riesgo cardiovascular",2021-07-01,118,0.81
+"E00309","Higiene industrial",2020-04-01,195,0.72
+"E00312","Higiene industrial",2021-10-01,108,0.98
+"E00314","Riesgo cardiovascular",2020-07-01,117,0.58
+"E00315","Riesgo cardiovascular",2019-07-01,99,0.53
+"E00317","Trabajo en alturas",2020-07-01,69,0.57
+"E00325","Ergonomia",2020-10-01,43,0.74
+"E00326","PESV",2021-10-01,139,0.67
+"E00328","PESV",2022-04-01,69,0.7
+"E00329","Higiene industrial",2021-04-01,187,0.92
+"E00330","Trabajo en alturas",2022-10-01,160,0.76
+"E00331","Riesgo psicosocial",2021-01-01,91,0.42
+"E00333","Higiene industrial",2019-07-01,186,0.79
+"E00338","Ergonomia",2020-07-01,186,0.68
+"E00342","Higiene industrial",2021-01-01,101,0.79
+"E00347","Riesgo cardiovascular",2020-07-01,80,0.95
+"E00350","Higiene industrial",2020-04-01,129,0.78
+"E00351","Trabajo en alturas",2019-10-01,188,0.7
+"E00353","Riesgo psicosocial",2020-04-01,180,0.48
+"E00356","PESV",2022-01-01,135,0.53
+"E00357","Riesgo psicosocial",2020-04-01,196,0.6
+"E00358","Trabajo en alturas",2022-07-01,152,0.67
+"E00360","Ergonomia",2020-04-01,128,0.66
+"E00364","Trabajo en alturas",2020-01-01,121,0.98
+"E00369","Higiene industrial",2020-07-01,52,0.89
+"E00371","Riesgo psicosocial",2019-07-01,165,0.97
+"E00373","Higiene industrial",2022-10-01,130,0.79
+"E00376","Ergonomia",2020-07-01,69,0.97
+"E00379","Ergonomia",2020-10-01,77,0.74
+"E00382","Riesgo cardiovascular",2021-07-01,118,0.67
+"E00384","Trabajo en alturas",2019-01-01,79,0.81
+"E00386","PESV",2019-04-01,125,0.63
+"E00387","Higiene industrial",2020-01-01,158,0.9
+"E00389","Ergonomia",2020-07-01,151,0.83
+"E00394","Ergonomia",2022-04-01,147,0.56
+"E00403","PESV",2021-01-01,57,0.9
+"E00406","PESV",2020-01-01,61,0.41
+"E00410","Higiene industrial",2020-04-01,58,0.9
+"E00411","Riesgo psicosocial",2021-01-01,114,0.76
+"E00413","Ergonomia",2022-04-01,180,0.57
+"E00419","PESV",2021-01-01,154,0.81
+"E00421","Riesgo cardiovascular",2019-10-01,55,0.6
+"E00423","Riesgo cardiovascular",2020-04-01,102,0.58
+"E00426","Riesgo psicosocial",2019-04-01,56,0.73
+"E00427","Trabajo en alturas",2020-07-01,155,0.59
+"E00431","Ergonomia",2020-01-01,188,0.42
+"E00435","Riesgo psicosocial",2022-04-01,91,1
+"E00436","Higiene industrial",2019-01-01,113,0.76
+"E00437","PESV",2021-04-01,123,0.53
+"E00438","PESV",2022-04-01,36,0.48
+"E00440","Ergonomia",2021-10-01,136,0.69
+"E00443","PESV",2022-07-01,180,0.4
+"E00444","Higiene industrial",2019-04-01,116,0.4
+"E00445","PESV",2020-04-01,115,0.57
+"E00446","Ergonomia",2022-01-01,23,0.45
+"E00449","Riesgo cardiovascular",2019-04-01,93,0.43
+"E00451","Riesgo cardiovascular",2022-04-01,189,0.97
+"E00455","Higiene industrial",2020-04-01,139,0.8
+"E00457","Trabajo en alturas",2019-04-01,185,0.95
+"E00460","Higiene industrial",2022-01-01,174,0.53
+"E00463","Ergonomia",2020-01-01,159,0.86
+"E00467","Riesgo psicosocial",2022-04-01,42,0.54
+"E00476","Riesgo psicosocial",2022-07-01,84,0.49
+"E00478","Riesgo cardiovascular",2020-10-01,86,0.78
+"E00479","Higiene industrial",2019-04-01,29,0.87
+"E00480","Higiene industrial",2019-04-01,94,0.94
+"E00486","Riesgo cardiovascular",2021-07-01,112,0.44
+"E00491","Ergonomia",2019-04-01,95,0.52
+"E00492","Higiene industrial",2021-04-01,81,0.88
+"E00497","Trabajo en alturas",2021-04-01,37,0.66
+"E00500","Ergonomia",2020-04-01,65,0.99
+"E00506","PESV",2019-10-01,143,0.91
+"E00509","PESV",2021-04-01,124,0.9
+"E00518","Riesgo psicosocial",2020-01-01,64,0.72
+"E00520","PESV",2019-10-01,135,0.97
+"E00521","Higiene industrial",2021-01-01,130,0.73
+"E00524","Ergonomia",2022-01-01,191,0.63
+"E00525","PESV",2019-07-01,21,0.98
+"E00528","Trabajo en alturas",2019-01-01,88,0.72
+"E00529","Riesgo cardiovascular",2019-04-01,156,0.56
+"E00530","Trabajo en alturas",2019-07-01,56,0.67
+"E00532","Riesgo psicosocial",2019-07-01,194,0.46
+"E00534","Riesgo cardiovascular",2021-10-01,151,0.85
+"E00536","Ergonomia",2022-07-01,180,0.43
+"E00544","Riesgo psicosocial",2019-10-01,46,0.65
+"E00545","Riesgo cardiovascular",2021-07-01,20,0.88
+"E00546","Riesgo cardiovascular",2022-04-01,102,0.77
+"E00549","Riesgo psicosocial",2021-04-01,39,0.65
+"E00550","Riesgo cardiovascular",2020-07-01,82,0.68
+"E00552","Ergonomia",2021-07-01,21,0.96
+"E00553","Ergonomia",2021-04-01,92,0.55
+"E00556","Riesgo psicosocial",2022-01-01,168,0.65
+"E00562","Riesgo psicosocial",2019-01-01,143,1
+"E00563","Higiene industrial",2021-01-01,44,0.61
+"E00564","Ergonomia",2022-04-01,128,0.79
+"E00569","Higiene industrial",2022-04-01,154,0.61
+"E00574","Riesgo psicosocial",2019-04-01,143,0.57
+"E00575","Trabajo en alturas",2019-01-01,67,0.93
+"E00577","Higiene industrial",2019-07-01,34,0.43
+"E00578","Higiene industrial",2019-04-01,66,0.41
+"E00579","PESV",2021-01-01,160,0.98
+"E00582","Higiene industrial",2022-10-01,139,0.91
+"E00583","Trabajo en alturas",2022-04-01,167,0.98
+"E00585","PESV",2021-04-01,186,0.43
+"E00589","PESV",2020-07-01,96,0.57
+"E00590","Ergonomia",2020-04-01,103,0.9
+"E00593","Riesgo cardiovascular",2020-07-01,52,0.48
+"E00601","PESV",2020-04-01,109,0.52
+"E00605","Riesgo cardiovascular",2020-01-01,128,0.54
+"E00609","Riesgo cardiovascular",2020-01-01,182,0.51
+"E00612","PESV",2020-04-01,143,0.7
+"E00619","Higiene industrial",2022-01-01,31,0.78
+"E00620","Riesgo psicosocial",2020-07-01,68,0.92
+"E00624","Riesgo cardiovascular",2021-01-01,29,0.6
+"E00627","Riesgo cardiovascular",2019-01-01,44,0.53
+"E00631","Riesgo psicosocial",2021-04-01,101,0.5
+"E00632","Ergonomia",2019-07-01,76,0.91
+"E00634","Higiene industrial",2019-10-01,108,0.55
+"E00639","PESV",2021-10-01,189,0.49
+"E00642","Ergonomia",2019-10-01,90,0.88
+"E00646","Ergonomia",2019-01-01,91,0.88
+"E00648","Riesgo cardiovascular",2020-01-01,70,0.59
+"E00650","Trabajo en alturas",2019-04-01,182,0.53
+"E00651","Trabajo en alturas",2021-07-01,53,0.69
+"E00652","Trabajo en alturas",2022-07-01,118,0.51
+"E00654","Higiene industrial",2022-07-01,112,0.76
+"E00655","Higiene industrial",2021-01-01,55,0.55
+"E00657","PESV",2021-10-01,153,0.6
+"E00658","Higiene industrial",2021-01-01,89,0.41
+"E00661","Ergonomia",2021-07-01,98,0.87
+"E00662","Trabajo en alturas",2021-07-01,47,0.93
+"E00665","Higiene industrial",2019-01-01,51,0.95
+"E00669","Trabajo en alturas",2021-04-01,92,0.47
+"E00671","PESV",2019-01-01,58,0.73
+"E00672","Ergonomia",2022-07-01,174,0.42
+"E00676","Trabajo en alturas",2019-07-01,134,0.62
+"E00684","Trabajo en alturas",2019-04-01,61,0.44
+"E00691","Higiene industrial",2021-01-01,93,0.62
+"E00695","PESV",2022-01-01,104,0.92
+"E00697","Higiene industrial",2019-01-01,167,0.58
+"E00699","Ergonomia",2022-10-01,69,0.77
+"E00701","Riesgo psicosocial",2020-04-01,156,0.41
+"E00703","Riesgo psicosocial",2019-07-01,64,0.82
+"E00706","Higiene industrial",2019-07-01,94,0.5
+"E00707","Riesgo psicosocial",2021-07-01,41,0.97
+"E00709","Ergonomia",2021-01-01,31,0.87
+"E00710","Higiene industrial",2021-01-01,153,0.71
+"E00714","Trabajo en alturas",2019-07-01,128,0.46
+"E00719","Higiene industrial",2021-01-01,98,0.77
+"E00723","PESV",2020-01-01,136,0.6
+"E00725","Riesgo psicosocial",2021-10-01,30,0.68
+"E00726","PESV",2020-07-01,78,0.52
+"E00727","Trabajo en alturas",2019-01-01,196,0.98
+"E00731","Ergonomia",2021-01-01,82,0.87
+"E00740","Ergonomia",2021-07-01,57,0.44
+"E00743","Higiene industrial",2022-10-01,68,0.55
+"E00744","PESV",2022-07-01,78,0.89
+"E00751","Riesgo psicosocial",2022-07-01,180,0.64
+"E00752","Riesgo psicosocial",2021-10-01,154,0.88
+"E00755","Riesgo cardiovascular",2021-01-01,139,0.57
+"E00756","Ergonomia",2020-01-01,179,0.96
+"E00759","Riesgo cardiovascular",2021-07-01,21,0.95
+"E00760","Ergonomia",2022-01-01,96,0.81
+"E00763","Riesgo psicosocial",2022-07-01,141,0.43
+"E00764","PESV",2020-10-01,131,0.52
+"E00769","Ergonomia",2020-04-01,66,0.75
+"E00772","Riesgo cardiovascular",2020-04-01,72,0.46
+"E00774","Riesgo cardiovascular",2019-04-01,36,0.57
+"E00775","PESV",2021-07-01,142,0.57
+"E00777","PESV",2022-01-01,54,0.77
+"E00779","PESV",2020-10-01,158,0.54
+"E00781","PESV",2021-10-01,113,0.54
+"E00782","Ergonomia",2021-10-01,50,0.41
+"E00783","Riesgo psicosocial",2021-07-01,134,0.98
+"E00787","Riesgo psicosocial",2022-01-01,69,0.88
+"E00793","Riesgo psicosocial",2021-10-01,156,0.96
+"E00795","Higiene industrial",2020-04-01,128,0.73
+"E00796","PESV",2022-04-01,108,1
+"E00797","Riesgo psicosocial",2022-10-01,122,0.83
+"E00799","Riesgo cardiovascular",2019-10-01,174,0.56
+"E00801","Trabajo en alturas",2022-01-01,35,0.59
+"E00802","Riesgo cardiovascular",2020-01-01,81,0.95
+"E00805","Riesgo psicosocial",2022-07-01,188,0.95
+"E00810","PESV",2022-04-01,65,0.73
+"E00811","Riesgo cardiovascular",2019-07-01,160,0.58
+"E00817","Trabajo en alturas",2021-01-01,144,0.69
+"E00819","PESV",2022-04-01,102,0.65
+"E00820","PESV",2019-04-01,102,0.54
+"E00823","Ergonomia",2020-04-01,24,0.51
+"E00824","PESV",2022-07-01,138,0.54
+"E00825","Trabajo en alturas",2019-01-01,48,0.59
+"E00828","PESV",2021-04-01,90,0.63
+"E00830","PESV",2019-04-01,105,0.71
+"E00831","Riesgo cardiovascular",2020-07-01,117,0.91
+"E00834","Ergonomia",2020-01-01,55,0.78
+"E00839","Ergonomia",2022-01-01,80,0.63
+"E00844","Trabajo en alturas",2022-10-01,41,0.97
+"E00849","Ergonomia",2019-01-01,23,0.82
+"E00850","PESV",2019-01-01,186,0.74
+"E00851","PESV",2021-04-01,172,0.79
+"E00854","Trabajo en alturas",2021-04-01,56,0.74
+"E00856","Riesgo cardiovascular",2020-01-01,74,0.68
+"E00861","Riesgo cardiovascular",2021-01-01,154,0.4
+"E00866","Riesgo cardiovascular",2020-10-01,71,0.49
+"E00870","Higiene industrial",2019-07-01,195,0.88
+"E00872","Trabajo en alturas",2020-10-01,105,0.4
+"E00873","Higiene industrial",2021-04-01,40,0.59
+"E00874","Riesgo psicosocial",2021-04-01,199,0.44
+"E00876","Higiene industrial",2021-04-01,86,0.92
+"E00877","Trabajo en alturas",2020-10-01,197,0.6
+"E00881","Higiene industrial",2022-01-01,71,0.43
+"E00882","Riesgo cardiovascular",2019-01-01,194,0.45
+"E00886","Trabajo en alturas",2020-04-01,135,0.64
+"E00889","Riesgo psicosocial",2021-01-01,60,0.97
+"E00893","Riesgo cardiovascular",2022-10-01,21,0.84
+"E00894","PESV",2022-10-01,58,0.91
+"E00895","Trabajo en alturas",2019-01-01,169,0.88
+"E00898","Trabajo en alturas",2019-10-01,104,0.79
+"E00904","Ergonomia",2020-01-01,97,0.53
+"E00905","Ergonomia",2020-10-01,111,0.6
+"E00906","Riesgo psicosocial",2020-01-01,123,0.68
+"E00907","Trabajo en alturas",2019-01-01,170,0.55
+"E00909","Trabajo en alturas",2022-04-01,171,0.54
+"E00910","Higiene industrial",2021-01-01,193,0.9
+"E00912","PESV",2020-07-01,61,0.52
+"E00914","Trabajo en alturas",2022-01-01,158,0.74
+"E00915","Riesgo cardiovascular",2022-10-01,164,0.47
+"E00925","Higiene industrial",2020-10-01,160,0.95
+"E00926","Riesgo psicosocial",2019-04-01,96,0.67
+"E00927","Riesgo cardiovascular",2019-10-01,175,0.78
+"E00928","PESV",2019-01-01,43,0.61
+"E00929","Riesgo psicosocial",2021-04-01,162,0.74
+"E00930","Riesgo psicosocial",2022-10-01,108,0.95
+"E00931","Riesgo psicosocial",2019-10-01,158,0.6
+"E00932","Higiene industrial",2019-07-01,132,0.79
+"E00934","Riesgo psicosocial",2022-07-01,53,0.81
+"E00935","Trabajo en alturas",2021-01-01,187,0.63
+"E00939","PESV",2022-07-01,67,0.41
+"E00940","PESV",2022-04-01,67,0.59
+"E00941","PESV",2020-07-01,148,0.43
+"E00942","Riesgo psicosocial",2021-10-01,82,0.78
+"E00943","Riesgo psicosocial",2020-01-01,115,0.59
+"E00944","Higiene industrial",2019-04-01,122,0.67
+"E00945","Higiene industrial",2021-01-01,92,0.68
+"E00946","Trabajo en alturas",2019-10-01,142,0.68
+"E00949","Higiene industrial",2021-07-01,93,0.47
+"E00950","Riesgo cardiovascular",2020-10-01,127,0.96
+"E00953","PESV",2021-04-01,160,0.89
+"E00955","Riesgo psicosocial",2019-10-01,123,0.42
+"E00961","Riesgo cardiovascular",2021-07-01,195,0.55
+"E00965","Riesgo cardiovascular",2022-07-01,64,0.91
+"E00966","Riesgo cardiovascular",2022-10-01,89,0.49
+"E00967","PESV",2020-10-01,111,0.41
+"E00968","Riesgo psicosocial",2021-01-01,134,0.53
+"E00969","Trabajo en alturas",2021-10-01,63,0.82
+"E00973","Riesgo psicosocial",2020-07-01,89,1
+"E00974","Ergonomia",2020-10-01,161,0.54
+"E00977","Trabajo en alturas",2022-01-01,122,0.96
+"E00978","Trabajo en alturas",2021-01-01,68,0.71
+"E00981","Riesgo psicosocial",2022-07-01,106,0.46
+"E00986","Riesgo cardiovascular",2022-07-01,95,0.68
+"E00990","Trabajo en alturas",2020-04-01,121,0.55
+"E00993","Trabajo en alturas",2021-07-01,26,0.5
+"E01001","Higiene industrial",2020-01-01,78,0.7
+"E01004","PESV",2022-10-01,53,0.75
+"E01007","Riesgo psicosocial",2019-04-01,163,0.62
+"E01009","Riesgo cardiovascular",2021-10-01,95,0.72
+"E01015","PESV",2020-04-01,192,0.44
+"E01021","Higiene industrial",2022-04-01,32,0.82
+"E01026","Riesgo psicosocial",2021-07-01,26,0.45
+"E01033","Riesgo cardiovascular",2019-07-01,86,0.46
+"E01034","Ergonomia",2021-04-01,90,0.69
+"E01039","Riesgo psicosocial",2021-07-01,167,0.66
+"E01040","PESV",2020-10-01,139,0.74
+"E01041","Riesgo cardiovascular",2022-04-01,61,0.99
+"E01043","Ergonomia",2022-10-01,198,0.45
+"E01044","Riesgo psicosocial",2021-07-01,45,0.85
+"E01047","Riesgo psicosocial",2021-07-01,33,0.7
+"E01048","PESV",2022-10-01,31,0.85
+"E01050","Ergonomia",2020-04-01,186,0.58
+"E01052","PESV",2020-07-01,141,0.69
+"E01059","Trabajo en alturas",2019-07-01,188,0.9
+"E01063","Trabajo en alturas",2022-01-01,38,0.94
+"E01066","Ergonomia",2020-07-01,194,0.49
+"E01068","PESV",2019-04-01,136,0.98
+"E01069","Ergonomia",2020-04-01,193,0.76
+"E01070","Riesgo psicosocial",2022-07-01,161,0.42
+"E01071","Ergonomia",2021-04-01,93,0.47
+"E01080","Riesgo psicosocial",2019-10-01,160,0.51
+"E01081","PESV",2020-01-01,162,0.51
+"E01086","Higiene industrial",2022-04-01,178,0.46
+"E01096","Riesgo psicosocial",2019-07-01,23,0.7
+"E01098","PESV",2020-01-01,50,0.59
+"E01102","Higiene industrial",2019-04-01,47,0.94
+"E01103","Higiene industrial",2022-04-01,192,0.8
+"E01104","Higiene industrial",2020-07-01,164,0.55
+"E01106","Ergonomia",2022-04-01,150,0.72
+"E01109","Riesgo psicosocial",2019-01-01,52,0.74
+"E01110","Riesgo psicosocial",2019-10-01,83,0.69
+"E01111","Trabajo en alturas",2021-04-01,36,0.84
+"E01113","Higiene industrial",2019-07-01,140,0.6
+"E01115","PESV",2020-01-01,130,0.54
+"E01116","Trabajo en alturas",2021-07-01,62,0.5
+"E01120","PESV",2022-10-01,66,0.71
+"E01121","Riesgo psicosocial",2019-07-01,70,0.72
+"E01122","Ergonomia",2022-07-01,200,0.88
+"E01124","Ergonomia",2020-07-01,133,0.55
+"E01125","Riesgo cardiovascular",2022-04-01,157,0.76
+"E01128","Riesgo cardiovascular",2020-04-01,133,0.64
+"E01131","Ergonomia",2022-01-01,101,0.98
+"E01132","Trabajo en alturas",2020-01-01,136,0.7
+"E01134","PESV",2021-07-01,87,0.96
+"E01135","Riesgo psicosocial",2022-07-01,115,0.97
+"E01139","PESV",2020-07-01,162,0.46
+"E01143","Ergonomia",2022-04-01,156,0.57
+"E01147","Trabajo en alturas",2019-10-01,169,0.6
+"E01150","Riesgo psicosocial",2021-10-01,41,0.43
+"E01154","PESV",2019-07-01,116,0.72
+"E01160","Higiene industrial",2020-04-01,159,0.55
+"E01166","PESV",2021-01-01,53,0.56
+"E01168","Trabajo en alturas",2020-10-01,86,0.66
+"E01169","Trabajo en alturas",2021-01-01,72,0.7
+"E01178","Higiene industrial",2020-04-01,53,0.42
+"E01179","Riesgo cardiovascular",2022-10-01,133,0.94
+"E01181","PESV",2022-04-01,37,0.8
+"E01184","PESV",2020-07-01,72,0.8
+"E01188","Ergonomia",2019-07-01,100,0.96
+"E01189","PESV",2021-07-01,154,0.97
+"E01194","Riesgo psicosocial",2020-10-01,164,0.93
+"E01195","PESV",2021-10-01,111,0.91
+"E01198","Riesgo cardiovascular",2021-01-01,22,0.9
+"E01202","Trabajo en alturas",2019-10-01,180,0.6
+"E01204","Riesgo psicosocial",2020-10-01,122,0.63
+"E01207","Ergonomia",2022-07-01,42,0.79
+"E01208","Higiene industrial",2022-10-01,130,0.53
+"E01213","Higiene industrial",2022-10-01,21,0.59
+"E01223","Riesgo psicosocial",2021-04-01,106,0.48
+"E01225","Riesgo psicosocial",2022-04-01,46,0.52
+"E01228","Higiene industrial",2021-01-01,170,0.61
+"E01233","Higiene industrial",2020-07-01,125,0.46
+"E01239","Higiene industrial",2020-01-01,85,0.49
+"E01240","Ergonomia",2020-04-01,126,0.98
+"E01241","Riesgo psicosocial",2021-01-01,73,0.9
+"E01245","Riesgo cardiovascular",2019-04-01,129,0.41
+"E01246","Ergonomia",2019-10-01,146,0.53
+"E01251","Ergonomia",2022-01-01,146,0.7
+"E01252","Riesgo psicosocial",2020-10-01,79,0.82
+"E01254","Trabajo en alturas",2022-01-01,185,1
+"E01255","Ergonomia",2019-10-01,43,0.7
+"E01264","PESV",2022-07-01,66,0.91
+"E01269","Higiene industrial",2021-10-01,86,0.66
+"E01275","Ergonomia",2022-07-01,171,0.51
+"E01276","PESV",2022-10-01,189,0.66
+"E01277","Higiene industrial",2021-10-01,195,0.53
+"E01278","Riesgo psicosocial",2020-07-01,134,0.67
+"E01280","Ergonomia",2021-04-01,107,0.75
+"E01283","Riesgo psicosocial",2019-10-01,79,0.81
+"E01284","Riesgo psicosocial",2019-10-01,33,0.84
+"E01285","Riesgo psicosocial",2019-04-01,105,0.62
+"E01287","Riesgo cardiovascular",2020-07-01,57,0.71
+"E01288","Trabajo en alturas",2020-04-01,188,0.62
+"E01290","PESV",2021-01-01,99,0.68
+"E01294","Riesgo cardiovascular",2021-01-01,40,0.51
+"E01296","Trabajo en alturas",2021-07-01,22,0.86
+"E01297","Trabajo en alturas",2020-10-01,166,0.98
+"E01301","PESV",2022-10-01,197,0.6
+"E01307","Ergonomia",2022-10-01,148,0.51
+"E01309","Trabajo en alturas",2019-04-01,65,0.8
+"E01312","Riesgo psicosocial",2020-10-01,59,0.57
+"E01313","Riesgo psicosocial",2019-01-01,140,0.79
+"E01314","Higiene industrial",2019-04-01,158,0.88
+"E01316","Riesgo cardiovascular",2022-07-01,123,0.4
+"E01318","Higiene industrial",2021-04-01,169,0.95
+"E01320","Riesgo cardiovascular",2019-01-01,126,0.48
+"E01321","PESV",2022-10-01,195,0.8
+"E01326","Ergonomia",2020-01-01,126,0.97
+"E01330","Trabajo en alturas",2022-10-01,48,0.66
+"E01334","Ergonomia",2019-04-01,52,0.96
+"E01339","Higiene industrial",2021-10-01,84,0.83
+"E01344","Trabajo en alturas",2021-07-01,176,0.7
+"E01348","Riesgo cardiovascular",2022-04-01,165,0.6
+"E01352","PESV",2019-07-01,181,0.44
+"E01354","Riesgo cardiovascular",2019-07-01,179,0.59
+"E01355","Trabajo en alturas",2022-01-01,153,0.83
+"E01356","PESV",2020-01-01,158,0.67
+"E01360","Higiene industrial",2020-04-01,59,0.74
+"E01365","Ergonomia",2019-07-01,110,0.46
+"E01366","Higiene industrial",2022-10-01,149,0.97
+"E01370","Riesgo psicosocial",2019-10-01,104,0.59
+"E01372","Riesgo psicosocial",2021-07-01,200,0.72
+"E01373","Ergonomia",2022-07-01,112,0.57
+"E01376","Riesgo cardiovascular",2019-01-01,113,0.45
+"E01378","Riesgo psicosocial",2020-10-01,183,0.6
+"E01382","Riesgo cardiovascular",2021-01-01,179,0.73
+"E01384","Riesgo cardiovascular",2020-01-01,155,0.76
+"E01387","Riesgo psicosocial",2019-04-01,25,0.57
+"E01388","Trabajo en alturas",2021-01-01,97,0.51
+"E01390","PESV",2022-01-01,79,0.52
+"E01393","Riesgo cardiovascular",2021-04-01,33,0.49
+"E01396","Ergonomia",2019-04-01,200,0.7
+"E01403","Trabajo en alturas",2019-07-01,61,0.53
+"E01404","Higiene industrial",2019-07-01,61,0.61
+"E01405","Ergonomia",2020-10-01,102,0.96
+"E01406","Riesgo psicosocial",2022-07-01,85,0.82
+"E01408","Trabajo en alturas",2022-10-01,173,0.76
+"E01409","Riesgo psicosocial",2019-01-01,29,0.8
+"E01412","PESV",2021-10-01,82,0.52
+"E01414","Trabajo en alturas",2019-01-01,181,0.91
+"E01416","PESV",2020-10-01,80,0.77
+"E01420","Trabajo en alturas",2022-07-01,101,0.96
+"E01424","Ergonomia",2019-04-01,138,0.74
+"E01430","Higiene industrial",2020-07-01,162,0.4
+"E01439","Ergonomia",2019-04-01,46,0.95
+"E01444","PESV",2020-07-01,134,0.79
+"E01445","Ergonomia",2019-04-01,28,0.52
+"E01448","Riesgo cardiovascular",2020-04-01,118,0.81
+"E01449","Ergonomia",2020-01-01,78,0.43
+"E01451","Riesgo cardiovascular",2020-07-01,156,0.94
+"E01456","Trabajo en alturas",2022-10-01,152,0.8
+"E01458","Ergonomia",2021-10-01,122,0.77
+"E01459","PESV",2020-01-01,110,0.95
+"E01460","Riesgo cardiovascular",2021-04-01,64,0.73
+"E01467","Riesgo cardiovascular",2022-10-01,95,0.43
+"E01470","Riesgo cardiovascular",2021-01-01,87,0.61
+"E01477","Trabajo en alturas",2019-07-01,190,0.51
+"E01480","Riesgo cardiovascular",2021-10-01,198,0.77
+"E01482","PESV",2021-07-01,122,0.67
+"E01487","Ergonomia",2022-07-01,111,0.43
+"E01489","PESV",2019-07-01,59,0.96
+"E01490","Riesgo psicosocial",2020-07-01,136,0.91
+"E01491","PESV",2022-01-01,38,0.62
+"E01492","Trabajo en alturas",2022-10-01,133,0.52
+"E01493","Higiene industrial",2021-01-01,93,0.88
+"E01499","Higiene industrial",2022-01-01,50,0.67
+"E01503","Higiene industrial",2021-04-01,190,0.78
+"E01511","PESV",2020-07-01,46,0.83
+"E01512","Higiene industrial",2022-04-01,132,0.6
+"E01515","Riesgo psicosocial",2019-10-01,34,0.52
+"E01518","PESV",2020-04-01,85,0.99
+"E01521","Trabajo en alturas",2020-01-01,142,0.89
+"E01522","Riesgo psicosocial",2022-10-01,145,0.51
+"E01523","PESV",2019-04-01,141,0.55
+"E01525","Ergonomia",2022-07-01,116,0.43
+"E01526","Ergonomia",2019-10-01,144,0.83
+"E01528","Ergonomia",2019-01-01,198,0.77
+"E01532","Riesgo cardiovascular",2022-07-01,191,0.76
+"E01535","Riesgo cardiovascular",2021-04-01,142,0.51
+"E01536","Riesgo psicosocial",2022-04-01,24,0.82
+"E01537","Riesgo cardiovascular",2019-07-01,113,0.79
+"E01539","Riesgo cardiovascular",2019-01-01,46,0.5
+"E01543","PESV",2020-04-01,163,0.44
+"E01548","Trabajo en alturas",2020-10-01,176,0.58
+"E01549","Trabajo en alturas",2019-07-01,125,0.55
+"E01550","Higiene industrial",2020-04-01,57,0.82
+"E01557","Riesgo cardiovascular",2022-07-01,30,0.49
+"E01564","Trabajo en alturas",2021-04-01,34,0.7
+"E01566","Riesgo psicosocial",2021-07-01,184,0.8
+"E01567","PESV",2020-04-01,138,0.65
+"E01571","Ergonomia",2020-10-01,29,0.87
+"E01572","Higiene industrial",2022-07-01,152,0.43
+"E01573","Ergonomia",2022-04-01,158,0.44
+"E01575","Higiene industrial",2020-10-01,55,0.72
+"E01576","Riesgo psicosocial",2021-01-01,43,0.44
+"E01577","Riesgo cardiovascular",2020-01-01,104,0.7
+"E01584","PESV",2022-10-01,107,0.68
+"E01585","Riesgo cardiovascular",2022-07-01,155,0.74
+"E01587","Higiene industrial",2021-07-01,46,0.41
+"E01596","PESV",2021-01-01,178,0.78
+"E01608","Ergonomia",2022-04-01,162,0.4
+"E01609","PESV",2020-10-01,112,0.68
+"E01610","Riesgo cardiovascular",2019-07-01,48,0.97
+"E01611","Riesgo cardiovascular",2022-07-01,84,0.87
+"E01612","Higiene industrial",2020-01-01,32,0.81
+"E01613","PESV",2020-07-01,183,0.88
+"E01614","Riesgo psicosocial",2019-10-01,43,0.81
+"E01615","Higiene industrial",2020-01-01,112,0.74
+"E01617","PESV",2019-01-01,37,0.48
+"E01622","Riesgo cardiovascular",2021-04-01,167,0.95
+"E01624","Riesgo psicosocial",2021-10-01,163,0.49
+"E01627","Higiene industrial",2020-04-01,153,0.6
+"E01630","Ergonomia",2022-04-01,198,0.43
+"E01633","Ergonomia",2022-07-01,198,0.78
+"E01637","Higiene industrial",2019-04-01,178,0.95
+"E01640","PESV",2020-10-01,26,0.74
+"E01641","Riesgo psicosocial",2022-01-01,97,0.75
+"E01643","Higiene industrial",2020-07-01,167,0.7
+"E01645","Trabajo en alturas",2022-10-01,196,0.46
+"E01652","PESV",2019-10-01,24,0.72
+"E01653","Riesgo psicosocial",2020-04-01,55,0.93
+"E01657","Higiene industrial",2022-07-01,115,0.6
+"E01659","Riesgo psicosocial",2022-07-01,136,0.89
+"E01661","Ergonomia",2022-01-01,28,0.53
+"E01664","Riesgo cardiovascular",2019-10-01,34,0.83
+"E01665","Ergonomia",2020-07-01,188,0.87
+"E01667","Riesgo cardiovascular",2021-07-01,108,0.8
+"E01670","Higiene industrial",2020-01-01,64,0.93
+"E01673","Trabajo en alturas",2021-10-01,36,0.69
+"E01675","Riesgo psicosocial",2022-04-01,118,0.59
+"E01679","Trabajo en alturas",2020-04-01,35,0.92
+"E01681","Ergonomia",2019-04-01,60,0.91
+"E01688","Ergonomia",2021-01-01,55,0.9
+"E01689","Ergonomia",2022-04-01,39,0.64
+"E01691","Trabajo en alturas",2022-10-01,40,0.55
+"E01695","Higiene industrial",2020-07-01,77,0.86
+"E01696","Ergonomia",2020-04-01,167,0.87
+"E01697","Higiene industrial",2019-10-01,123,0.88
+"E01701","Trabajo en alturas",2019-07-01,97,0.75
+"E01709","Riesgo cardiovascular",2020-01-01,185,0.43
+"E01711","Riesgo psicosocial",2022-01-01,53,0.61
+"E01712","Ergonomia",2020-01-01,78,0.51
+"E01713","PESV",2019-04-01,172,0.77
+"E01715","Riesgo cardiovascular",2022-10-01,43,0.51
+"E01716","Riesgo cardiovascular",2021-04-01,102,0.81
+"E01718","Ergonomia",2022-04-01,179,0.95
+"E01722","Higiene industrial",2021-10-01,95,0.67
+"E01725","Riesgo cardiovascular",2022-10-01,184,0.54
+"E01726","PESV",2019-10-01,32,0.82
+"E01727","Trabajo en alturas",2020-10-01,58,0.88
+"E01728","PESV",2022-07-01,22,0.94
+"E01729","Riesgo psicosocial",2022-07-01,48,0.86
+"E01730","PESV",2020-04-01,85,0.47
+"E01738","Riesgo cardiovascular",2022-07-01,38,0.88
+"E01740","Trabajo en alturas",2022-01-01,45,0.47
+"E01741","Riesgo psicosocial",2020-07-01,174,0.72
+"E01751","Riesgo cardiovascular",2020-10-01,56,0.86
+"E01757","Ergonomia",2019-01-01,51,0.44
+"E01759","Higiene industrial",2020-04-01,25,0.74
+"E01762","Ergonomia",2022-04-01,48,0.81
+"E01765","Higiene industrial",2021-07-01,44,0.81
+"E01767","Riesgo cardiovascular",2022-10-01,65,0.43
+"E01768","Riesgo cardiovascular",2021-04-01,105,0.78
+"E01769","Trabajo en alturas",2021-10-01,150,0.48
+"E01770","Riesgo cardiovascular",2020-10-01,83,0.6
+"E01772","Higiene industrial",2020-04-01,95,0.41
+"E01779","Riesgo cardiovascular",2021-07-01,121,0.77
+"E01780","Higiene industrial",2020-01-01,49,0.94
+"E01781","Trabajo en alturas",2019-01-01,97,0.58
+"E01783","Ergonomia",2022-07-01,65,0.7
+"E01785","PESV",2019-01-01,35,0.61
+"E01786","Ergonomia",2021-10-01,49,0.68
+"E01787","Trabajo en alturas",2020-01-01,28,0.72
+"E01789","Riesgo cardiovascular",2022-01-01,143,0.92
+"E01791","Trabajo en alturas",2019-07-01,162,0.9
+"E01792","Trabajo en alturas",2022-04-01,106,1
+"E01794","Higiene industrial",2022-04-01,82,0.45
+"E01798","Ergonomia",2020-07-01,164,0.86
+"E01804","Higiene industrial",2019-04-01,128,0.71
+"E01810","Trabajo en alturas",2021-04-01,198,0.87
+"E01814","Higiene industrial",2020-01-01,114,0.63
+"E01817","Higiene industrial",2021-04-01,190,0.83
+"E01820","Higiene industrial",2022-01-01,64,0.83
+"E01823","Higiene industrial",2022-04-01,191,0.75
+"E01833","Ergonomia",2020-01-01,62,0.59
+"E01836","PESV",2019-01-01,105,0.79
+"E01838","Trabajo en alturas",2020-01-01,31,0.81
+"E01842","Higiene industrial",2020-04-01,182,0.8
+"E01843","Riesgo psicosocial",2021-07-01,38,0.8
+"E01847","Riesgo psicosocial",2019-04-01,186,0.84
+"E01849","Riesgo cardiovascular",2019-01-01,128,0.95
+"E01851","Higiene industrial",2022-10-01,53,0.6
+"E01852","Trabajo en alturas",2019-10-01,126,0.52
+"E01855","Riesgo cardiovascular",2020-10-01,149,0.76
+"E01856","PESV",2021-01-01,158,0.47
+"E01857","Riesgo psicosocial",2020-04-01,106,0.63
+"E01861","Higiene industrial",2019-07-01,34,0.73
+"E01866","Riesgo psicosocial",2019-10-01,184,0.76
+"E01868","Riesgo cardiovascular",2020-04-01,29,0.75
+"E01869","Trabajo en alturas",2019-07-01,160,0.58
+"E01871","Higiene industrial",2021-10-01,71,0.74
+"E01874","Higiene industrial",2019-07-01,24,0.78
+"E01879","Trabajo en alturas",2020-10-01,142,0.88
+"E01881","Ergonomia",2019-07-01,60,0.92
+"E01886","PESV",2020-07-01,31,0.95
+"E01893","PESV",2021-04-01,192,0.86
+"E01895","Riesgo cardiovascular",2021-01-01,111,0.84
+"E01898","PESV",2020-10-01,116,0.95
+"E01899","Trabajo en alturas",2019-04-01,59,0.99
+"E01902","Higiene industrial",2021-04-01,107,0.93
+"E01906","Riesgo psicosocial",2021-01-01,183,0.99
+"E01907","Riesgo psicosocial",2021-10-01,140,0.99
+"E01908","Riesgo cardiovascular",2021-10-01,93,0.46
+"E01909","Ergonomia",2022-04-01,167,0.62
+"E01912","Riesgo psicosocial",2021-01-01,154,0.67
+"E01913","Riesgo psicosocial",2019-01-01,81,0.84
+"E01914","Trabajo en alturas",2022-01-01,125,0.73
+"E01915","Higiene industrial",2019-01-01,29,0.43
+"E01916","Riesgo psicosocial",2019-01-01,196,0.71
+"E01917","Riesgo cardiovascular",2021-07-01,78,1
+"E01919","Riesgo cardiovascular",2019-04-01,71,0.64
+"E01926","Riesgo cardiovascular",2020-10-01,48,0.55
+"E01933","Riesgo psicosocial",2020-01-01,133,0.6
+"E01938","Higiene industrial",2019-10-01,133,0.68
+"E01940","PESV",2021-07-01,183,0.57
+"E01944","PESV",2020-10-01,62,0.61
+"E01948","Higiene industrial",2021-04-01,74,0.53
+"E01953","Higiene industrial",2019-04-01,107,0.91
+"E01954","Ergonomia",2020-04-01,80,0.51
+"E01956","Higiene industrial",2019-10-01,37,0.94
+"E01958","Trabajo en alturas",2020-01-01,78,0.86
+"E01966","Higiene industrial",2021-01-01,80,0.73
+"E01967","Riesgo psicosocial",2020-10-01,61,0.96
+"E01970","Riesgo cardiovascular",2019-10-01,56,0.81
+"E01971","Riesgo cardiovascular",2022-07-01,44,0.58
+"E01974","Riesgo cardiovascular",2020-01-01,125,0.67
+"E01983","Riesgo psicosocial",2022-10-01,166,0.57
+"E01984","Ergonomia",2020-10-01,114,0.4
+"E01987","Trabajo en alturas",2022-01-01,116,0.76
+"E01992","Higiene industrial",2021-04-01,24,0.77
+"E01993","Higiene industrial",2020-04-01,61,0.85
+"E01994","Ergonomia",2021-01-01,76,0.66
+"E01996","Trabajo en alturas",2019-10-01,125,0.73
+"E01999","Riesgo cardiovascular",2022-07-01,79,0.42
+"E02001","Higiene industrial",2021-10-01,146,0.69
+"E02009","Trabajo en alturas",2020-10-01,138,0.4
+"E02012","Riesgo cardiovascular",2021-01-01,62,0.51
+"E02014","Riesgo cardiovascular",2021-01-01,84,0.92
+"E02015","Trabajo en alturas",2019-10-01,27,0.89
+"E02017","Riesgo cardiovascular",2022-04-01,145,0.92
+"E02019","Trabajo en alturas",2020-07-01,38,0.99
+"E02020","Ergonomia",2020-04-01,84,0.41
+"E02026","Higiene industrial",2020-04-01,94,0.58
+"E02032","Ergonomia",2019-01-01,150,0.87
+"E02033","Ergonomia",2021-10-01,103,0.8
+"E02036","Ergonomia",2022-01-01,174,0.58
+"E02040","Riesgo psicosocial",2021-07-01,103,0.99
+"E02047","Trabajo en alturas",2022-07-01,164,0.76
+"E02049","Trabajo en alturas",2022-10-01,149,0.8
+"E02055","Riesgo cardiovascular",2022-04-01,81,0.68
+"E02058","Riesgo psicosocial",2020-01-01,199,0.69
+"E02061","Riesgo cardiovascular",2021-04-01,133,0.78
+"E02062","PESV",2020-07-01,32,0.74
+"E02063","Higiene industrial",2020-07-01,105,0.83
+"E02065","Riesgo cardiovascular",2021-01-01,42,0.91
+"E02066","Riesgo cardiovascular",2020-10-01,27,0.78
+"E02069","Trabajo en alturas",2021-04-01,48,0.45
+"E02073","Trabajo en alturas",2020-10-01,74,0.54
+"E02074","Higiene industrial",2020-01-01,89,0.69
+"E02075","Trabajo en alturas",2021-01-01,111,0.78
+"E02077","Higiene industrial",2022-07-01,69,0.95
+"E02086","Riesgo cardiovascular",2021-07-01,50,0.52
+"E02092","Trabajo en alturas",2022-04-01,113,0.72
+"E02093","Riesgo cardiovascular",2021-07-01,88,0.75
+"E02094","Riesgo psicosocial",2020-04-01,169,0.73
+"E02095","Trabajo en alturas",2019-10-01,98,0.57
+"E02096","Higiene industrial",2022-07-01,166,0.71
+"E02097","Trabajo en alturas",2020-10-01,110,0.56
+"E02102","Ergonomia",2020-07-01,45,0.69
+"E02105","PESV",2019-07-01,74,0.95
+"E02108","Riesgo psicosocial",2021-01-01,99,0.95
+"E02110","Riesgo cardiovascular",2019-01-01,194,0.43
+"E02111","PESV",2020-07-01,20,0.53
+"E02114","Trabajo en alturas",2022-07-01,183,0.73
+"E02116","Higiene industrial",2022-10-01,119,0.61
+"E02128","Trabajo en alturas",2020-07-01,138,0.68
+"E02132","Trabajo en alturas",2020-07-01,151,0.52
+"E02135","Higiene industrial",2022-10-01,60,0.44
+"E02136","Trabajo en alturas",2019-10-01,92,0.68
+"E02139","Higiene industrial",2020-10-01,99,0.73
+"E02140","Trabajo en alturas",2022-07-01,158,0.85
+"E02142","Higiene industrial",2019-01-01,85,0.42
+"E02143","Riesgo cardiovascular",2020-04-01,39,0.52
+"E02145","Riesgo cardiovascular",2021-10-01,35,0.82
+"E02147","Riesgo cardiovascular",2019-01-01,26,0.69
+"E02148","Trabajo en alturas",2022-07-01,68,0.96
+"E02151","Riesgo cardiovascular",2021-01-01,81,0.82
+"E02157","PESV",2020-10-01,171,0.68
+"E02160","PESV",2022-01-01,68,0.58
+"E02162","PESV",2021-01-01,174,0.46
+"E02166","PESV",2019-07-01,58,0.71
+"E02168","Riesgo cardiovascular",2022-07-01,109,0.79
+"E02172","Ergonomia",2019-01-01,173,0.47
+"E02175","Ergonomia",2021-04-01,111,0.48
+"E02176","Ergonomia",2022-04-01,97,0.44
+"E02180","Trabajo en alturas",2022-10-01,85,0.89
+"E02184","PESV",2021-07-01,149,0.95
+"E02193","Ergonomia",2022-07-01,126,0.61
+"E02194","Riesgo cardiovascular",2019-04-01,168,0.88
+"E02195","Riesgo psicosocial",2019-04-01,75,0.62
+"E02199","Higiene industrial",2019-07-01,138,0.93
+"E02201","Riesgo cardiovascular",2019-01-01,116,0.44
+"E02202","Trabajo en alturas",2019-07-01,188,0.86
+"E02203","PESV",2020-10-01,166,0.47
+"E02208","Riesgo psicosocial",2019-10-01,56,0.66
+"E02210","Riesgo cardiovascular",2019-01-01,184,0.83
+"E02212","Trabajo en alturas",2022-10-01,169,0.5
+"E02213","PESV",2019-07-01,198,0.51
+"E02221","Trabajo en alturas",2021-07-01,75,0.94
+"E02227","Trabajo en alturas",2022-04-01,75,0.72
+"E02232","Higiene industrial",2022-07-01,49,0.7
+"E02233","Ergonomia",2019-07-01,96,0.41
+"E02237","Riesgo cardiovascular",2019-04-01,189,0.65
+"E02240","Trabajo en alturas",2019-01-01,47,0.79
+"E02250","PESV",2020-01-01,92,0.49
+"E02254","Trabajo en alturas",2022-04-01,129,0.61
+"E02258","Riesgo psicosocial",2021-07-01,140,0.73
+"E02260","Higiene industrial",2019-07-01,95,0.53
+"E02262","Higiene industrial",2021-01-01,59,0.62
+"E02263","PESV",2020-07-01,108,0.95
+"E02266","Riesgo cardiovascular",2022-07-01,165,0.55
+"E02267","Riesgo cardiovascular",2019-01-01,157,0.64
+"E02276","Ergonomia",2020-07-01,142,0.93
+"E02277","Ergonomia",2022-04-01,128,0.93
+"E02281","Ergonomia",2020-01-01,40,0.95
+"E02283","Riesgo cardiovascular",2019-07-01,139,0.69
+"E02284","Higiene industrial",2020-10-01,139,0.44
+"E02287","Trabajo en alturas",2021-04-01,169,0.41
+"E02291","Riesgo cardiovascular",2019-07-01,35,0.78
+"E02292","PESV",2021-04-01,91,0.92
+"E02294","Higiene industrial",2022-07-01,108,0.46
+"E02300","Riesgo psicosocial",2022-07-01,178,0.81
+"E02301","Trabajo en alturas",2022-01-01,87,0.41
+"E02302","Higiene industrial",2019-10-01,41,0.73
+"E02305","Higiene industrial",2021-07-01,171,0.98
+"E02306","PESV",2021-01-01,90,0.76
+"E02307","PESV",2020-01-01,163,0.55
+"E02308","Higiene industrial",2021-07-01,57,0.63
+"E02311","Trabajo en alturas",2021-01-01,53,0.46
+"E02313","Ergonomia",2019-07-01,190,0.86
+"E02315","Trabajo en alturas",2022-04-01,118,0.42
+"E02318","Ergonomia",2019-07-01,79,0.49
+"E02319","PESV",2019-01-01,122,0.75
+"E02325","Higiene industrial",2021-01-01,154,0.5
+"E02328","Riesgo psicosocial",2019-01-01,120,0.53
+"E02330","Higiene industrial",2020-10-01,148,0.71
+"E02332","Ergonomia",2022-04-01,73,0.83
+"E02333","Ergonomia",2019-10-01,166,0.91
+"E02334","Higiene industrial",2019-10-01,151,0.59
+"E02335","Higiene industrial",2019-10-01,127,0.89
+"E02337","PESV",2019-07-01,28,0.47
+"E02340","Riesgo psicosocial",2019-07-01,160,0.55
+"E02342","Riesgo cardiovascular",2022-07-01,58,0.62
+"E02345","Riesgo cardiovascular",2019-01-01,125,0.42
+"E02348","Riesgo psicosocial",2021-04-01,188,0.73
+"E02350","Riesgo cardiovascular",2021-10-01,127,0.74
+"E02351","Riesgo psicosocial",2019-10-01,111,0.56
+"E02354","Riesgo psicosocial",2020-01-01,192,0.97
+"E02355","PESV",2022-01-01,122,0.85
+"E02358","Riesgo psicosocial",2021-07-01,78,0.89
+"E02360","Trabajo en alturas",2021-01-01,106,0.46
+"E02365","Higiene industrial",2021-01-01,130,0.56
+"E02366","Ergonomia",2020-01-01,69,0.87
+"E02367","PESV",2022-04-01,75,0.98
+"E02368","Trabajo en alturas",2019-10-01,61,0.43
+"E02371","Riesgo psicosocial",2021-07-01,100,0.47
+"E02372","Riesgo psicosocial",2021-01-01,47,0.47
+"E02375","PESV",2021-01-01,50,0.92
+"E02376","Higiene industrial",2019-10-01,159,0.72
+"E02379","Higiene industrial",2019-10-01,129,0.53
+"E02380","Riesgo psicosocial",2022-07-01,68,0.66
+"E02386","PESV",2021-04-01,94,0.57
+"E02388","Riesgo psicosocial",2021-10-01,165,0.48
+"E02390","Riesgo psicosocial",2021-07-01,91,0.44
+"E02392","Trabajo en alturas",2021-01-01,193,0.75
+"E02396","Riesgo cardiovascular",2019-07-01,189,0.88
+"E02406","Ergonomia",2019-10-01,112,0.44
+"E02412","Riesgo cardiovascular",2022-01-01,191,0.73
+"E02414","Riesgo psicosocial",2022-04-01,89,0.87
+"E02418","Riesgo cardiovascular",2021-01-01,107,0.63
+"E02424","Riesgo cardiovascular",2021-04-01,47,0.81
+"E02425","Riesgo cardiovascular",2022-01-01,127,0.69
+"E02428","PESV",2019-04-01,45,0.5
+"E02429","Trabajo en alturas",2021-01-01,21,0.86
+"E02433","Riesgo cardiovascular",2019-04-01,145,0.74
+"E02435","Riesgo psicosocial",2019-04-01,106,0.92
+"E02436","Higiene industrial",2022-07-01,84,0.66
+"E02440","Higiene industrial",2019-07-01,27,0.6
+"E02442","PESV",2021-04-01,178,0.43
+"E02443","Trabajo en alturas",2022-10-01,196,0.55
+"E02444","Higiene industrial",2020-01-01,79,0.44
+"E02457","Higiene industrial",2019-07-01,103,0.8
+"E02458","Riesgo psicosocial",2019-10-01,194,0.78
+"E02459","Ergonomia",2022-04-01,129,0.98
+"E02461","Riesgo cardiovascular",2019-04-01,143,0.76
+"E02462","Ergonomia",2021-01-01,56,0.76
+"E02464","Riesgo psicosocial",2021-01-01,26,0.6
+"E02468","Riesgo cardiovascular",2019-01-01,55,0.51
+"E02470","Ergonomia",2021-10-01,148,0.64
+"E02473","Trabajo en alturas",2022-07-01,76,0.6
+"E02476","Riesgo cardiovascular",2021-10-01,90,0.78
+"E02477","Trabajo en alturas",2019-01-01,33,0.54
+"E02478","Riesgo psicosocial",2020-07-01,135,0.86
+"E02479","Ergonomia",2020-04-01,137,0.81
+"E02481","Riesgo cardiovascular",2019-07-01,53,0.98
+"E02485","Higiene industrial",2019-01-01,55,0.62
+"E02487","Ergonomia",2019-10-01,111,0.52
+"E02488","Riesgo cardiovascular",2022-07-01,43,0.86
+"E02490","Trabajo en alturas",2020-07-01,173,0.85
+"E02491","Higiene industrial",2019-10-01,133,0.67
+"E02495","Ergonomia",2021-04-01,30,0.68
+"E02498","Ergonomia",2021-07-01,175,0.89
+"E02500","Higiene industrial",2021-01-01,71,0.89
+"E02501","Trabajo en alturas",2020-10-01,87,0.8
+"E02504","Higiene industrial",2021-01-01,159,0.51
+"E02509","PESV",2020-07-01,75,0.42
+"E02510","Riesgo psicosocial",2021-10-01,179,0.88
+"E02517","Riesgo cardiovascular",2020-10-01,80,0.51
+"E02518","Higiene industrial",2020-07-01,148,0.6
+"E02522","Riesgo cardiovascular",2020-04-01,71,0.64
+"E02526","Ergonomia",2022-01-01,72,0.7
+"E02527","Higiene industrial",2019-10-01,27,0.67
+"E02530","Higiene industrial",2020-01-01,26,0.63
+"E02536","Riesgo psicosocial",2022-01-01,33,0.77
+"E02538","PESV",2019-07-01,54,0.71
+"E02539","PESV",2021-07-01,125,0.56
+"E02540","Riesgo cardiovascular",2021-04-01,55,0.85
+"E02542","Ergonomia",2021-07-01,147,0.77
+"E02544","PESV",2020-01-01,50,0.7
+"E02547","Riesgo cardiovascular",2022-07-01,153,0.87
+"E02561","Higiene industrial",2019-10-01,99,0.7
+"E02562","Higiene industrial",2021-04-01,60,0.76
+"E02563","Higiene industrial",2021-10-01,152,0.43
+"E02565","Ergonomia",2020-04-01,197,0.85
+"E02567","PESV",2019-07-01,109,0.86
+"E02568","PESV",2019-01-01,199,0.76
+"E02572","Riesgo cardiovascular",2021-10-01,176,0.94
+"E02577","Riesgo cardiovascular",2022-01-01,49,0.51
+"E02578","Riesgo cardiovascular",2019-04-01,25,0.93
+"E02581","Ergonomia",2019-01-01,27,0.93
+"E02584","Higiene industrial",2019-07-01,148,0.41
+"E02586","Trabajo en alturas",2019-04-01,58,0.73
+"E02587","PESV",2019-04-01,35,0.71
+"E02590","Higiene industrial",2019-01-01,80,0.55
+"E02591","Trabajo en alturas",2019-10-01,62,0.59
+"E02592","Higiene industrial",2022-07-01,88,0.92
+"E02598","Ergonomia",2020-01-01,112,0.73
+"E02601","Ergonomia",2021-04-01,127,0.59
+"E02605","PESV",2022-07-01,21,0.47
+"E02608","Riesgo cardiovascular",2021-10-01,129,1
+"E02609","PESV",2019-04-01,61,0.87
+"E02610","PESV",2019-07-01,147,0.73
+"E02613","Ergonomia",2020-01-01,130,0.98
+"E02616","Riesgo cardiovascular",2021-04-01,55,0.69
+"E02617","PESV",2020-01-01,77,0.57
+"E02621","Riesgo cardiovascular",2019-10-01,32,0.67
+"E02622","Higiene industrial",2022-01-01,87,0.73
+"E02623","Trabajo en alturas",2019-07-01,126,0.73
+"E02628","Trabajo en alturas",2021-07-01,172,0.51
+"E02631","PESV",2019-07-01,29,0.7
+"E02632","Higiene industrial",2021-04-01,155,0.98
+"E02637","Ergonomia",2020-07-01,22,0.73
+"E02641","Higiene industrial",2021-07-01,88,0.72
+"E02642","PESV",2022-04-01,71,0.86
+"E02643","Riesgo psicosocial",2020-10-01,142,0.42
+"E02644","Higiene industrial",2020-10-01,37,0.8
+"E02645","Trabajo en alturas",2019-10-01,99,0.52
+"E02648","Riesgo psicosocial",2019-01-01,53,0.94
+"E02650","Riesgo psicosocial",2020-04-01,118,0.73
+"E02651","Ergonomia",2020-10-01,181,0.65
+"E02652","Riesgo cardiovascular",2021-01-01,69,0.8
+"E02654","Riesgo cardiovascular",2020-07-01,66,0.75
+"E02655","Riesgo psicosocial",2019-07-01,69,0.5
+"E02659","Trabajo en alturas",2022-07-01,185,0.99
+"E02667","Riesgo cardiovascular",2021-07-01,197,0.63
+"E02668","Riesgo cardiovascular",2022-01-01,76,0.58
+"E02669","Ergonomia",2022-01-01,101,1
+"E02672","Ergonomia",2021-10-01,129,0.46
+"E02679","Higiene industrial",2020-01-01,43,0.94
+"E02680","Riesgo cardiovascular",2022-01-01,37,0.91
+"E02681","Higiene industrial",2021-07-01,55,0.47
+"E02682","PESV",2020-07-01,45,0.96
+"E02686","Higiene industrial",2021-10-01,57,0.67
+"E02691","Ergonomia",2019-07-01,48,0.99
+"E02692","Trabajo en alturas",2019-01-01,46,0.91
+"E02695","Higiene industrial",2019-01-01,147,0.47
+"E02696","Higiene industrial",2021-10-01,87,0.98
+"E02700","Trabajo en alturas",2022-07-01,121,0.72
+"E02702","Riesgo cardiovascular",2022-04-01,59,0.72
+"E02704","Higiene industrial",2022-07-01,26,0.88
+"E02705","Trabajo en alturas",2019-04-01,186,0.83
+"E02706","Trabajo en alturas",2019-01-01,37,0.86
+"E02708","Riesgo psicosocial",2020-01-01,174,0.48
+"E02716","PESV",2022-10-01,196,0.41
+"E02717","PESV",2020-10-01,181,0.86
+"E02719","Higiene industrial",2022-07-01,196,0.61
+"E02722","Higiene industrial",2019-04-01,165,0.76
+"E02723","Riesgo psicosocial",2019-04-01,171,0.63
+"E02724","Trabajo en alturas",2022-04-01,98,0.48
+"E02725","Trabajo en alturas",2019-10-01,73,0.47
+"E02728","Riesgo cardiovascular",2019-07-01,196,0.95
+"E02731","Ergonomia",2022-01-01,160,0.95
+"E02732","Trabajo en alturas",2020-04-01,49,0.94
+"E02733","Riesgo psicosocial",2021-04-01,133,0.51
+"E02734","Riesgo cardiovascular",2022-10-01,24,0.61
+"E02736","PESV",2022-10-01,180,0.86
+"E02740","Trabajo en alturas",2020-04-01,84,0.44
+"E02743","Higiene industrial",2020-01-01,95,0.74
+"E02744","Higiene industrial",2019-01-01,194,0.88
+"E02745","Riesgo cardiovascular",2020-07-01,29,0.67
+"E02746","PESV",2021-10-01,35,0.43
+"E02748","Higiene industrial",2020-04-01,124,0.47
+"E02757","Riesgo psicosocial",2022-10-01,138,0.51
+"E02760","Ergonomia",2019-04-01,178,0.98
+"E02761","Trabajo en alturas",2022-07-01,43,0.62
+"E02767","Riesgo cardiovascular",2022-10-01,88,0.43
+"E02770","Higiene industrial",2019-04-01,195,0.89
+"E02779","Riesgo psicosocial",2019-04-01,171,0.7
+"E02781","Riesgo psicosocial",2020-04-01,187,0.86
+"E02782","PESV",2020-01-01,47,0.7
+"E02784","Higiene industrial",2021-01-01,184,0.58
+"E02787","Higiene industrial",2020-01-01,154,0.51
+"E02792","PESV",2020-07-01,33,0.82
+"E02793","Trabajo en alturas",2019-01-01,30,0.89
+"E02796","Ergonomia",2021-10-01,167,0.8
+"E02797","Higiene industrial",2022-07-01,109,0.59
+"E02798","PESV",2019-04-01,66,0.55
+"E02799","PESV",2019-07-01,177,0.59
+"E02800","Ergonomia",2019-10-01,170,0.71
+"E02802","Riesgo cardiovascular",2019-04-01,180,0.45
+"E02803","PESV",2021-01-01,100,0.97
+"E02804","PESV",2022-10-01,117,0.49
+"E02809","PESV",2021-04-01,192,0.89
+"E02811","Ergonomia",2019-10-01,91,0.97
+"E02816","Riesgo psicosocial",2022-04-01,123,0.5
+"E02820","Riesgo psicosocial",2019-10-01,114,0.82
+"E02822","PESV",2020-04-01,106,0.95
+"E02823","Trabajo en alturas",2019-10-01,24,0.92
+"E02827","PESV",2020-10-01,112,0.47
+"E02829","Higiene industrial",2019-01-01,190,1
+"E02833","Riesgo psicosocial",2021-10-01,128,0.88
+"E02834","Riesgo psicosocial",2019-04-01,199,0.63
+"E02837","PESV",2022-01-01,55,0.87
+"E02838","Higiene industrial",2019-07-01,91,0.46
+"E02839","PESV",2022-01-01,22,0.95
+"E02840","Riesgo psicosocial",2021-04-01,161,0.99
+"E02841","Riesgo cardiovascular",2020-07-01,63,0.7
+"E02844","Riesgo cardiovascular",2021-07-01,79,0.86
+"E02846","Ergonomia",2021-04-01,164,0.95
+"E02847","Higiene industrial",2019-10-01,191,0.81
+"E02849","Riesgo cardiovascular",2020-07-01,69,0.43
+"E02851","Riesgo psicosocial",2021-01-01,82,0.83
+"E02852","Trabajo en alturas",2021-01-01,27,0.59
+"E02853","Riesgo psicosocial",2020-01-01,119,0.94
+"E02857","Higiene industrial",2021-04-01,105,0.55
+"E02858","PESV",2019-10-01,132,0.53
+"E02862","Higiene industrial",2019-07-01,198,0.45
+"E02863","PESV",2021-01-01,178,0.94
+"E02866","Riesgo cardiovascular",2022-10-01,60,0.91
+"E02873","Trabajo en alturas",2021-01-01,68,0.9
+"E02877","PESV",2020-01-01,164,0.58
+"E02879","PESV",2021-10-01,125,0.84
+"E02880","Ergonomia",2020-01-01,136,0.41
+"E02881","Higiene industrial",2019-07-01,73,0.93
+"E02882","Trabajo en alturas",2022-10-01,74,0.78
+"E02883","Trabajo en alturas",2020-10-01,86,0.62
+"E02890","Trabajo en alturas",2022-10-01,60,0.65
+"E02891","Higiene industrial",2019-07-01,104,1
+"E02893","PESV",2020-04-01,135,0.91
+"E02894","PESV",2019-04-01,152,0.45
+"E02897","Trabajo en alturas",2020-10-01,68,0.89
+"E02898","Trabajo en alturas",2019-10-01,22,0.92
+"E02908","Ergonomia",2022-01-01,170,0.57
+"E02909","Trabajo en alturas",2022-04-01,61,0.95
+"E02911","Riesgo cardiovascular",2021-10-01,177,0.5
+"E02912","Riesgo psicosocial",2021-07-01,195,0.64
+"E02915","Higiene industrial",2020-07-01,147,0.49
+"E02919","Riesgo cardiovascular",2019-01-01,192,0.56
+"E02921","Ergonomia",2021-10-01,69,0.88
+"E02923","Trabajo en alturas",2021-01-01,72,0.92
+"E02929","Ergonomia",2022-10-01,189,0.63
+"E02936","Riesgo psicosocial",2022-10-01,90,0.5
+"E02942","Riesgo cardiovascular",2019-01-01,190,0.65
+"E02943","Riesgo psicosocial",2021-07-01,56,0.87
+"E02945","Higiene industrial",2022-01-01,44,0.46
+"E02948","PESV",2020-01-01,55,0.97
+"E02951","Riesgo psicosocial",2019-07-01,117,0.51
+"E02953","Higiene industrial",2019-01-01,114,0.71
+"E02954","Trabajo en alturas",2019-07-01,83,0.54
+"E02955","Riesgo psicosocial",2022-07-01,35,0.93
+"E02956","Higiene industrial",2021-07-01,149,0.79
+"E02959","Higiene industrial",2020-10-01,105,0.69
+"E02962","Higiene industrial",2020-04-01,182,0.61
+"E02965","Ergonomia",2022-10-01,119,0.4
+"E02966","Ergonomia",2021-04-01,47,0.75
+"E02967","Riesgo psicosocial",2022-07-01,160,0.89
+"E02969","Riesgo psicosocial",2019-04-01,54,0.82
+"E02970","Higiene industrial",2020-01-01,143,0.89
+"E02973","Ergonomia",2020-07-01,163,0.83
+"E02978","Higiene industrial",2021-04-01,69,0.74
+"E02980","Riesgo cardiovascular",2019-04-01,53,0.76
+"E02981","Higiene industrial",2021-10-01,143,0.93
+"E02983","Riesgo psicosocial",2022-10-01,98,0.56
+"E02984","PESV",2020-10-01,161,0.89
+"E02993","Riesgo psicosocial",2022-01-01,23,0.79
+"E03005","Higiene industrial",2020-10-01,190,0.95
+"E03008","Trabajo en alturas",2021-04-01,27,0.99
+"E03017","Riesgo psicosocial",2020-01-01,84,0.95
+"E03021","Higiene industrial",2022-01-01,195,0.82
+"E03022","PESV",2021-01-01,161,0.7
+"E03023","Ergonomia",2020-07-01,102,0.83
+"E03024","Riesgo psicosocial",2021-04-01,160,0.56
+"E03027","Riesgo psicosocial",2021-04-01,96,0.42
+"E03029","Ergonomia",2022-10-01,137,0.91
+"E03035","Riesgo psicosocial",2022-07-01,156,0.53
+"E03038","Riesgo psicosocial",2020-04-01,157,0.5
+"E03040","Higiene industrial",2022-01-01,135,0.45
+"E03057","Ergonomia",2021-04-01,147,0.81
+"E03063","PESV",2021-04-01,37,0.59
+"E03069","Ergonomia",2020-04-01,109,0.74
+"E03072","PESV",2022-10-01,30,0.94
+"E03076","PESV",2021-04-01,156,0.54
+"E03083","Trabajo en alturas",2022-10-01,36,0.77
+"E03091","Ergonomia",2019-01-01,188,0.51
+"E03093","PESV",2019-01-01,104,0.64
+"E03095","Ergonomia",2021-07-01,79,0.77
+"E03101","Trabajo en alturas",2020-10-01,173,0.88
+"E03102","Trabajo en alturas",2022-01-01,94,0.46
+"E03107","Riesgo psicosocial",2019-10-01,156,0.8
+"E03108","Trabajo en alturas",2022-07-01,200,0.77
+"E03109","Higiene industrial",2021-07-01,83,0.73
+"E03112","Trabajo en alturas",2021-01-01,64,0.93
+"E03114","PESV",2022-10-01,115,0.57
+"E03115","Ergonomia",2021-01-01,175,0.86
+"E03121","Higiene industrial",2020-01-01,144,0.8
+"E03128","Ergonomia",2022-10-01,181,0.84
+"E03129","Ergonomia",2020-01-01,171,0.52
+"E03130","Ergonomia",2022-01-01,106,0.75
+"E03134","Higiene industrial",2022-01-01,167,0.68
+"E03140","Riesgo psicosocial",2019-04-01,125,0.66
+"E03143","PESV",2019-01-01,120,0.59
+"E03144","PESV",2019-07-01,40,0.52
+"E03150","Riesgo cardiovascular",2022-01-01,27,0.51
+"E03153","Trabajo en alturas",2022-04-01,102,0.99
+"E03154","Riesgo cardiovascular",2022-10-01,160,0.85
+"E03158","Riesgo psicosocial",2019-04-01,20,0.49
+"E03162","PESV",2022-10-01,192,0.86
+"E03166","PESV",2019-01-01,171,0.65
+"E03167","Riesgo psicosocial",2020-10-01,36,0.83
+"E03176","Ergonomia",2022-04-01,104,0.52
+"E03187","Riesgo cardiovascular",2019-04-01,97,0.44
+"E03188","Ergonomia",2019-04-01,124,0.44
+"E03190","PESV",2019-10-01,55,0.42
+"E03192","Riesgo psicosocial",2022-04-01,126,0.69
+"E03193","Riesgo psicosocial",2022-04-01,125,0.79
+"E03197","Higiene industrial",2022-10-01,26,0.63
+"E03198","Riesgo psicosocial",2022-07-01,44,0.58
+"E03199","Higiene industrial",2019-10-01,37,0.83
+"E03201","Ergonomia",2019-01-01,181,0.52
+"E03203","Trabajo en alturas",2019-07-01,188,0.68
+"E03212","Trabajo en alturas",2020-04-01,161,0.69
+"E03215","PESV",2019-01-01,147,0.77
+"E03221","Trabajo en alturas",2020-04-01,125,0.76
+"E03223","Higiene industrial",2020-01-01,39,0.56
+"E03226","PESV",2019-10-01,148,0.89
+"E03227","Higiene industrial",2022-10-01,200,0.41
+"E03228","Riesgo cardiovascular",2020-04-01,150,0.62
+"E03239","PESV",2019-01-01,171,0.95
+"E03241","Riesgo psicosocial",2020-07-01,164,0.7
+"E03247","Riesgo psicosocial",2022-04-01,159,0.54
+"E03249","Higiene industrial",2022-04-01,85,0.6
+"E03250","Trabajo en alturas",2020-04-01,157,0.84
+"E03261","Trabajo en alturas",2021-07-01,164,0.65
+"E03262","PESV",2019-04-01,167,0.97
+"E03263","Ergonomia",2021-01-01,131,0.6
+"E03277","Riesgo psicosocial",2019-10-01,197,0.91
+"E03284","Trabajo en alturas",2020-07-01,163,0.56
+"E03285","Ergonomia",2022-10-01,156,0.62
+"E03288","PESV",2020-01-01,116,0.63
+"E03289","Ergonomia",2021-10-01,174,0.9
+"E03290","Ergonomia",2021-04-01,149,0.56
+"E03291","Riesgo psicosocial",2020-04-01,188,0.82
+"E03296","Ergonomia",2022-04-01,139,0.47
+"E03298","Ergonomia",2022-10-01,111,0.94
+"E03299","Higiene industrial",2019-01-01,30,0.45
+"E03301","PESV",2019-04-01,149,0.85
+"E03302","Riesgo psicosocial",2019-07-01,184,0.9
+"E03303","Ergonomia",2022-04-01,117,0.83
+"E03304","Trabajo en alturas",2022-07-01,84,0.98
+"E03305","Riesgo psicosocial",2020-07-01,110,0.87
+"E03308","Trabajo en alturas",2019-01-01,61,0.45
+"E03309","Higiene industrial",2020-04-01,52,0.58
+"E03310","Trabajo en alturas",2022-04-01,177,0.83
+"E03317","Trabajo en alturas",2021-10-01,32,0.78
+"E03318","PESV",2019-10-01,180,0.85
+"E03324","Trabajo en alturas",2021-10-01,39,0.81
+"E03325","Trabajo en alturas",2021-04-01,128,0.66
+"E03326","Higiene industrial",2022-10-01,150,0.73
+"E03327","Trabajo en alturas",2020-01-01,127,0.5
+"E03331","PESV",2019-01-01,30,0.85
+"E03336","Higiene industrial",2019-04-01,31,0.59
+"E03342","PESV",2022-10-01,81,0.55
+"E03344","Ergonomia",2022-10-01,54,0.56
+"E03345","PESV",2020-04-01,20,0.6
+"E03346","PESV",2022-07-01,197,0.45
+"E03347","Trabajo en alturas",2022-10-01,51,0.73
+"E03349","Higiene industrial",2022-07-01,39,0.8
+"E03352","Higiene industrial",2020-10-01,128,0.64
+"E03354","Riesgo cardiovascular",2020-07-01,81,0.48
+"E03356","Ergonomia",2020-07-01,148,0.53
+"E03362","Higiene industrial",2019-07-01,59,0.62
+"E03366","Riesgo cardiovascular",2022-01-01,139,0.87
+"E03367","Riesgo psicosocial",2021-10-01,126,0.98
+"E03368","Trabajo en alturas",2022-01-01,67,0.83
+"E03369","Trabajo en alturas",2020-10-01,120,0.55
+"E03370","Higiene industrial",2019-07-01,188,0.66
+"E03372","Ergonomia",2020-04-01,79,0.57
+"E03374","Trabajo en alturas",2020-10-01,105,0.56
+"E03376","Trabajo en alturas",2020-07-01,97,0.78
+"E03383","Higiene industrial",2022-01-01,151,0.42
+"E03385","Riesgo psicosocial",2021-07-01,99,0.62
+"E03389","Riesgo psicosocial",2022-04-01,167,0.53
+"E03390","Riesgo cardiovascular",2020-04-01,168,0.96
+"E03391","Higiene industrial",2022-01-01,198,0.82
+"E03397","Riesgo cardiovascular",2020-01-01,75,0.78
+"E03402","PESV",2022-07-01,69,0.93
+"E03404","Riesgo cardiovascular",2020-07-01,149,0.91
+"E03406","Riesgo psicosocial",2019-04-01,104,0.71
+"E03409","Higiene industrial",2021-04-01,176,0.45
+"E03410","Riesgo cardiovascular",2021-04-01,193,0.87
+"E03411","Trabajo en alturas",2019-01-01,71,0.95
+"E03412","Riesgo psicosocial",2021-01-01,82,0.65
+"E03414","Riesgo psicosocial",2022-04-01,54,0.58
+"E03417","Higiene industrial",2020-07-01,64,0.96
+"E03421","Trabajo en alturas",2022-04-01,47,0.67
+"E03427","Ergonomia",2019-04-01,104,0.88
+"E03430","Riesgo cardiovascular",2019-07-01,148,0.78
+"E03431","PESV",2019-04-01,189,0.86
+"E03432","Riesgo cardiovascular",2019-10-01,52,0.54
+"E03439","Higiene industrial",2019-04-01,42,0.59
+"E03443","Higiene industrial",2020-01-01,30,0.79
+"E03445","Higiene industrial",2020-10-01,140,0.66
+"E03451","Ergonomia",2019-07-01,101,0.9
+"E03452","PESV",2021-04-01,107,0.52
+"E03453","Riesgo psicosocial",2021-04-01,59,0.48
+"E03456","Riesgo cardiovascular",2021-01-01,183,0.85
+"E03457","Higiene industrial",2020-01-01,63,0.66
+"E03458","Ergonomia",2021-10-01,81,0.89
+"E03460","Riesgo cardiovascular",2019-10-01,85,0.45
+"E03461","Ergonomia",2019-01-01,91,0.93
+"E03466","Trabajo en alturas",2020-04-01,30,0.74
+"E03468","PESV",2020-07-01,90,0.61
+"E03469","Riesgo cardiovascular",2021-10-01,79,0.5
+"E03471","Higiene industrial",2022-04-01,119,0.52
+"E03474","Higiene industrial",2021-04-01,120,0.96
+"E03481","Riesgo psicosocial",2022-10-01,160,0.89
+"E03483","Ergonomia",2020-07-01,148,0.55
+"E03489","Ergonomia",2019-10-01,161,0.77
+"E03490","PESV",2019-10-01,158,0.77
+"E03491","Ergonomia",2022-01-01,170,0.76
+"E03492","Ergonomia",2019-10-01,85,0.46
+"E03493","Higiene industrial",2022-01-01,189,0.65
+"E03494","Ergonomia",2022-04-01,151,0.47
+"E03495","Higiene industrial",2021-04-01,70,0.52
+"E03497","Riesgo cardiovascular",2019-10-01,55,0.61
+"E03503","PESV",2022-07-01,127,0.85
+"E03505","Riesgo cardiovascular",2022-07-01,103,0.52
+"E03508","PESV",2020-04-01,105,0.74
+"E03510","Riesgo cardiovascular",2019-01-01,131,0.7
+"E03520","Trabajo en alturas",2021-01-01,35,0.42
+"E03521","Trabajo en alturas",2022-01-01,141,0.96
+"E03522","Higiene industrial",2020-07-01,164,0.83
+"E03528","PESV",2021-04-01,67,0.9
+"E03530","PESV",2019-01-01,58,0.93
+"E03539","Trabajo en alturas",2022-04-01,153,0.43
+"E03541","Riesgo cardiovascular",2020-01-01,100,0.82
+"E03547","Riesgo psicosocial",2020-10-01,49,0.61
+"E03550","Ergonomia",2019-04-01,51,0.95
+"E03551","Ergonomia",2021-04-01,162,0.58
+"E03554","PESV",2022-07-01,168,0.45
+"E03559","Riesgo cardiovascular",2020-01-01,155,0.64
+"E03560","Trabajo en alturas",2021-04-01,49,0.67
+"E03562","Riesgo cardiovascular",2022-07-01,114,0.91
+"E03576","Riesgo psicosocial",2022-10-01,104,0.92
+"E03577","PESV",2019-10-01,115,0.93
+"E03580","Riesgo psicosocial",2022-01-01,70,0.75
+"E03587","Higiene industrial",2021-04-01,94,0.71
+"E03589","Riesgo cardiovascular",2019-04-01,82,0.58
+"E03590","Trabajo en alturas",2019-07-01,159,0.58
+"E03591","Riesgo cardiovascular",2019-10-01,93,0.84
+"E03597","PESV",2021-04-01,113,0.7
+"E03600","Higiene industrial",2022-04-01,146,0.81
+"E03602","Ergonomia",2022-04-01,77,0.96
+"E03603","Riesgo psicosocial",2021-01-01,149,0.98
+"E03605","Riesgo cardiovascular",2022-07-01,129,0.6
+"E03607","Riesgo psicosocial",2022-07-01,85,0.44
+"E03609","Riesgo cardiovascular",2022-01-01,96,0.95
+"E03610","PESV",2020-07-01,160,0.89
+"E03613","Riesgo cardiovascular",2020-04-01,95,0.98
+"E03617","Riesgo cardiovascular",2019-07-01,78,0.52
+"E03619","Higiene industrial",2019-10-01,128,0.86
+"E03620","Ergonomia",2020-04-01,51,0.92
+"E03623","Riesgo psicosocial",2019-01-01,144,0.43
+"E03627","Trabajo en alturas",2019-07-01,96,0.46
+"E03628","PESV",2021-04-01,23,0.86
+"E03629","Riesgo psicosocial",2019-10-01,50,0.69
+"E03630","Higiene industrial",2021-04-01,88,0.83
+"E03631","Riesgo psicosocial",2021-07-01,144,0.94
+"E03642","PESV",2021-04-01,46,0.88
+"E03643","Riesgo cardiovascular",2020-07-01,154,0.49
+"E03644","Higiene industrial",2019-01-01,64,0.72
+"E03645","Ergonomia",2022-07-01,124,0.69
+"E03647","Ergonomia",2019-10-01,61,0.79
+"E03653","Riesgo psicosocial",2021-07-01,94,0.58
+"E03657","Trabajo en alturas",2021-01-01,146,0.85
+"E03658","Trabajo en alturas",2021-07-01,37,0.86
+"E03660","Riesgo cardiovascular",2022-01-01,70,0.68
+"E03666","Riesgo psicosocial",2019-01-01,21,0.77
+"E03667","Higiene industrial",2022-07-01,135,0.98
+"E03668","PESV",2019-01-01,148,0.98
+"E03670","PESV",2021-01-01,117,0.67
+"E03671","Riesgo psicosocial",2022-10-01,122,0.9
+"E03673","Riesgo cardiovascular",2019-07-01,187,0.6
+"E03676","Riesgo cardiovascular",2021-07-01,102,0.76
+"E03679","PESV",2020-01-01,129,1
+"E03683","Trabajo en alturas",2021-10-01,143,0.41
+"E03697","Riesgo cardiovascular",2019-10-01,47,0.7
+"E03700","Riesgo psicosocial",2021-04-01,177,0.73
+"E03701","Riesgo psicosocial",2020-10-01,121,0.71
+"E03702","Higiene industrial",2019-10-01,23,0.72
+"E03706","PESV",2021-07-01,145,0.73
+"E03714","Riesgo cardiovascular",2021-04-01,181,0.8
+"E03717","PESV",2019-07-01,121,0.7
+"E03719","Riesgo psicosocial",2019-10-01,124,0.9
+"E03721","Trabajo en alturas",2020-10-01,102,0.64
+"E03729","Trabajo en alturas",2021-04-01,145,0.5
+"E03731","PESV",2021-10-01,178,0.99
+"E03736","Higiene industrial",2021-07-01,200,0.45
+"E03740","Riesgo cardiovascular",2022-07-01,162,0.57
+"E03741","Riesgo cardiovascular",2019-01-01,118,0.69
+"E03744","Riesgo psicosocial",2020-07-01,161,0.87
+"E03750","Ergonomia",2022-04-01,166,0.84
+"E03755","Trabajo en alturas",2021-10-01,43,0.49
+"E03758","Higiene industrial",2022-04-01,71,0.98
+"E03759","PESV",2019-04-01,89,0.91
+"E03760","Trabajo en alturas",2022-01-01,109,0.62
+"E03761","Trabajo en alturas",2019-07-01,151,0.55
+"E03762","Riesgo cardiovascular",2020-04-01,52,0.96
+"E03763","Higiene industrial",2022-10-01,144,0.79
+"E03768","Riesgo cardiovascular",2021-07-01,30,0.89
+"E03773","PESV",2022-07-01,102,0.87
+"E03775","Trabajo en alturas",2020-07-01,88,0.94
+"E03777","PESV",2021-07-01,22,0.94
+"E03780","Higiene industrial",2020-10-01,118,0.85
+"E03783","Ergonomia",2019-07-01,141,0.75
+"E03784","PESV",2019-01-01,107,0.84
+"E03785","Trabajo en alturas",2020-07-01,80,0.45
+"E03788","PESV",2020-10-01,131,0.52
+"E03789","PESV",2019-07-01,140,0.68
+"E03791","Ergonomia",2021-07-01,182,0.49
+"E03795","Higiene industrial",2021-01-01,119,0.71
+"E03796","Trabajo en alturas",2022-07-01,23,0.42
+"E03798","Higiene industrial",2019-01-01,144,0.57
+"E03799","Ergonomia",2021-07-01,70,0.75
+"E03800","Ergonomia",2022-07-01,34,0.81
+"E03801","Ergonomia",2021-04-01,132,0.64
+"E03802","Ergonomia",2022-04-01,56,0.73
+"E03805","Higiene industrial",2022-07-01,168,0.66
+"E03806","Trabajo en alturas",2021-10-01,101,0.85
+"E03807","Riesgo cardiovascular",2019-04-01,165,0.62
+"E03808","Trabajo en alturas",2019-07-01,57,0.87
+"E03809","Trabajo en alturas",2020-07-01,120,0.72
+"E03818","Trabajo en alturas",2019-07-01,184,0.93
+"E03819","Ergonomia",2022-07-01,83,0.72
+"E03826","Riesgo cardiovascular",2020-04-01,141,0.5
+"E03828","PESV",2022-07-01,69,0.53
+"E03829","Ergonomia",2022-04-01,90,0.96
+"E03834","Ergonomia",2021-10-01,135,1
+"E03836","Riesgo cardiovascular",2020-01-01,139,0.67
+"E03838","PESV",2021-04-01,57,0.99
+"E03842","Higiene industrial",2019-10-01,162,0.77
+"E03845","PESV",2020-10-01,171,0.54
+"E03848","Ergonomia",2020-01-01,64,0.58
+"E03850","Higiene industrial",2019-04-01,128,0.82
+"E03851","Trabajo en alturas",2020-07-01,152,0.41
+"E03854","Riesgo cardiovascular",2021-07-01,161,0.74
+"E03855","PESV",2020-01-01,112,0.61
+"E03857","Ergonomia",2021-07-01,196,0.61
+"E03859","Riesgo psicosocial",2021-04-01,184,0.49
+"E03860","Riesgo cardiovascular",2022-10-01,184,0.78
+"E03864","Riesgo psicosocial",2019-04-01,114,0.76
+"E03867","Higiene industrial",2019-07-01,39,0.6
+"E03868","Riesgo psicosocial",2022-04-01,191,0.51
+"E03869","PESV",2020-10-01,160,0.62
+"E03870","Ergonomia",2020-07-01,75,0.55
+"E03871","Higiene industrial",2020-04-01,44,0.49
+"E03879","Ergonomia",2021-07-01,31,0.67
+"E03880","PESV",2021-07-01,149,0.44
+"E03881","Ergonomia",2021-04-01,92,0.75
+"E03887","Riesgo psicosocial",2019-10-01,37,0.57
+"E03888","Riesgo psicosocial",2020-01-01,42,0.77
+"E03891","Higiene industrial",2021-10-01,21,0.8
+"E03892","Riesgo cardiovascular",2021-07-01,27,0.5
+"E03895","PESV",2019-01-01,65,0.71
+"E03896","Trabajo en alturas",2020-10-01,123,0.51
+"E03898","Riesgo cardiovascular",2021-07-01,56,0.5
+"E03900","Ergonomia",2020-01-01,96,0.5
+"E03901","Trabajo en alturas",2021-01-01,67,0.89
+"E03903","Ergonomia",2020-04-01,162,0.78
+"E03909","Higiene industrial",2022-07-01,161,0.78
+"E03915","Trabajo en alturas",2021-07-01,88,0.52
+"E03917","Riesgo psicosocial",2021-01-01,23,0.89
+"E03920","Riesgo psicosocial",2022-07-01,84,0.69
+"E03921","Higiene industrial",2021-01-01,195,0.53
+"E03924","Ergonomia",2022-10-01,81,0.66
+"E03928","Higiene industrial",2022-04-01,153,0.74
+"E03930","Trabajo en alturas",2020-04-01,112,0.67
+"E03931","Higiene industrial",2022-07-01,124,0.81
+"E03946","PESV",2020-10-01,91,0.94
+"E03951","PESV",2021-01-01,176,0.79
+"E03957","Ergonomia",2022-07-01,160,0.57
+"E03960","Riesgo psicosocial",2020-10-01,29,0.61
+"E03961","Higiene industrial",2019-10-01,44,0.64
+"E03962","PESV",2022-07-01,193,0.74
+"E03965","Riesgo cardiovascular",2022-10-01,196,0.79
+"E03966","Riesgo cardiovascular",2021-04-01,87,0.46
+"E03967","Riesgo cardiovascular",2020-04-01,150,0.72
+"E03970","Ergonomia",2020-10-01,53,0.88
+"E03971","Higiene industrial",2020-04-01,123,0.79
+"E03972","PESV",2020-01-01,193,0.5
+"E03974","PESV",2019-01-01,80,0.74
+"E03976","Higiene industrial",2020-07-01,91,0.41
+"E03980","Riesgo cardiovascular",2022-04-01,195,0.9
+"E03981","Riesgo cardiovascular",2020-01-01,62,0.93
+"E03983","Riesgo psicosocial",2021-01-01,38,0.61
+"E03987","Riesgo cardiovascular",2020-07-01,80,0.89
+"E03988","Riesgo cardiovascular",2019-01-01,133,0.96
+"E03993","Riesgo cardiovascular",2020-01-01,192,0.73
+"E03995","Riesgo psicosocial",2019-07-01,182,0.74
+"E03996","Ergonomia",2020-10-01,186,0.43
+"E03997","Trabajo en alturas",2019-10-01,114,0.94
+"E03999","Trabajo en alturas",2021-01-01,156,0.7
+"E04006","Riesgo cardiovascular",2020-04-01,78,0.86
+"E04010","Trabajo en alturas",2019-10-01,93,0.43
+"E04011","Riesgo psicosocial",2020-07-01,64,0.49
+"E04018","Riesgo cardiovascular",2020-01-01,47,0.61
+"E04020","Trabajo en alturas",2019-04-01,87,0.74
+"E04021","Trabajo en alturas",2021-01-01,87,0.62
+"E04024","Trabajo en alturas",2022-01-01,117,0.65
+"E04027","Ergonomia",2019-04-01,96,0.64
+"E04029","Trabajo en alturas",2021-07-01,163,0.87
+"E04032","Riesgo cardiovascular",2019-07-01,176,0.69
+"E04033","Riesgo psicosocial",2022-07-01,112,0.56
+"E04037","Trabajo en alturas",2021-10-01,100,0.93
+"E04038","Riesgo cardiovascular",2020-10-01,151,0.6
+"E04042","Higiene industrial",2020-01-01,33,0.71
+"E04053","Higiene industrial",2021-01-01,55,0.57
+"E04054","Riesgo psicosocial",2021-10-01,137,0.92
+"E04058","Riesgo psicosocial",2019-07-01,137,0.82
+"E04061","Riesgo psicosocial",2020-01-01,65,0.66
+"E04062","Higiene industrial",2020-07-01,73,0.58
+"E04064","Riesgo psicosocial",2020-01-01,170,0.63
+"E04068","Trabajo en alturas",2021-10-01,24,0.63
+"E04078","Higiene industrial",2021-10-01,42,0.48
+"E04082","Trabajo en alturas",2022-10-01,187,0.9
+"E04085","Higiene industrial",2022-04-01,143,0.9
+"E04087","Higiene industrial",2021-01-01,43,0.68
+"E04089","Ergonomia",2022-07-01,166,0.98
+"E04090","Ergonomia",2019-01-01,152,0.97
+"E04093","Ergonomia",2022-04-01,167,0.88
+"E04095","Ergonomia",2020-01-01,135,0.79
+"E04096","Trabajo en alturas",2020-01-01,106,0.99
+"E04099","Higiene industrial",2019-04-01,189,0.98
+"E04100","Ergonomia",2021-10-01,51,0.83
+"E04101","PESV",2019-07-01,110,0.53
+"E04102","Higiene industrial",2021-01-01,58,0.54
+"E04104","Trabajo en alturas",2020-04-01,101,1
+"E04106","Ergonomia",2021-10-01,138,0.5
+"E04108","PESV",2020-07-01,196,0.68
+"E04115","Riesgo psicosocial",2020-10-01,53,0.62
+"E04119","Trabajo en alturas",2022-04-01,153,0.43
+"E04122","Higiene industrial",2021-04-01,179,0.85
+"E04126","Higiene industrial",2020-01-01,194,0.71
+"E04127","Higiene industrial",2019-10-01,75,0.41
+"E04129","Higiene industrial",2021-04-01,131,0.43
+"E04130","Riesgo cardiovascular",2020-10-01,179,0.45
+"E04135","Riesgo cardiovascular",2020-01-01,36,0.7
+"E04143","Riesgo cardiovascular",2022-01-01,98,0.55
+"E04144","Trabajo en alturas",2020-10-01,126,0.47
+"E04148","Riesgo psicosocial",2019-01-01,146,0.8
+"E04149","Riesgo cardiovascular",2019-07-01,32,0.95
+"E04154","Riesgo cardiovascular",2019-01-01,144,0.62
+"E04156","Trabajo en alturas",2021-10-01,161,0.85
+"E04158","Higiene industrial",2022-10-01,51,0.41
+"E04161","PESV",2021-10-01,66,0.68
+"E04162","Riesgo psicosocial",2022-07-01,177,0.55
+"E04163","Higiene industrial",2019-01-01,100,0.72
+"E04167","Ergonomia",2019-07-01,63,0.9
+"E04168","Trabajo en alturas",2020-10-01,142,0.75
+"E04171","PESV",2021-10-01,49,0.73
+"E04178","PESV",2019-04-01,189,0.55
+"E04179","Trabajo en alturas",2019-10-01,42,0.43
+"E04180","Riesgo cardiovascular",2021-01-01,148,0.93
+"E04183","Higiene industrial",2019-01-01,70,0.78
+"E04186","Riesgo cardiovascular",2021-04-01,39,0.51
+"E04188","Riesgo cardiovascular",2020-10-01,128,0.54
+"E04189","PESV",2020-04-01,137,0.47
+"E04190","Riesgo cardiovascular",2022-07-01,189,0.5
+"E04193","Riesgo psicosocial",2019-04-01,26,0.43
+"E04194","Riesgo cardiovascular",2022-07-01,30,0.49
+"E04196","Riesgo psicosocial",2020-10-01,63,0.88
+"E04197","Ergonomia",2020-10-01,95,0.66
+"E04199","Trabajo en alturas",2022-04-01,65,0.89
+"E04200","Trabajo en alturas",2021-07-01,48,0.97
+"E04203","Ergonomia",2022-01-01,113,0.89
+"E04204","Higiene industrial",2019-01-01,175,0.84
+"E04205","PESV",2020-01-01,198,0.85
+"E04206","Riesgo psicosocial",2022-10-01,136,0.56
+"E04207","Trabajo en alturas",2019-07-01,190,0.76
+"E04208","Riesgo cardiovascular",2021-04-01,98,0.5
+"E04209","Trabajo en alturas",2021-01-01,142,0.95
+"E04210","Ergonomia",2022-10-01,130,0.79
+"E04212","Higiene industrial",2020-01-01,63,0.45
+"E04213","Riesgo psicosocial",2021-04-01,46,0.69
+"E04214","Riesgo psicosocial",2019-04-01,73,0.57
+"E04217","PESV",2019-01-01,167,0.56
+"E04219","Riesgo cardiovascular",2021-04-01,192,0.83
+"E04220","Trabajo en alturas",2020-10-01,179,0.91
+"E04221","PESV",2019-10-01,164,0.5
+"E04224","Riesgo psicosocial",2021-01-01,62,0.81
+"E04225","Higiene industrial",2021-10-01,105,0.8
+"E04226","Trabajo en alturas",2022-04-01,67,0.73
+"E04227","Riesgo psicosocial",2020-04-01,51,0.83
+"E04229","PESV",2019-07-01,119,0.69
+"E04232","Higiene industrial",2021-01-01,117,0.66
+"E04236","Trabajo en alturas",2020-01-01,191,0.71
+"E04237","Riesgo cardiovascular",2021-07-01,114,0.76
+"E04239","Ergonomia",2021-10-01,30,0.71
+"E04241","Higiene industrial",2021-10-01,71,0.76
+"E04242","Higiene industrial",2020-07-01,78,0.44
+"E04243","PESV",2022-07-01,47,0.5
+"E04244","Riesgo psicosocial",2021-10-01,147,0.97
+"E04251","Riesgo cardiovascular",2021-10-01,130,0.87
+"E04252","Ergonomia",2019-10-01,137,0.88
+"E04253","Ergonomia",2019-01-01,79,0.63
+"E04255","Trabajo en alturas",2021-01-01,66,0.81
+"E04256","Riesgo cardiovascular",2019-01-01,194,0.77
+"E04257","PESV",2019-01-01,135,0.71
+"E04260","Riesgo psicosocial",2020-07-01,171,0.57
+"E04261","PESV",2021-07-01,136,0.69
+"E04262","Riesgo cardiovascular",2019-07-01,163,0.5
+"E04263","Higiene industrial",2022-01-01,113,0.99
+"E04266","Riesgo psicosocial",2022-01-01,190,0.62
+"E04268","Ergonomia",2021-07-01,115,0.8
+"E04269","Higiene industrial",2021-07-01,188,0.78
+"E04271","Ergonomia",2019-01-01,140,0.55
+"E04278","Higiene industrial",2021-04-01,21,0.4
+"E04279","Riesgo cardiovascular",2020-10-01,141,0.56
+"E04282","Trabajo en alturas",2021-10-01,144,0.55
+"E04284","Trabajo en alturas",2021-07-01,97,0.84
+"E04285","Riesgo psicosocial",2021-01-01,64,0.61
+"E04286","Trabajo en alturas",2019-04-01,167,0.82
+"E04287","Ergonomia",2022-07-01,53,0.45
+"E04293","Ergonomia",2021-07-01,130,0.7
+"E04294","PESV",2021-04-01,143,0.7
+"E04298","PESV",2022-07-01,195,0.55
+"E04300","Riesgo cardiovascular",2022-01-01,170,0.93
+"E04302","Trabajo en alturas",2021-01-01,31,0.97
+"E04303","PESV",2020-01-01,86,0.85
+"E04305","Higiene industrial",2022-01-01,125,0.6
+"E04312","PESV",2019-01-01,147,0.99
+"E04314","Riesgo cardiovascular",2021-01-01,91,0.65
+"E04315","Higiene industrial",2019-10-01,187,0.49
+"E04316","Trabajo en alturas",2022-04-01,183,0.87
+"E04322","Riesgo cardiovascular",2021-10-01,160,0.76
+"E04324","Trabajo en alturas",2022-10-01,53,0.42
+"E04325","Riesgo psicosocial",2022-01-01,157,0.67
+"E04326","Riesgo cardiovascular",2020-07-01,94,0.78
+"E04330","Riesgo cardiovascular",2022-07-01,136,0.96
+"E04331","Trabajo en alturas",2021-07-01,181,0.44
+"E04332","Higiene industrial",2020-01-01,115,0.8
+"E04334","PESV",2022-01-01,27,0.5
+"E04335","Riesgo psicosocial",2022-01-01,28,0.65
+"E04337","Riesgo cardiovascular",2021-01-01,48,0.81
+"E04339","Higiene industrial",2022-10-01,125,0.59
+"E04340","Ergonomia",2020-07-01,95,0.71
+"E04342","Higiene industrial",2022-10-01,72,0.92
+"E04346","Riesgo psicosocial",2021-07-01,138,0.74
+"E04350","Riesgo psicosocial",2022-04-01,109,0.44
+"E04352","Riesgo psicosocial",2019-04-01,67,0.56
+"E04359","Higiene industrial",2021-04-01,143,0.57
+"E04361","Ergonomia",2022-04-01,108,0.83
+"E04363","Ergonomia",2020-01-01,75,0.97
+"E04364","PESV",2022-07-01,36,0.64
+"E04365","Higiene industrial",2019-10-01,174,0.43
+"E04367","PESV",2019-04-01,61,0.52
+"E04372","Ergonomia",2019-04-01,138,0.92
+"E04377","Trabajo en alturas",2020-01-01,50,0.99
+"E04380","Ergonomia",2021-10-01,37,0.64
+"E04381","PESV",2019-07-01,110,0.9
+"E04382","Trabajo en alturas",2022-04-01,109,0.9
+"E04386","Riesgo psicosocial",2020-07-01,114,0.68
+"E04388","PESV",2019-10-01,93,0.49
+"E04389","Riesgo cardiovascular",2021-04-01,190,0.86
+"E04392","Higiene industrial",2019-01-01,42,0.45
+"E04393","Riesgo psicosocial",2021-07-01,105,0.44
+"E04397","Trabajo en alturas",2021-07-01,63,0.63
+"E04399","Riesgo cardiovascular",2021-07-01,47,0.85
+"E04400","PESV",2020-10-01,37,0.52
+"E04401","Riesgo psicosocial",2022-04-01,110,0.9
+"E04402","Ergonomia",2019-10-01,114,0.44
+"E04409","Trabajo en alturas",2021-07-01,41,0.79
+"E04415","Ergonomia",2021-07-01,78,0.55
+"E04417","Trabajo en alturas",2022-10-01,121,0.99
+"E04418","Riesgo cardiovascular",2021-01-01,90,0.47
+"E04419","Riesgo psicosocial",2019-01-01,191,0.94
+"E04420","Riesgo cardiovascular",2022-04-01,28,0.68
+"E04423","Riesgo cardiovascular",2021-07-01,164,0.4
+"E04425","Ergonomia",2021-01-01,85,0.59
+"E04428","Riesgo cardiovascular",2020-10-01,139,1
+"E04431","Ergonomia",2020-04-01,189,0.86
+"E04432","Higiene industrial",2022-01-01,34,0.98
+"E04433","Trabajo en alturas",2020-04-01,199,0.42
+"E04436","Riesgo psicosocial",2021-07-01,134,0.52
+"E04437","PESV",2021-01-01,51,0.51
+"E04439","Riesgo cardiovascular",2022-07-01,181,0.43
+"E04447","Trabajo en alturas",2021-10-01,136,0.7
+"E04449","Trabajo en alturas",2019-10-01,51,0.81
+"E04450","Trabajo en alturas",2022-04-01,178,0.67
+"E04451","Higiene industrial",2021-04-01,180,0.96
+"E04453","PESV",2020-07-01,187,0.68
+"E04457","PESV",2019-01-01,61,0.83
+"E04459","PESV",2022-04-01,126,0.57
+"E04465","PESV",2019-01-01,36,0.47
+"E04466","PESV",2022-04-01,168,0.45
+"E04467","Higiene industrial",2021-01-01,198,0.52
+"E04469","Trabajo en alturas",2019-01-01,22,0.73
+"E04470","PESV",2021-07-01,47,0.69
+"E04472","Riesgo cardiovascular",2020-04-01,131,0.46
+"E04475","PESV",2022-01-01,118,0.94
+"E04478","Ergonomia",2019-07-01,60,0.75
+"E04479","PESV",2020-10-01,175,0.76
+"E04481","Riesgo psicosocial",2021-07-01,83,0.84
+"E04486","PESV",2022-10-01,73,0.81
+"E04487","Riesgo cardiovascular",2022-04-01,89,0.45
+"E04489","Ergonomia",2022-10-01,124,0.7
+"E04497","Higiene industrial",2022-10-01,74,0.6
+"E04498","PESV",2021-10-01,24,0.6
+"E04503","Higiene industrial",2019-01-01,65,0.51
+"E04504","Higiene industrial",2021-07-01,128,0.96
+"E04507","Riesgo cardiovascular",2020-04-01,63,0.67
+"E04513","Higiene industrial",2022-10-01,63,0.75
+"E04515","Trabajo en alturas",2020-01-01,29,0.95
+"E04516","Higiene industrial",2022-07-01,37,0.95
+"E04518","Riesgo cardiovascular",2019-07-01,192,0.41
+"E04521","Trabajo en alturas",2022-01-01,24,0.94
+"E04522","Riesgo cardiovascular",2019-04-01,185,0.75
+"E04523","PESV",2021-10-01,179,0.6
+"E04528","Ergonomia",2021-10-01,172,0.47
+"E04529","Trabajo en alturas",2022-04-01,107,0.85
+"E04537","Riesgo cardiovascular",2020-10-01,28,0.43
+"E04541","Higiene industrial",2021-07-01,178,0.55
+"E04542","Ergonomia",2020-04-01,106,0.74
+"E04545","Riesgo cardiovascular",2020-07-01,107,0.94
+"E04548","PESV",2020-07-01,26,0.6
+"E04549","PESV",2021-10-01,175,0.41
+"E04552","Riesgo psicosocial",2021-01-01,169,0.43
+"E04554","Ergonomia",2021-01-01,113,0.84
+"E04561","Trabajo en alturas",2019-10-01,111,0.78
+"E04566","Trabajo en alturas",2022-04-01,161,0.81
+"E04573","Riesgo cardiovascular",2020-07-01,57,1
+"E04576","PESV",2022-07-01,188,1
+"E04577","Riesgo cardiovascular",2021-07-01,89,0.75
+"E04580","PESV",2020-04-01,106,0.65
+"E04581","Ergonomia",2021-07-01,61,0.59
+"E04584","PESV",2020-07-01,59,0.91
+"E04589","Riesgo cardiovascular",2022-07-01,56,0.49
+"E04591","Trabajo en alturas",2022-07-01,61,0.87
+"E04593","Trabajo en alturas",2022-04-01,150,0.44
+"E04595","Ergonomia",2021-07-01,43,0.82
+"E04598","Riesgo psicosocial",2022-04-01,120,0.81
+"E04599","Trabajo en alturas",2020-01-01,181,0.49
+"E04600","Riesgo psicosocial",2022-07-01,126,0.78
+"E04601","Riesgo cardiovascular",2020-04-01,163,0.66
+"E04605","Riesgo psicosocial",2022-01-01,134,0.57
+"E04609","Higiene industrial",2021-10-01,152,0.75
+"E04610","PESV",2021-01-01,100,0.4
+"E04611","Ergonomia",2020-01-01,58,0.54
+"E04616","Riesgo psicosocial",2019-04-01,107,0.92
+"E04619","Trabajo en alturas",2022-07-01,181,0.94
+"E04622","Riesgo cardiovascular",2022-01-01,74,0.47
+"E04625","Riesgo cardiovascular",2019-07-01,162,0.61
+"E04629","Higiene industrial",2021-04-01,53,0.8
+"E04631","Ergonomia",2020-04-01,150,0.62
+"E04633","Trabajo en alturas",2020-07-01,183,0.94
+"E04635","PESV",2019-04-01,171,0.62
+"E04636","Ergonomia",2020-10-01,96,0.71
+"E04639","Riesgo psicosocial",2022-01-01,31,0.53
+"E04641","PESV",2020-07-01,99,0.96
+"E04645","Riesgo psicosocial",2019-07-01,162,0.9
+"E04650","Higiene industrial",2022-04-01,44,0.95
+"E04651","Riesgo cardiovascular",2019-10-01,128,0.62
+"E04660","Ergonomia",2019-10-01,184,0.91
+"E04664","Ergonomia",2022-01-01,110,0.86
+"E04665","Higiene industrial",2019-10-01,67,0.97
+"E04671","PESV",2020-10-01,84,0.5
+"E04672","Trabajo en alturas",2020-01-01,37,0.48
+"E04673","Ergonomia",2022-07-01,78,0.45
+"E04674","Trabajo en alturas",2021-10-01,71,0.89
+"E04676","Ergonomia",2022-01-01,37,0.67
+"E04680","Riesgo cardiovascular",2021-04-01,96,1
+"E04681","Riesgo psicosocial",2021-01-01,106,0.63
+"E04682","Ergonomia",2019-01-01,104,0.46
+"E04684","Trabajo en alturas",2022-01-01,60,0.94
+"E04685","PESV",2021-04-01,153,0.9
+"E04687","Ergonomia",2019-07-01,122,0.96
+"E04688","Riesgo cardiovascular",2022-01-01,106,0.47
+"E04689","Riesgo cardiovascular",2021-10-01,31,0.73
+"E04692","Riesgo cardiovascular",2019-04-01,75,0.47
+"E04695","Riesgo psicosocial",2022-04-01,89,0.69
+"E04697","Trabajo en alturas",2019-07-01,67,0.76
+"E04699","Riesgo cardiovascular",2021-10-01,58,0.75
+"E04704","Ergonomia",2021-04-01,106,0.62
+"E04707","Riesgo cardiovascular",2019-10-01,132,0.84
+"E04712","Trabajo en alturas",2020-04-01,67,0.66
+"E04715","Riesgo psicosocial",2021-07-01,70,0.63
+"E04717","Riesgo psicosocial",2021-04-01,133,0.66
+"E04723","Trabajo en alturas",2021-04-01,143,0.78
+"E04724","PESV",2020-01-01,127,0.56
+"E04727","Trabajo en alturas",2020-04-01,190,0.81
+"E04736","PESV",2019-10-01,200,0.88
+"E04738","Riesgo psicosocial",2021-10-01,38,0.96
+"E04742","Trabajo en alturas",2021-07-01,59,0.7
+"E04751","Higiene industrial",2022-10-01,133,0.95
+"E04754","Higiene industrial",2021-07-01,120,0.8
+"E04759","Riesgo cardiovascular",2020-04-01,97,0.68
+"E04762","Trabajo en alturas",2021-10-01,129,0.71
+"E04763","Trabajo en alturas",2019-07-01,49,0.86
+"E04774","Riesgo cardiovascular",2021-07-01,175,0.51
+"E04777","Riesgo psicosocial",2020-10-01,89,0.66
+"E04780","Riesgo cardiovascular",2019-10-01,179,0.53
+"E04784","PESV",2019-10-01,38,0.88
+"E04786","Higiene industrial",2022-10-01,167,0.59
+"E04791","Riesgo cardiovascular",2019-01-01,194,0.73
+"E04793","Higiene industrial",2022-01-01,102,0.73
+"E04796","PESV",2021-07-01,40,0.58
+"E04797","Higiene industrial",2020-04-01,112,0.9
+"E04798","Higiene industrial",2019-01-01,137,0.77
+"E04802","Higiene industrial",2021-01-01,161,0.67
+"E04804","Ergonomia",2022-10-01,51,0.73
+"E04809","Ergonomia",2021-04-01,150,0.97
+"E04813","Trabajo en alturas",2022-04-01,150,0.73
+"E04815","Riesgo cardiovascular",2020-04-01,34,0.96
+"E04819","Riesgo psicosocial",2020-01-01,88,0.96
+"E04820","Higiene industrial",2019-04-01,159,0.96
+"E04822","Trabajo en alturas",2019-01-01,183,0.92
+"E04825","Higiene industrial",2022-01-01,31,0.8
+"E04827","Riesgo cardiovascular",2022-07-01,187,0.86
+"E04828","Ergonomia",2019-01-01,113,0.89
+"E04835","Riesgo cardiovascular",2022-04-01,122,0.49
+"E04840","Higiene industrial",2021-04-01,156,0.97
+"E04841","Trabajo en alturas",2021-07-01,152,0.67
+"E04842","PESV",2019-01-01,36,0.83
+"E04845","Trabajo en alturas",2021-04-01,171,0.75
+"E04847","PESV",2020-04-01,85,0.48
+"E04849","PESV",2022-10-01,167,0.94
+"E04852","Trabajo en alturas",2021-04-01,56,0.62
+"E04854","Riesgo cardiovascular",2019-07-01,164,0.53
+"E04858","Riesgo cardiovascular",2019-07-01,39,0.44
+"E04859","Higiene industrial",2022-10-01,112,0.99
+"E04862","Riesgo psicosocial",2022-04-01,166,0.86
+"E04863","Ergonomia",2019-07-01,134,0.94
+"E04868","Higiene industrial",2020-01-01,83,0.42
+"E04871","Riesgo cardiovascular",2021-10-01,34,0.81
+"E04876","Riesgo cardiovascular",2021-01-01,84,0.77
+"E04877","Higiene industrial",2020-01-01,83,0.88
+"E04879","Trabajo en alturas",2022-10-01,192,1
+"E04880","Higiene industrial",2022-01-01,24,0.55
+"E04881","PESV",2019-01-01,124,0.89
+"E04882","Trabajo en alturas",2021-07-01,116,0.61
+"E04885","Riesgo cardiovascular",2020-07-01,25,0.52
+"E04886","PESV",2020-10-01,143,0.82
+"E04890","Riesgo cardiovascular",2021-10-01,139,0.8
+"E04892","Ergonomia",2022-10-01,95,0.74
+"E04894","Riesgo psicosocial",2019-04-01,71,0.58
+"E04902","Higiene industrial",2020-10-01,113,0.65
+"E04904","PESV",2021-07-01,29,0.92
+"E04907","PESV",2019-04-01,58,0.57
+"E04908","Higiene industrial",2021-07-01,172,0.54
+"E04915","Trabajo en alturas",2020-04-01,142,0.75
+"E04917","Ergonomia",2022-07-01,164,0.52
+"E04919","Riesgo psicosocial",2022-10-01,196,0.67
+"E04920","Riesgo cardiovascular",2020-04-01,143,0.9
+"E04928","Trabajo en alturas",2020-10-01,74,0.48
+"E04931","PESV",2020-07-01,72,0.54
+"E04935","Riesgo psicosocial",2019-07-01,40,0.7
+"E04941","Trabajo en alturas",2020-10-01,155,0.99
+"E04945","Riesgo psicosocial",2019-01-01,112,0.97
+"E04953","Riesgo psicosocial",2021-10-01,187,0.71
+"E04954","Higiene industrial",2021-04-01,27,0.47
+"E04957","Riesgo cardiovascular",2021-10-01,151,0.96
+"E04958","PESV",2019-04-01,64,0.49
+"E04963","Higiene industrial",2020-04-01,114,0.46
+"E04966","Higiene industrial",2022-04-01,187,0.47
+"E04967","Riesgo psicosocial",2021-07-01,190,0.64
+"E04968","Trabajo en alturas",2019-10-01,134,0.62
+"E04976","Higiene industrial",2019-01-01,156,0.52
+"E04981","Ergonomia",2021-10-01,198,0.86
+"E04984","Riesgo cardiovascular",2021-04-01,140,0.98
+"E04985","Trabajo en alturas",2021-07-01,67,0.44
+"E04986","Riesgo psicosocial",2021-04-01,21,0.57
+"E04987","Riesgo cardiovascular",2021-07-01,91,0.47
+"E04988","Riesgo psicosocial",2022-04-01,131,0.76
+"E04992","Trabajo en alturas",2020-10-01,106,0.67
+"E04997","PESV",2020-04-01,174,0.47
+"E04999","PESV",2022-10-01,167,0.54

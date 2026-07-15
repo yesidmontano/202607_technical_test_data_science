@@ -1,0 +1,17 @@
+PRUEBA TECNICA DE CIENCIA DE DATOS
+
+Contenido de esta carpeta:
+- Prueba_Tecnica_Ciencia_de_Datos.pdf : enunciado completo de la prueba.
+- datos/ : seis archivos CSV sinteticos, descritos en el Anexo A del enunciado.
+
+Condiciones principales (el detalle esta en el PDF):
+- Plazo de entrega: lunes 20 de julio a las 8:00 p.m., hora Colombia.
+- Prueba individual. Debe resolverse en su totalidad.
+- Entregue un repositorio tipo git con historia de commits, estructura clara y README.
+- Codigo ejecutable en .py o su equivalente en R, no notebooks, y reproducible
+  (semilla fija, entorno documentado, rutas relativas).
+- Documentacion tecnica por cada modelo desarrollado.
+- Si usa herramientas de IA, incluya un documento aparte con donde la uso,
+  por que la uso y que tomo de ella.
+
+Los datos son 100% sinteticos y no contienen informacion real de empresas ni de personas.
