@@ -37,6 +37,11 @@
 | [`correlacion_predictor_vs_target.parquet`](#24-correlacion_predictor_vs_targetparquet) | S01 – 1.2 EDA (correlaciones) | `data/staging/S01/` | 28 | 7 |
 | [`colinealidad_vif.parquet`](#25-colinealidad_vifparquet) | S01 – 1.2 EDA (correlaciones) | `data/staging/S01/` | 17 | 8 |
 | [`predictores_recomendacion.parquet`](#26-predictores_recomendacionparquet) | S01 – 1.2 EDA (correlaciones) | `data/staging/S01/` | 7 | 9 |
+| [`panel_empresa_lag_yoy.parquet`](#27-panel_empresa_lag_yoyparquet) | S01 – 1.3 Hipótesis (features) | `data/staging/S01/` | 30 000 | 12 |
+| [`hip_features_resumen.parquet`](#28-hip_features_resumenparquet) | S01 – 1.3 Hipótesis (features) | `data/staging/S01/` | 5 | 12 |
+| [`hip_p3_dunn_clase_adyacente.parquet`](#29-hip_p3_dunn_clase_adyacenteparquet) | S01 – 1.3 Hipótesis (features) | `data/staging/S01/` | 4 | 10 |
+| [`hip_p9_persistencia_spearman.parquet`](#30-hip_p9_persistencia_spearmanparquet) | S01 – 1.3 Hipótesis (features) | `data/staging/S01/` | 6 | 7 |
+| [`hip_p10_retencion_top10.parquet`](#31-hip_p10_retencion_top10parquet) | S01 – 1.3 Hipótesis (features) | `data/staging/S01/` | 6 | 8 |
 
 ---
 
@@ -555,18 +560,106 @@ Sets evaluados:
 
 ---
 
+## 27. `panel_empresa_lag_yoy.parquet`
+
+**Ruta:** `data/staging/S01/panel_empresa_lag_yoy.parquet`
+**Script origen:** `sections/S01-Metodologia_EDA_Analisis/1_3_Pruebas de hipotesis/code/02-hip_features/hip_features.py`
+**Granularidad:** Una fila por empresa × par de años consecutivos (5 000 × 6 = 30 000).
+**Base:** Derivado de `temporal_empresa_anio` mediante `shift(-1)` por `id_empresa` (sin leakage: t predice t+1).
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `id_empresa` | `texto` | Identificador de empresa |
+| `anio_t` / `anio_t1` | `entero` | Par de años consecutivos |
+| `n_siniestros_t` / `n_siniestros_t1` | `entero` | Conteo de siniestros en t y t+1 |
+| `frecuencia_x100_t` / `frecuencia_x100_t1` | `numérico` | Tasa relativa en t y t+1 |
+| `alta_siniestralidad_t` / `alta_siniestralidad_t1` | `entero` | Flag Top 10% en t y t+1 |
+| `n_trabajadores` / `clase_riesgo` / `sector` | — | Atributos de empresa (de staging) |
+
+> **Uso:** pruebas P9/P10; feature `log_lag_n_siniestros` en S03; retención del target en S04/S05.
+> **Nota:** No duplica `temporal_persistencia_yoy` (agregado YoY); este panel es a nivel empresa.
+
+---
+
+## 28. `hip_features_resumen.parquet`
+
+**Ruta:** `data/staging/S01/hip_features_resumen.parquet`
+**Script origen:** `02-hip_features/hip_features.py`
+**Granularidad:** Una fila por prueba de hipótesis del feature set (P3, P5, P7, P9, P10).
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `pregunta` / `descripcion` | `texto` | Identificador y enunciado |
+| `h0` / `h1` | `texto` | Hipótesis nula y alterna |
+| `prueba` | `texto` | Test(s) aplicados |
+| `estadistico` / `p_valor` / `p_valor_ajustado_holm` | `numérico` | Inferencia |
+| `efecto` / `metrica_efecto` | `numérico` / `texto` | Tamaño del efecto |
+| `decision` / `rechaza_h0_ajustado` | `texto` / `bool` | Veredicto |
+| `relevancia_practica` | `texto` | Interpretación de negocio |
+
+> Copia CSV también en `sections/.../1_3_Pruebas de hipotesis/results/hip_features_resumen.csv`.
+
+---
+
+## 29. `hip_p3_dunn_clase_adyacente.parquet`
+
+**Ruta:** `data/staging/S01/hip_p3_dunn_clase_adyacente.parquet`
+**Script origen:** `02-hip_features/hip_features.py`
+**Granularidad:** Una fila por par adyacente de clase de riesgo (4 pares: 1–2, 2–3, 3–4, 4–5).
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `clase_a` / `clase_b` | `entero` | Par adyacente |
+| `p_holm` / `significativo` | `numérico` / `bool` | Dunn con Holm |
+| `mediana_a` / `mediana_b` / `ratio_medianas` | `numérico` | Medianas de `frecuencia_x100` |
+| `cliffs_delta` / `magnitud_delta` | `numérico` / `texto` | Tamaño del efecto del par |
+
+---
+
+## 30. `hip_p9_persistencia_spearman.parquet`
+
+**Ruta:** `data/staging/S01/hip_p9_persistencia_spearman.parquet`
+**Script origen:** `02-hip_features/hip_features.py`
+**Granularidad:** Una fila por par de años consecutivos (6).
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `anio_t` / `anio_t1` | `entero` | Par de años |
+| `n_pares` | `entero` | Empresas en el par (5 000) |
+| `spearman` / `pearson` | `numérico` | Correlaciones n_t ↔ n_t1 |
+| `p_spearman` / `p_holm` | `numérico` | p 1-cola y ajustado Holm |
+| `rechaza_h0` | `bool` | Decisión tras Holm |
+
+---
+
+## 31. `hip_p10_retencion_top10.parquet`
+
+**Ruta:** `data/staging/S01/hip_p10_retencion_top10.parquet`
+**Script origen:** `02-hip_features/hip_features.py`
+**Granularidad:** Una fila por par de años consecutivos (6).
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `anio_t` / `anio_t1` | `entero` | Par de años |
+| `n_alta_t` / `n_retenidas` | `entero` | Top 10% en t y retenidas en t+1 |
+| `tasa_retencion` / `lift` | `numérico` | Retención observada y lift vs 0.10 |
+| `p_binomial` / `p_holm` | `numérico` | Inferencia binomial 1-cola |
+| `rechaza_h0` | `bool` | Decisión tras Holm |
+
+---
+
 ## Uso en secciones futuras
 
 | Sección | Dataset requerido | Propósito |
 |---|---|---|
-| S01 – 1.3 Hipótesis | `empresa_siniestralidad_completa`, `bivariado_resumen_*` | Pruebas formales de diferencia / asociación (no incluidas en 1.2.3) |
+| S01 – 1.3 Hipótesis | `empresa_siniestralidad_completa`, `temporal_empresa_anio`, `temporal_persistencia_yoy`, `panel_empresa_lag_yoy` | Pruebas formales de diferencia / asociación |
 | S01 – 1.4 Datos faltantes | `siniestros_staging`, `empresas_staging` | Diagnóstico de nulos y patrones |
-| S01 – 1.5 Baseline | `empresa_siniestralidad_completa`, `temporal_empresa_anio` | Definición del predictor baseline y target anual |
+| S01 – 1.5 Baseline | `empresa_siniestralidad_completa`, `temporal_empresa_anio`, `panel_empresa_lag_yoy` | Definición del predictor baseline y target anual |
 | S02 – Modelación económica | `empresa_siniestralidad_completa`, `bivariado_resumen_sector`, `temporal_anual`, `predictores_recomendacion` | Caracterización sectorial; baseline de pricing (prima) |
-| S03 – Reto de negocio | `empresa_siniestralidad_tratada`, `siniestros_tratados`, `temporal_empresa_anio`, `colinealidad_vif`, `predictores_recomendacion` | Feature set + vigilancia VIF; CV temporal con lag |
-| S04 – Inferencia causal | `empresa_siniestralidad_completa` / `_tratada` | Grupo tratado / control; evaluar sensibilidad a winsorización |
-| S05 – Recomendador | `empresas_staging`, `empresa_siniestralidad_completa` | Perfil de empresa para recomendación |
+| S03 – Reto de negocio | `empresa_siniestralidad_tratada`, `siniestros_tratados`, `temporal_empresa_anio`, `panel_empresa_lag_yoy`, `colinealidad_vif`, `predictores_recomendacion`, `hip_features_resumen` | Feature set + vigilancia VIF; CV temporal con lag |
+| S04 – Inferencia causal | `empresa_siniestralidad_completa` / `_tratada`, `hip_p10_retencion_top10` | Grupo tratado / control; estabilidad del target |
+| S05 – Recomendador | `empresas_staging`, `empresa_siniestralidad_completa`, `hip_p10_retencion_top10` | Perfil de empresa; priorizar recurrentes Top 10% |
 
 ---
 
-*Actualizado por: `S01 – 1.2 EDA | analisis_univariado.py` + `analisis_bivariado.py` + `analisis_temporal.py` + `analisis_outliers.py` + `analisis_correlaciones.py` — Prueba Técnica Grupo SURA.*
+*Actualizado por: `S01 – 1.2 EDA` + `S01 – 1.3 hip_arquitectura_modelo.py` + `hip_features.py` — Prueba Técnica Grupo SURA.*
