@@ -610,4 +610,97 @@ Realizar un análisis exploratorio completo: distribuciones univariadas de la fr
 
 ---
 
+## Síntesis Consolidada – Lo que Condiciona el Modelado
+
+> Esta sección integra los hallazgos de los cinco análisis del EDA (univariado, bivariado, temporal, outliers y correlaciones) en una lectura única, orientada a las decisiones de diseño concretas que deben tomarse en S02–S05.
+
+---
+
+### I. Tabla Maestra de Condicionantes
+
+| # | Hallazgo (origen EDA) | Decisión de diseño obligatoria | Sección destino |
+|---|---|---|---|
+| 1 | Frecuencia sobredispersa + 7.5% de ceros (1.2.2) | Modelo de conteo Binomial Negativa o Zero-Inflated Poisson; nunca OLS directa | S03 |
+| 2 | Severidad asimetría = 10.42; log ≈ normal (1.2.2) | Modelar en escala log; familia Gamma o Lognormal; winsorizar `dias_incapacidad` P1–P99 | S03 |
+| 3 | AT y EL con distribuciones de severidad estructuralmente distintas (1.2.2) | Modelos de severidad separados por tipo de siniestro | S03 |
+| 4 | Costos log-normales; Gini ≈ 0.70; top 10% = 56.5% del costo (1.2.2 / 1.2.3) | Métrica prioritaria: Recall / Precisión / F1 en el **decil superior** (no accuracy global) | S03 / S04 |
+| 5 | `clase_riesgo` explica ~73% del costo; ρ Spearman ≈ 0.73 con frecuencia (1.2.3 / 1.2.6) | Feature obligatorio en **todos** los modelos; evaluar estratificación o interacciones | S02 / S03 / S04 |
+| 6 | Sector discrimina ~6× entre extremos (Construcción vs TIC) (1.2.3) | Incluir sector vía encoding (target encoding o embeddings CIIU); explorar interacción `sector × clase_riesgo` | S02 / S03 |
+| 7 | PyMEs dominan el portafolio (86.4%) (1.2.2) | Recomendaciones S05 deben ser factibles para empresas con recursos limitados | S05 |
+| 8 | Tamaño ↑ conteo/costo pero ↓ tasa relativa (1.2.3) | Usar `n_trabajadores` como **offset** en modelos de conteo; no como predictor de tasa lineal | S03 |
+| 9 | Prima alineada con costo acumulado; ρ prima↔tamaño ≈ 0.59 (1.2.3 / 1.2.6) | Puede usarse como proxy de exposición; vigilar colinealidad moderada con tamaño | S03 |
+| 10 | Geografía: rango de medianas solo ~3 pts entre departamentos (1.2.3) | Feature de **baja prioridad**; usar como control o dummy nacional si aplica; evitar dummies por ciudad | S03 / S05 |
+| 11 | Estacionalidad mensual de volumen ≈ ±2% (1.2.4) | Features de mes/calendario de **baja prioridad**; no invertir complejidad estacional | S02 / S03 |
+| 12 | Oscilación interanual ±15% sin tendencia monotónica (1.2.4) | Validación temporal T-1→T es crítica; el año de holdout elegido importa materialmente | S03 |
+| 13 | Mix AT/EL estable (~86%/14%) en el tiempo (1.2.4) | No modelar cambio de composición; sí estratificar severidad AT vs EL | S03 |
+| 14 | Persistencia `n_siniestros` t→t+1 ≈ 0.70; retención Top 10% ≈ 50% (1.2.4) | Incluir `log_lag_n_siniestros` como feature baseline; hay rotación real que el modelo debe capturar | S03 / S04 |
+| 15 | IQR/MAD marcan ~12–15% en costo/severidad (distribución estructural, no error) (1.2.5) | No borrar por IQR; usar solo como diagnóstico; **tratamiento: winsorización P1–P99** | S03 |
+| 16 | Outliers IQR crecen con la clase de riesgo (clase 5 = 17.4%) (1.2.5) | Evaluar winsorización **estratificada por clase** o familia de cola pesada (Gamma) en S03 | S03 |
+| 17 | VIF máximo ≈ 1.7 en todos los sets de features (1.2.6) | **No hace falta eliminar** predictores por colinealidad; todos los candidatos son incluibles | S03 |
+| 18 | Ningún par predictor–predictor supera ρ = 0.70 (1.2.6) | El set completo (clase + tamaño + prima + lag + sector) es numéricamente estable | S03 |
+| 19 | Antigüedad ≈ 0 correlación con outcomes (1.2.6) | Baja prioridad; incluir solo como control si hay variación de cohorte | S03 / S05 |
+
+---
+
+### II. Decisiones de Diseño por Eje de Modelado
+
+#### S02 – Modelación Económica y Sectorial
+
+- El análisis temporal (1.2.4) muestra **oscilación interanual sin tendencia**; los modelos de proyección deben capturar varianza interanual, no solo una tendencia lineal.
+- `clase_riesgo` y `sector` son los predictores estructurales de primer orden: cualquier modelo de caracterización sectorial debe partir de estas dos dimensiones.
+- La estacionalidad mensual es demasiado débil (~±2%) para justificar componentes estacionales complejos en el nowcast.
+
+#### S03 – Reto de Negocio (frecuencia, severidad, portafolio)
+
+- **Modelado de frecuencia:** Binomial Negativa o Zero-Inflated Poisson con offset `log(n_trabajadores)`. Feature set: `clase_riesgo`, `sector`, `log_lag_n_siniestros`, `log_prima_anual_w` (opcional).
+- **Modelado de severidad:** Gamma o Lognormal en escala log, separado por tipo de siniestro (AT vs EL). Evaluar winsorización estratificada por clase de riesgo.
+- **Resultado técnico:** modelar componentes de frecuencia y severidad/costo por separado — la oscilación del costo amplifica la del volumen (2019: +15.5% vol → +25.3% costo; 2023: +15.5% → +36%).
+- **Validación:** esquema temporal T-1→T; métrica principal Recall/Precisión en el decil superior (no accuracy).
+- **Dataset:** `empresa_siniestralidad_tratada` con columnas `*_w` (winsorizadas) + panel `temporal_empresa_anio` con lag.
+
+#### S04 – Inferencia Causal de Programas de Prevención
+
+- La **persistencia del target** (~50% de retención en Top 10%) implica que un grupo estable de empresas de alto riesgo puede servir como grupo de control natural en diseños de diferencia en diferencias o matching.
+- El lag de conteo (ρ ≈ 0.70) es el principal confundidor a controlar: las empresas que participan en programas pueden diferir sistemáticamente en su siniestralidad previa.
+- `clase_riesgo` y `sector` son variables de estratificación clave para el matching o propensity score.
+- El análisis geográfico muestra efecto débil, lo que facilita diseños que comparen empresas de la misma región sin pérdida de potencia estadística.
+
+#### S05 – Sistema de Recomendación de Servicios
+
+- El portafolio está **dominado por PyMEs** (86.4%), por lo que las recomendaciones deben priorizarse para empresas con recursos operativos y financieros limitados.
+- `clase_riesgo`, `sector` y tamaño son las dimensiones de segmentación para perfilar empresas similares (filtros colaborativos o content-based).
+- La **concentración de costos** (Gini ≈ 0.70; top 10% = 56.5%) justifica un motor de recomendación con pesos diferenciados: el valor esperado de una recomendación adoptada es mucho mayor en el decil superior.
+- Antigüedad y geografía tienen baja señal predictiva de riesgo → usar solo como filtros de contexto, no como features de ranking.
+
+---
+
+### III. Feature Set Definitivo para Modelado (Contrato EDA → S03)
+
+| Feature | Tipo | Transformación | Rol | Prioridad |
+|---|---|---|---|---|
+| `clase_riesgo` | Ordinal (1–5) | Nominal u ordinal | Predictor estructural | **Obligatorio** |
+| `sector` | Categórico | Target encoding / embeddings CIIU | Predictor estructural | **Obligatorio** |
+| `log_n_trabajadores_w` | Continuo | log + winsor P1–P99 | Offset de exposición | **Obligatorio** |
+| `log_lag_n_siniestros` | Continuo | log(1+lag_n) con shift estricto | Baseline predictivo | **Obligatorio** |
+| `log_prima_anual_w` | Continuo | log + winsor P1–P99 | Proxy de riesgo/tamaño | **Opcional** (vigilar VIF) |
+| `antiguedad_meses` | Continuo | Sin transformación | Control de cohorte | **Opcional** |
+| `departamento` | Categórico | Dummy nacional | Control geográfico | **Baja prioridad** |
+| `mes` / `año` | Calendario | Dummies o sin incluir | Control temporal | **Baja prioridad** |
+
+> **Anti-leakage crítico:** `log_lag_n_siniestros` debe calcularse con shift estricto (año t-1 → predicción año t). No usar ninguna variable del año de predicción como feature de entrenamiento.
+
+---
+
+### IV. Checklist de Reproducibilidad EDA → Modelado
+
+- [x] Datos raw en `data/raw/` — inmutables.
+- [x] Datos tratados en `data/staging/` (`*_tratados`, `empresa_siniestralidad_tratada`, `temporal_empresa_anio`).
+- [x] Columnas winsorisadas identificadas con sufijo `_w`; originales conservadas.
+- [x] Target `alta_siniestralidad` (Top 10% por n_siniestros, definido por año) en staging.
+- [x] Lag calculado con shift temporal correcto (sin data leakage).
+- [x] `RANDOM_SEED = 42` fijado en todos los scripts de análisis.
+- [ ] Baseline del modelo (S01-1.5) pendiente — usar como punto de referencia antes de S03.
+
+---
+
 *Análisis realizado con `sura_brand` · Sección S01-1.2 EDA · Prueba Técnica Grupo SURA.*

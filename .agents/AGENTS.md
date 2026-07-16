@@ -260,6 +260,48 @@ import sura_brand as sb
 
 ---
 
+## Condicionantes del Modelado (EDA → S02-S05)
+
+> **Referencia autoritativa:** `sections/S01-Metodologia_EDA_Analisis/1_2_EDA/results/Insights_EDA.md`
+> Sección **"Síntesis Consolidada – Lo que Condiciona el Modelado"** (19 condicionantes).
+> Leer ese documento antes de iniciar cualquier tarea de modelado en S02, S03, S04 o S05.
+
+### Feature Set Obligatorio (contrato EDA → S03)
+
+| Feature | Transformación | Rol | Prioridad |
+|---|---|---|---|
+| `clase_riesgo` | Ordinal (1–5) | Predictor estructural | **Obligatorio** |
+| `sector` | Target encoding / embeddings CIIU | Predictor estructural | **Obligatorio** |
+| `log_n_trabajadores_w` | log + winsor P1–P99 | Offset de exposición | **Obligatorio** |
+| `log_lag_n_siniestros` | log(1+lag_n), shift estricto t-1 | Baseline predictivo | **Obligatorio** |
+| `log_prima_anual_w` | log + winsor P1–P99 | Proxy riesgo/tamaño | Opcional (vigilar VIF) |
+| `antiguedad_meses` | Sin transformación | Control de cohorte | Opcional |
+| `departamento` | Dummy nacional | Control geográfico | Baja prioridad |
+| `mes` / `año` | Dummies o excluir | Control temporal | Baja prioridad |
+
+### Decisiones de Diseño Derivadas del EDA
+
+- **Modelo de frecuencia:** Binomial Negativa o Zero-Inflated Poisson (sobredispersión + 7.5% ceros). **Nunca OLS directa.**
+- **Modelo de severidad:** Gamma o Lognormal en escala log. Modelos **separados por tipo AT vs EL**.
+- **Métrica principal:** Recall / Precisión / F1 en el **decil superior** de costo (no accuracy global). Gini ≈ 0.70; top 10% = 56.5% del costo.
+- **Validación:** esquema temporal T-1 → T estricto. El año de holdout importa (oscilación YoY ≈ ±15%).
+- **Anti-leakage:** `log_lag_n_siniestros` calculado con shift estricto año t-1. No usar variables del año de predicción.
+- **Colinealidad:** VIF máx ≈ 1.7 — no hace falta eliminar predictores. Todos los candidatos son incluibles.
+- **Geografía:** efecto de ~3 pts entre departamentos — feature de baja prioridad; no sobreajustar con dummies por ciudad.
+- **Winsorización:** P1–P99 en variables numéricas de siniestro y empresa. Usar columnas `*_w` del staging. No borrar filas.
+- **PyMEs dominan** (86.4% del portafolio): recomendaciones en S05 deben ser factibles para empresas con recursos limitados.
+
+### Datasets de Staging Listos para Modelado
+
+| Archivo en `data/staging/` | Contenido |
+|---|---|
+| `empresa_siniestralidad_tratada` | Panel transversal + columnas `*_w` winsorizadas |
+| `temporal_empresa_anio` | Panel empresa×año con lag y target `alta_siniestralidad` (Top 10%) |
+| `siniestros_tratados` | Siniestros con columnas `*_w` + flags de outliers |
+| `predictores_recomendacion` | Feature set listo para S03 / S05 |
+
+---
+
 ## Dominio del Negocio
 
 ### Datasets disponibles (todos sintéticos)
