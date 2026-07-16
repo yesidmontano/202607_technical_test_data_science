@@ -42,6 +42,8 @@
 | [`hip_p3_dunn_clase_adyacente.parquet`](#29-hip_p3_dunn_clase_adyacenteparquet) | S01 – 1.3 Hipótesis (features) | `data/staging/S01/` | 4 | 10 |
 | [`hip_p9_persistencia_spearman.parquet`](#30-hip_p9_persistencia_spearmanparquet) | S01 – 1.3 Hipótesis (features) | `data/staging/S01/` | 6 | 7 |
 | [`hip_p10_retencion_top10.parquet`](#31-hip_p10_retencion_top10parquet) | S01 – 1.3 Hipótesis (features) | `data/staging/S01/` | 6 | 8 |
+| [`hip_confirmaciones_resumen.parquet`](#32-hip_confirmaciones_resumenparquet) | S01 – 1.3 Hipótesis (confirmación) | `data/staging/S01/` | 3 | 12 |
+| [`hip_p12_bondad_ajuste_costo.parquet`](#33-hip_p12_bondad_ajuste_costoparquet) | S01 – 1.3 Hipótesis (confirmación) | `data/staging/S01/` | 1 | 20 |
 
 ---
 
@@ -648,18 +650,60 @@ Sets evaluados:
 
 ---
 
+## 32. `hip_confirmaciones_resumen.parquet`
+
+**Ruta:** `data/staging/S01/hip_confirmaciones_resumen.parquet`
+**Script origen:** `sections/S01-Metodologia_EDA_Analisis/1_3_Pruebas de hipotesis/code/03-hip_confirmaciones/hip_confirmaciones.py`
+**Granularidad:** Una fila por prueba de confirmación/descarte (P8, P11, P12).
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `pregunta` / `descripcion` | `texto` | Identificador y enunciado |
+| `h0` / `h1` | `texto` | Hipótesis nula y alterna |
+| `prueba` | `texto` | Test(s) aplicados |
+| `estadistico` / `p_valor` / `p_valor_ajustado_holm` | `numérico` | Inferencia |
+| `efecto` / `metrica_efecto` | `numérico` / `texto` | Tamaño del efecto |
+| `decision` / `rechaza_h0_ajustado` | `texto` / `bool` | Veredicto (crudo y tras Holm) |
+| `relevancia_practica` | `texto` | Interpretación de negocio |
+
+> Copia CSV en `sections/.../1_3_Pruebas de hipotesis/results/hip_confirmaciones_resumen.csv`.
+
+---
+
+## 33. `hip_p12_bondad_ajuste_costo.parquet`
+
+**Ruta:** `data/staging/S01/hip_p12_bondad_ajuste_costo.parquet`
+**Script origen:** `03-hip_confirmaciones/hip_confirmaciones.py`
+**Granularidad:** Una fila con métricas de GOF y comparación de familias para costo.
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `variable` / `n` | `texto` / `entero` | `log_costo_total_w` y tamaño muestral |
+| `mean` / `std` / `skewness` / `excess_kurtosis` | `numérico` | Forma de log(costo) |
+| `anderson_a2` / `anderson_crit_5pct` | `numérico` | Anderson-Darling vs Normal |
+| `ks_d` / `ks_p` | `numérico` | Kolmogorov-Smirnov estandarizado |
+| `jarque_bera` / `jarque_bera_p` | `numérico` | Jarque-Bera |
+| `shapiro_w_n5000` / `shapiro_p_n5000` | `numérico` | Shapiro en submuestra |
+| `aic_gamma` / `aic_lognormal` / `delta_aic_gamma_minus_lognormal` | `numérico` | Comparación de familias |
+| `familia_preferida_aic` | `texto` | `Lognormal` o `Gamma` |
+| `gamma_shape` / `lognorm_s` | `numérico` | Parámetros MLE (floc=0) |
+
+> **Uso:** orientar la familia de severidad (costo) en S03; no sustituye diagnóstico de residuales del modelo final.
+
+---
+
 ## Uso en secciones futuras
 
 | Sección | Dataset requerido | Propósito |
 |---|---|---|
-| S01 – 1.3 Hipótesis | `empresa_siniestralidad_completa`, `temporal_empresa_anio`, `temporal_persistencia_yoy`, `panel_empresa_lag_yoy` | Pruebas formales de diferencia / asociación |
+| S01 – 1.3 Hipótesis | `empresa_siniestralidad_completa`, `temporal_empresa_anio`, `temporal_persistencia_yoy`, `panel_empresa_lag_yoy`, `temporal_mensual`, `estacionalidad_mes` | Pruebas formales de diferencia / asociación / GOF |
 | S01 – 1.4 Datos faltantes | `siniestros_staging`, `empresas_staging` | Diagnóstico de nulos y patrones |
 | S01 – 1.5 Baseline | `empresa_siniestralidad_completa`, `temporal_empresa_anio`, `panel_empresa_lag_yoy` | Definición del predictor baseline y target anual |
-| S02 – Modelación económica | `empresa_siniestralidad_completa`, `bivariado_resumen_sector`, `temporal_anual`, `predictores_recomendacion` | Caracterización sectorial; baseline de pricing (prima) |
-| S03 – Reto de negocio | `empresa_siniestralidad_tratada`, `siniestros_tratados`, `temporal_empresa_anio`, `panel_empresa_lag_yoy`, `colinealidad_vif`, `predictores_recomendacion`, `hip_features_resumen` | Feature set + vigilancia VIF; CV temporal con lag |
+| S02 – Modelación económica | `empresa_siniestralidad_completa`, `bivariado_resumen_sector`, `temporal_anual`, `predictores_recomendacion`, `hip_confirmaciones_resumen` | Caracterización sectorial; confirmar descarte de mes/geo |
+| S03 – Reto de negocio | `empresa_siniestralidad_tratada`, `siniestros_tratados`, `temporal_empresa_anio`, `panel_empresa_lag_yoy`, `colinealidad_vif`, `predictores_recomendacion`, `hip_features_resumen`, `hip_p12_bondad_ajuste_costo` | Feature set + familia de severidad; CV temporal con lag |
 | S04 – Inferencia causal | `empresa_siniestralidad_completa` / `_tratada`, `hip_p10_retencion_top10` | Grupo tratado / control; estabilidad del target |
 | S05 – Recomendador | `empresas_staging`, `empresa_siniestralidad_completa`, `hip_p10_retencion_top10` | Perfil de empresa; priorizar recurrentes Top 10% |
 
 ---
 
-*Actualizado por: `S01 – 1.2 EDA` + `S01 – 1.3 hip_arquitectura_modelo.py` + `hip_features.py` — Prueba Técnica Grupo SURA.*
+*Actualizado por: `S01 – 1.2 EDA` + `S01 – 1.3 hip_arquitectura_modelo.py` + `hip_features.py` + `hip_confirmaciones.py` — Prueba Técnica Grupo SURA.*

@@ -500,4 +500,188 @@ Se descartó t-test (asimetría + K-S entre grupos p ≪ 0.001) y comparación s
 
 ---
 
+## 1.3.4 – Pruebas de Confirmación / Descarte (P8, P11, P12)
+
+> Generado a partir de `code/03-hip_confirmaciones/hip_confirmaciones.py`
+> Datasets reutilizados: `temporal_mensual` · `estacionalidad_mes` · `siniestros_tratados` · `empresa_siniestralidad_completa` · `bivariado_resumen_departamento`
+> Datasets nuevos: `hip_confirmaciones_resumen.parquet` · `hip_p12_bondad_ajuste_costo.parquet`
+>
+> **Nota de diseño:** P8 y P11 son pruebas de *confirmación de nulidad* (1.3.1). El objetivo de negocio es respaldar el **descarte** de features (mes, geografía) cuando el efecto práctico es despreciable — no solo mirar el p-valor.
+
+---
+
+### P8 – ¿Existe estacionalidad mensual significativa en el volumen?
+
+#### Hipótesis
+- **H₀:** No hay diferencias sistemáticas de volumen de siniestros entre los 12 meses (sin estacionalidad).
+- **H₁:** Al menos un mes difiere (estacionalidad presente).
+
+#### Justificación de la prueba elegida
+Estrategia de tres pruebas convergentes:
+1. **Friedman** sobre la matriz año × mes (controla el efecto año; diseño de bloques naturales).
+2. **Kruskal-Wallis** sobre `n_siniestros` agregado por mes (7 observaciones/mes).
+3. **Chi-cuadrado de uniformidad** sobre conteos mensuales crudos (~39 894 siniestros).
+
+Se descartó ANOVA de un factor (pocas obs/mes y posible heterocedasticidad) y Fourier/STL formales (sobre-especificación para una pregunta de “¿invertir en dummies de mes?”).
+
+**Efecto práctico:** amplitud del índice estacional en puntos porcentuales, con umbral de equivalencia &lt; 5 pp (alineado al EDA: “no invertir en componentes estacionales”).
+
+#### Verificación de supuestos
+| Supuesto | Verificación | Resultado |
+|---|---|---|
+| Matriz año×mes completa | 7 × 12, 0 faltantes | ✓ |
+| Friedman: bloques independientes | Un año = un bloque | ✓ |
+| KW: obs independientes por mes | Un año = una obs de mes | ✓ |
+| Chi²: n·p_i &gt; 5 | Esperados ≈ 3 324/mes | ✓ |
+
+#### Resultados
+| Prueba | Estadístico | p-valor | Efecto |
+|---|---|---|---|
+| Friedman | χ²_F = 2.87 | **0.992** | Kendall W = **0.037** |
+| Kruskal-Wallis | H = 1.34 | 0.9998 | η² ≈ 0 |
+| Chi² uniformidad | χ² = 5.06 | 0.928 | Cramér V = **0.003** (despreciable) |
+| Amplitud índice estacional | — | — | **3.82 pp** (&lt; 5 pp) |
+
+**Decisión: NO RECHAZAR H₀.** Tras Holm familiar: p-ajustado = 0.992.
+
+#### Corrección por comparaciones múltiples
+Holm-Bonferroni sobre la familia de 3 pruebas (P8, P11, P12): p-ajustado P8 = 0.992 → no rechaza.
+
+#### Significancia estadística vs Relevancia práctica
+- **Significancia:** ninguna prueba se acerca a α=0.05.
+- **Efecto:** amplitud 3.8 pp, W≈0.04, V≈0.003 — todos despreciables.
+- **Relevancia práctica:** Confirma la recomendación del EDA: **no invertir en features de mes ni componentes estacionales en S02/S03.** La variación mensual es indistinguible del ruido.
+
+![P8 Estacionalidad](imgs/03_P8_estacionalidad_mensual.png)
+
+---
+
+### P11 – ¿Las frecuencias medianas difieren entre departamentos?
+
+#### Hipótesis
+- **H₀:** Las distribuciones de `frecuencia_x100` son iguales en los 7 departamentos.
+- **H₁:** Al menos un departamento difiere.
+
+#### Justificación de la prueba elegida
+**Kruskal-Wallis** (no paramétrico) + **Dunn post-hoc con Holm**. Se descartó ANOVA por violación de normalidad (Shapiro p ≪ 0.001 en todos los departamentos). Levene no rechazó homocedasticidad (p=0.62), pero la asimetría de frecuencia justifica K-W de todos modos.
+
+**Efecto práctico:** η² con umbral de equivalencia &lt; 0.01 (despreciable) y rango de medianas en puntos de frec.×100.
+
+#### Verificación de supuestos
+| Supuesto | Verificación | Resultado |
+|---|---|---|
+| Normalidad por depto | Shapiro (n_s=200) | ❌ Violado en los 7 |
+| Homocedasticidad | Levene p=0.62 | ✓ No se rechaza |
+| Independencia | Empresas distintas | ✓ |
+| Cobertura geográfica | 224 empresas con depto NaN excluidas | Documentado (n=4 776) |
+
+#### Resultados
+| Estadístico | Valor |
+|---|---|
+| H Kruskal-Wallis | 13.40 (df=6) |
+| p-valor (sin Holm familiar) | 0.0371 |
+| p-ajustado Holm (familia P8–P12) | **0.0743** |
+| **η²** | **0.0016** → **despreciable** |
+| Rango de medianas | **2.87** puntos de frec.×100 |
+| Pares Dunn significativos (Holm interno) | **0 / 21** |
+
+**Decisión tras Holm familiar: NO RECHAZAR H₀.**  
+(El p crudo 0.037 habría rechazado en aislamiento, pero es un falso positivo familiar; el post-hoc Dunn no encuentra ningún par distinguible.)
+
+#### Corrección por comparaciones múltiples
+- Familia confirmación (3 pruebas): p-ajustado = 0.074 → **no rechaza**.
+- Dunn interno (21 pares): 0 significativos tras Holm.
+
+#### Significancia estadística vs Relevancia práctica
+- **Significancia:** marginal en crudo, **no significativa tras Holm**.
+- **Efecto:** η²=0.0016 y rango de medianas &lt; 3 puntos — irrelevante para pricing/segmentación.
+- **Relevancia práctica:** **Descartar `departamento`/`ciudad` como predictor principal en S03/S05.** Puede usarse solo como control descriptivo o estrato de reporting, no como feature prioritario.
+
+![P11 Departamento](imgs/03_P11_departamento_frecuencia.png)
+
+---
+
+### P12 – ¿log(costo) sigue suficientemente una Normal para justificar Lognormal/Gamma?
+
+#### Hipótesis
+- **H₀:** `log(costo_total_w)` ~ Normal ⇒ los costos siguen Lognormal.
+- **H₁:** `log(costo)` se desvía de la Normal.
+
+#### Justificación de la prueba elegida
+Batería de GOF sobre `log_costo_total_w` (winsorizado, n=37 332):
+1. **Anderson-Darling** (sensible a colas).
+2. **Kolmogorov-Smirnov** estandarizado.
+3. **Jarque-Bera** (momentos 3–4).
+4. **Shapiro** en submuestra n=5 000 (límite práctico).
+
+Complemento de decisión de familia: **AIC Gamma vs Lognormal** ajustadas a `costo_total_w` (floc=0). Con n grande, el rechazo de normalidad *exacta* es esperable; la decisión de modelado se ancla en skew/kurtosis + AIC, no solo en el p-valor.
+
+#### Verificación de supuestos
+| Supuesto | Verificación | Resultado |
+|---|---|---|
+| Muestra i.i.d. de costos | Un siniestro = una obs | ✓ (aprox.) |
+| Parámetros estimados (KS compuesto) | μ̂, σ̂ de la misma muestra | ⚠️ KS conservador/anticonservador; se reporta junto a AD/JB |
+| Soporte positivo para Gamma/Lognormal | `costo_total_w > 0` | ✓ |
+| Cobertura | 2 562 filas sin `costo_total_w` excluidas | Documentado |
+
+#### Resultados
+| Métrica | Valor |
+|---|---|
+| n | 37 332 |
+| Skewness log | **0.411** (simetría leve) |
+| Kurtosis excesiva | **−0.063** (casi mesocúrtica) |
+| Anderson-Darling A² | 192.6 (crítico 5% ≈ 0.75) → rechaza |
+| KS D | 0.0538, p ≈ 10⁻⁹⁴ |
+| Jarque-Bera | 1 059, p ≈ 10⁻²³⁰ |
+| AIC Gamma | 1 183 379 |
+| AIC Lognormal | **1 172 123** |
+| ΔAIC (Gamma − Lognormal) | **+11 257** → prefiere **Lognormal** |
+
+**Decisión estadística: RECHAZAR H₀** (normalidad exacta). Holm: p-ajustado ≈ 0.
+
+#### Corrección por comparaciones múltiples
+Holm familiar: P12 sigue rechazando (p-ajustado ≈ 0). No altera la lectura práctica.
+
+#### Significancia estadística vs Relevancia práctica
+- **Significancia:** rechazo inequívoco de Normal *exacta* — esperado con n≈37k ante cualquier micro-desviación.
+- **Tamaño del efecto / forma:** skew=0.41 y kurtosis≈0 indican desviación **leve**, no patológica. El Q-Q se desvía sobre todo en extremos, no en el cuerpo.
+- **Relevancia práctica:** AIC favorece **Lognormal** sobre Gamma por amplio margen. Para S03:
+  - **Familia preferida de severidad (costo):** Lognormal (o Normal sobre log-costo con robustez en colas).
+  - **Gamma** permanece como alternativa razonable (cola derecha en escala original), pero el ajuste incondicional favorece Lognormal.
+  - El rechazo de normalidad exacta **no** invalida usar log-costo en un GLM/regresión; sí advierte calibrar colas (winsorización ya aplicada, o distribución t / mixture si se necesita).
+
+![P12 Bondad de ajuste](imgs/03_P12_bondad_ajuste_costo.png)
+
+---
+
+## Síntesis Confirmación/Descarte – Corrección Holm-Bonferroni (3 pruebas)
+
+| Prueba | p original | p ajustado | ¿Rechaza H₀? | Lectura de negocio |
+|---|---|---|---|---|
+| P8 – Estacionalidad | 0.992 | 0.992 | **NO** | Descartar features de mes |
+| P11 – Departamento | 0.037 | **0.074** | **NO** | Descartar geografía como predictor principal |
+| P12 – Bondad ajuste costo | ≈0 | ≈0 | **SÍ** (Normal exacta) | Usar **Lognormal** (AIC); desviación leve |
+
+---
+
+## Implicaciones para Confirmación / Descarte (S02–S03)
+
+| Pregunta | Decisión confirmada |
+|---|---|
+| P8 → Estacionalidad | **No** incluir dummies de mes ni componentes estacionales. Amplitud 3.8 pp es ruido. |
+| P11 → Geografía | **No** priorizar `departamento`/`ciudad` en el feature set. η² despreciable; 0/21 pares Dunn. |
+| P12 → Familia de severidad | Preferir **Lognormal** para costo; Gamma como runner-up. No exigir normalidad exacta del log con n grande — anclarse en AIC + forma (skew/kurtosis). |
+
+---
+
+## Cierre del bloque S01-1.3 (12 preguntas)
+
+| Bloque | Preguntas | Resultado neto |
+|---|---|---|
+| Arquitectura (1.3.2) | P1, P2, P4, P6 | NB sí; ZI no; sector sí (moderado); severidad AT/EL separada |
+| Feature set (1.3.3) | P3, P5, P7, P9, P10 | Clase 5 niveles; interacción débil; micro-flag; lag obligatorio; retención Top10 lift 5× |
+| Confirmación/descarte (1.3.4) | P8, P11, P12 | Sin mes; sin geografía prioritaria; Lognormal para costo |
+
+---
+
 *Análisis realizado con `sura_brand` · Sección S01-1.3 Pruebas de Hipótesis · Prueba Técnica Grupo SURA.*
