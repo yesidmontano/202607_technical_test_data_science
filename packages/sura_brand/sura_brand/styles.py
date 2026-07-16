@@ -62,11 +62,11 @@ def _build_light_style() -> Dict:
         "axes.spines.right": False,
         "axes.spines.left": True,
         "axes.spines.bottom": True,
-        "axes.titlepad": 14,
+        "axes.titlepad": 8,
         "axes.titleweight": "bold",
         "axes.titlecolor": NEGRO.hex,
         "axes.labelcolor": GRIS_MEDIO.hex,
-        "axes.labelpad": 8,
+        "axes.labelpad": 4,
         "axes.prop_cycle": mpl.cycler(color=CATEGORICAL_PRIMARY),
 
         # ── Grid ────────────────────────────────
@@ -113,9 +113,11 @@ def _build_light_style() -> Dict:
         "hist.bins": 20,
 
         # ── Guardado ────────────────────────────
+        # Do NOT use bbox='tight': it collapses header/footer margins reserved
+        # by create_dashboard / create_report_figure and causes title/footer overlap.
         "savefig.facecolor": "#FAFAFA",
         "savefig.edgecolor": "none",
-        "savefig.bbox": "tight",
+        "savefig.bbox": None,
         "savefig.dpi": 150,
         "savefig.transparent": False,
 
@@ -149,11 +151,11 @@ def _build_dark_style() -> Dict:
         "axes.spines.right": False,
         "axes.spines.left": True,
         "axes.spines.bottom": True,
-        "axes.titlepad": 14,
+        "axes.titlepad": 8,
         "axes.titleweight": "bold",
         "axes.titlecolor": TEXT,
         "axes.labelcolor": MUTED,
-        "axes.labelpad": 8,
+        "axes.labelpad": 4,
         "axes.prop_cycle": mpl.cycler(color=CATEGORICAL_LIGHT),
 
         # ── Grid ────────────────────────────────
@@ -199,7 +201,7 @@ def _build_dark_style() -> Dict:
         # ── Guardado ────────────────────────────
         "savefig.facecolor": BG,
         "savefig.edgecolor": "none",
-        "savefig.bbox": "tight",
+        "savefig.bbox": None,
         "savefig.dpi": 150,
         "savefig.transparent": False,
 

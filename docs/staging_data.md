@@ -20,7 +20,6 @@
 | [`bivariado_resumen_segmento.parquet`](#7-bivariado_resumen_segmentoparquet) | S01 – 1.2 EDA (bivariado) | `data/staging/S01/` | 4 | 15 |
 | [`bivariado_resumen_departamento.parquet`](#8-bivariado_resumen_departamentoparquet) | S01 – 1.2 EDA (bivariado) | `data/staging/S01/` | 7 | 15 |
 | [`bivariado_resumen_ciudad.parquet`](#9-bivariado_resumen_ciudadparquet) | S01 – 1.2 EDA (bivariado) | `data/staging/S01/` | 7 | 15 |
-| [`bivariado_tests_asociacion.parquet`](#10-bivariado_tests_asociacionparquet) | S01 – 1.2 EDA (bivariado) | `data/staging/S01/` | 23 | 5 |
 
 ---
 
@@ -198,29 +197,11 @@ Campos agregados (comunes a todos los resúmenes bivariados 5–9):
 
 ---
 
-## 10. `bivariado_tests_asociacion.parquet`
-
-**Ruta:** `data/staging/S01/bivariado_tests_asociacion.parquet`
-**Script origen:** `02-analisis_bivariado/analisis_bivariado.py`
-**Granularidad:** Una fila por prueba estadística (23 pruebas).
-
-| Campo | Tipo | Descripción |
-|---|---|---|
-| `dimension` | `texto` | Variable o par evaluado (ej. `clase_riesgo`, `n_trabajadores ~ n_siniestros`) |
-| `metric` | `texto` | Métrica de siniestralidad evaluada |
-| `test` | `texto` | `Kruskal-Wallis` o `Spearman` |
-| `statistic` | `numérico` | Estadístico H (KW) o ρ (Spearman) |
-| `pvalue` | `numérico` | Valor-p de la prueba |
-
-> **Nota:** Las pruebas son exploratorias (no corregidas por comparaciones múltiples). Útiles como screening previo a S01-1.3 (hipótesis formales).
-
----
-
 ## Uso en secciones futuras
 
 | Sección | Dataset requerido | Propósito |
 |---|---|---|
-| S01 – 1.3 Hipótesis | `empresa_siniestralidad_completa`, `bivariado_tests_asociacion` | Pruebas formales de diferencia / asociación |
+| S01 – 1.3 Hipótesis | `empresa_siniestralidad_completa`, `bivariado_resumen_*` | Pruebas formales de diferencia / asociación (no incluidas en 1.2.3) |
 | S01 – 1.4 Datos faltantes | `siniestros_staging`, `empresas_staging` | Diagnóstico de nulos y patrones |
 | S01 – 1.5 Baseline | `empresa_siniestralidad_completa` | Definición del predictor baseline |
 | S02 – Modelación económica | `empresa_siniestralidad_completa`, `bivariado_resumen_sector` | Caracterización sectorial |

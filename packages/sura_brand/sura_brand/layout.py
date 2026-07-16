@@ -13,9 +13,10 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from matplotlib.figure import Figure
 from matplotlib.axes import Axes
+from matplotlib.patches import FancyBboxPatch
 
 from sura_brand.colors import AZUL_SURA, AQUA_SURA, NEGRO, GRIS_MEDIO, BLANCO
-from sura_brand.charts import add_sura_footer, add_logo_watermark
+from sura_brand.charts import add_logo_watermark
 
 
 # ─────────────────────────────────────────────
@@ -35,6 +36,16 @@ class FigureSizes:
 SIZES = FigureSizes()
 
 
+# Margins in figure coordinates. Leave generous bands so ax titles
+# (above) and tick/xlabels (below) never collide with fig-level chrome.
+# Gaps sized for short/wide figures (fonts occupy more figure-fraction there).
+_TOP = 0.78
+_BOTTOM = 0.20
+_TITLE_Y = 0.985
+_SUBTITLE_Y = 0.920
+_LINE_Y = 0.875
+
+
 # ─────────────────────────────────────────────
 #  LAYOUT HELPERS
 # ─────────────────────────────────────────────
@@ -45,12 +56,15 @@ def create_dashboard(
     title: str = "",
     subtitle: str = "",
     figsize: Optional[Tuple[int, int]] = None,
-    hspace: float = 0.4,
-    wspace: float = 0.3,
+    hspace: float = 0.45,
+    wspace: float = 0.30,
     footer_text: str = "Análisis EDA | Grupo SURA",
 ) -> Tuple[Figure, List[Axes]]:
     """
-    Crea un dashboard multi-panel con cabecera y footer SURA.
+    Crea un dashboard multi-panel con cabecera SURA.
+
+    El footer/logo no se dibujan aquí: usar ``add_sura_footer`` después de
+    poblar los ejes (evita solapamiento y footers duplicados).
 
     Parameters
     ----------
@@ -65,74 +79,60 @@ def create_dashboard(
     hspace, wspace : float
         Espaciado vertical y horizontal entre paneles.
     footer_text : str
-        Texto del footer.
+        Reservado por compatibilidad de API. No se dibuja; pasar el texto
+        a ``add_sura_footer(fig, text=...)``.
 
     Returns
     -------
     Tuple[Figure, List[Axes]]
         La figura y una lista plana de todos los ejes.
-
-    Examples
-    --------
-    >>> from sura_brand.layout import create_dashboard
-    >>> fig, axes = create_dashboard(2, 3, title="EDA - Variables Numéricas")
-    >>> for i, ax in enumerate(axes):
-    ...     ax.set_title(f"Panel {i+1}")
     """
+    del footer_text  # API compat — footer se aplica con add_sura_footer
+
     if figsize is None:
-        figsize = (ncols * 6, nrows * 5 + (1.5 if title else 0))
+        # Extra vertical room so short/wide dashboards don't crowd header/footer
+        figsize = (max(ncols * 5.5, 10.0), max(nrows * 4.2, 5.0) + 3.5)
 
     fig = plt.figure(figsize=figsize)
     fig.patch.set_facecolor("#FAFAFA")
 
-    # Reservar espacio para cabecera si hay título
     if title:
-        top_space = 0.92 if subtitle else 0.94
-        gs = gridspec.GridSpec(
-            nrows, ncols,
-            figure=fig,
-            hspace=hspace, wspace=wspace,
-            top=top_space, bottom=0.08, left=0.06, right=0.97,
-        )
-        # Título principal
+        # Figure-level header (never shares space with subplot axes)
         fig.text(
-            0.5, 0.97, title,
+            0.5, _TITLE_Y, title,
             ha="center", va="top",
-            fontsize=16, fontweight="bold",
+            fontsize=13, fontweight="bold",
             color=AZUL_SURA.hex,
             transform=fig.transFigure,
         )
-        # Subtítulo
         if subtitle:
             fig.text(
-                0.5, 0.945, subtitle,
+                0.5, _SUBTITLE_Y, subtitle,
                 ha="center", va="top",
-                fontsize=11, color=GRIS_MEDIO.hex, style="italic",
+                fontsize=9, color=GRIS_MEDIO.hex, style="italic",
                 transform=fig.transFigure,
             )
-        # Línea decorativa bajo el título
-        ax_line = fig.add_axes([0.05, 0.935, 0.90, 0.002])
-        ax_line.set_facecolor(AQUA_SURA.hex)
-        ax_line.axis("off")
+        line = fig.add_axes([0.08, _LINE_Y, 0.84, 0.004])
+        line.set_facecolor(AQUA_SURA.hex)
+        line.set_xticks([])
+        line.set_yticks([])
+        for spine in line.spines.values():
+            spine.set_visible(False)
+
+        gs = gridspec.GridSpec(
+            nrows, ncols, figure=fig,
+            hspace=hspace, wspace=wspace,
+            top=_TOP, bottom=_BOTTOM, left=0.08, right=0.97,
+        )
     else:
         gs = gridspec.GridSpec(
-            nrows, ncols,
-            figure=fig,
+            nrows, ncols, figure=fig,
             hspace=hspace, wspace=wspace,
-            top=0.94, bottom=0.08, left=0.06, right=0.97,
+            top=0.94, bottom=_BOTTOM, left=0.08, right=0.97,
         )
 
     axes = [fig.add_subplot(gs[i, j]) for i in range(nrows) for j in range(ncols)]
-
-    # Footer
-    fig.text(
-        0.01, 0.01, footer_text,
-        ha="left", va="bottom",
-        fontsize=8, color=GRIS_MEDIO.hex, style="italic",
-        transform=fig.transFigure,
-    )
-    add_logo_watermark(fig, position="bottom-right", alpha=0.45, scale=0.08)
-
+    fig._sura_footer_ax = None  # type: ignore[attr-defined]
     return fig, axes
 
 
@@ -145,6 +145,8 @@ def create_report_figure(
     """
     Crea una figura de reporte con un solo panel y cabecera SURA.
 
+    El footer/logo no se dibujan aquí: usar ``add_sura_footer`` después.
+
     Parameters
     ----------
     title : str
@@ -154,47 +156,49 @@ def create_report_figure(
     figsize : tuple
         Tamaño de la figura. Default: REPORT_FULL (14×10).
     footer_text : str
-        Texto del footer.
+        Reservado por compatibilidad de API. No se dibuja; pasar el texto
+        a ``add_sura_footer(fig, text=...)``.
 
     Returns
     -------
     Tuple[Figure, Axes]
         La figura y el eje principal.
     """
-    fig, ax = plt.subplots(figsize=figsize)
+    del footer_text  # API compat — footer se aplica con add_sura_footer
+
+    fig = plt.figure(figsize=figsize)
     fig.patch.set_facecolor("#FAFAFA")
-    fig.subplots_adjust(top=0.88, bottom=0.10)
 
-    # Barra de color en la parte superior
-    ax_bar = fig.add_axes([0.0, 0.94, 1.0, 0.025])
-    ax_bar.set_facecolor(AZUL_SURA.hex)
-    ax_bar.axis("off")
+    top = 0.74 if subtitle else 0.80
+    fig.subplots_adjust(top=top, bottom=_BOTTOM, left=0.10, right=0.95)
 
-    # Título
+    # Top accent bar (thin strip, clear of title text)
+    bar = fig.add_axes([0.0, 0.975, 1.0, 0.015])
+    bar.set_facecolor(AZUL_SURA.hex)
+    bar.set_xticks([])
+    bar.set_yticks([])
+    for spine in bar.spines.values():
+        spine.set_visible(False)
+
     fig.text(
-        0.05, 0.935, title,
+        0.05, 0.945, title,
         ha="left", va="top",
-        fontsize=15, fontweight="bold",
+        fontsize=13, fontweight="bold",
         color=AZUL_SURA.hex,
         transform=fig.transFigure,
     )
     if subtitle:
         fig.text(
-            0.05, 0.905, subtitle,
+            0.05, 0.900, subtitle,
             ha="left", va="top",
-            fontsize=10, color=GRIS_MEDIO.hex, style="italic",
+            fontsize=9.5, color=GRIS_MEDIO.hex, style="italic",
             transform=fig.transFigure,
         )
 
-    # Footer
-    fig.text(
-        0.01, 0.01, footer_text,
-        ha="left", va="bottom",
-        fontsize=8, color=GRIS_MEDIO.hex, style="italic",
-        transform=fig.transFigure,
-    )
-    add_logo_watermark(fig, position="bottom-right", alpha=0.5, scale=0.09)
-
+    ax = fig.add_subplot(111)
+    # Re-apply margins after add_subplot (can reset subplotpars)
+    fig.subplots_adjust(top=top, bottom=_BOTTOM, left=0.10, right=0.95)
+    fig._sura_footer_ax = None  # type: ignore[attr-defined]
     return fig, ax
 
 
@@ -207,29 +211,12 @@ def create_kpi_figure(
 ) -> Figure:
     """
     Crea una figura de KPIs / métricas destacadas con estilo SURA.
-
-    Parameters
-    ----------
-    kpis : Dict[str, value]
-        Diccionario con nombre de métrica y su valor.
-        Ej: {'Total Registros': 12_450, 'Variables': 23, 'Nulos (%)': '3.2%'}
-    title : str
-        Título de la sección de KPIs.
-    colors : List[str], optional
-        Lista de colores para cada KPI. Si None, usa la paleta SURA.
-    figsize : tuple, optional
-        Tamaño de la figura.
-    footer_text : str
-        Texto del footer.
-
-    Returns
-    -------
-    Figure
     """
     from sura_brand.palettes import CATEGORICAL_PRIMARY
+
     n = len(kpis)
     if figsize is None:
-        figsize = (min(n * 3.5, 18), 3.5)
+        figsize = (min(n * 3.5, 18), 3.8)
 
     colors = colors or (CATEGORICAL_PRIMARY * ((n // len(CATEGORICAL_PRIMARY)) + 1))[:n]
     fig, axes = plt.subplots(1, n, figsize=figsize)
@@ -239,7 +226,7 @@ def create_kpi_figure(
     fig.patch.set_facecolor("#FAFAFA")
 
     if title:
-        fig.suptitle(title, fontsize=14, fontweight="bold", color=AZUL_SURA.hex, y=1.02)
+        fig.suptitle(title, fontsize=14, fontweight="bold", color=AZUL_SURA.hex, y=0.98)
 
     for ax, (metric, value), color in zip(axes, kpis.items(), colors):
         ax.set_facecolor(color)
@@ -247,7 +234,6 @@ def create_kpi_figure(
         ax.set_ylim(0, 1)
         ax.axis("off")
 
-        # Valor grande
         val_str = f"{value:,}" if isinstance(value, (int, float)) else str(value)
         ax.text(
             0.5, 0.55, val_str,
@@ -256,16 +242,14 @@ def create_kpi_figure(
             color=BLANCO.hex,
             transform=ax.transAxes,
         )
-        # Nombre de la métrica
         ax.text(
             0.5, 0.22, metric,
             ha="center", va="center",
             fontsize=10,
-            color="rgba(255,255,255,0.85)" if color != BLANCO.hex else NEGRO.hex,
+            color=BLANCO.hex,
             transform=ax.transAxes,
         )
-        # Bordes redondeados simulados con patch
-        ax.add_patch(mpatches.FancyBboxPatch(
+        ax.add_patch(FancyBboxPatch(
             (0.02, 0.02), 0.96, 0.96,
             boxstyle="round,pad=0.02",
             transform=ax.transAxes,
@@ -273,12 +257,10 @@ def create_kpi_figure(
             zorder=0,
         ))
 
-    import matplotlib.patches as mpatches  # noqa – import inside to avoid cycle
-
-    fig.subplots_adjust(wspace=0.08, left=0.02, right=0.98, bottom=0.05)
+    fig.subplots_adjust(wspace=0.08, left=0.02, right=0.98, bottom=0.16, top=0.88)
     fig.text(
-        0.01, -0.05, footer_text,
-        ha="left", va="bottom",
+        0.02, 0.04, footer_text,
+        ha="left", va="center",
         fontsize=7.5, color=GRIS_MEDIO.hex, style="italic",
         transform=fig.transFigure,
     )

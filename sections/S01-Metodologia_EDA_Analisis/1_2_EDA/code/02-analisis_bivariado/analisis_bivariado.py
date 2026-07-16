@@ -15,7 +15,11 @@ Descripción:
     Adicionalmente:
     · Construye datasets de staging reutilizables (panel completo + resúmenes).
     · Guarda figuras en results/imgs/ con prefijo 02_*.
-    · Imprime estadísticas para Insights_EDA.md.
+    · Imprime estadísticas descriptivas para Insights_EDA.md.
+
+    Nota:
+    Las pruebas formales de hipótesis (KW, Spearman con p-valor, etc.)
+    se reservan para S01-1.3. Este script es solo exploración descriptiva.
 
 Inputs:
     - data/staging/S01/empresas_staging.parquet
@@ -41,7 +45,6 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
-import scipy.stats as stats
 import sura_brand as sb
 
 warnings.filterwarnings("ignore")
@@ -120,7 +123,8 @@ panel["sector"] = panel["sector"].astype("category")
 
 def _save_fig(fig: plt.Figure, name: str) -> None:
     path = RESULTS_IMGS / name
-    fig.savefig(path, dpi=150, bbox_inches="tight")
+    # Avoid bbox_inches='tight' — it collapses carefully reserved header/footer margins
+    fig.savefig(path, dpi=150, facecolor=fig.get_facecolor(), edgecolor="none")
     plt.close(fig)
     print(f"   💾  {name}")
 
@@ -155,37 +159,10 @@ def _group_summary(df: pd.DataFrame, group_col: str) -> pd.DataFrame:
     return agg
 
 
-def _kruskal(df: pd.DataFrame, group_col: str, value_col: str) -> tuple:
-    groups = [
-        g[value_col].dropna().values
-        for _, g in df.groupby(group_col, observed=True)
-        if len(g[value_col].dropna()) > 0
-    ]
-    if len(groups) < 2:
-        return np.nan, np.nan
-    result = stats.kruskal(*groups)
-    return float(result.statistic), float(result.pvalue)
-
-
-def _spearman(x, y) -> tuple:
-    r, p = stats.spearmanr(x, y, nan_policy="omit")
-    return float(r), float(p)
-
-
-def _annotate_stat(ax, text: str, x: float = 0.03, y: float = 0.97) -> None:
-    ax.text(
-        x, y, text,
-        transform=ax.transAxes, fontsize=8,
-        verticalalignment="top", horizontalalignment="left",
-        bbox=dict(boxstyle="round,pad=0.4", facecolor="white",
-                  edgecolor="#C7C9C7", alpha=0.9),
-    )
-
-
 palette = sb.get_palette("categorical")
 
 # ──────────────────────────────────────────────────────────────────────────────
-#  3. Staging summaries
+#  3. Staging summaries (descriptive only — no hypothesis tests)
 # ──────────────────────────────────────────────────────────────────────────────
 print("\n🔧  Computing bivariate summary tables...")
 
@@ -195,48 +172,6 @@ resumen_segmento = _group_summary(panel, "segmento")
 resumen_depto = _group_summary(panel, "departamento")
 resumen_ciudad = _group_summary(panel, "ciudad")
 
-# Association tests table
-tests = []
-for dim, col in [
-    ("clase_riesgo", "clase_riesgo"),
-    ("sector", "sector"),
-    ("segmento", "segmento"),
-    ("departamento", "departamento"),
-    ("ciudad", "ciudad"),
-]:
-    for metric in ["frecuencia_x100", "n_siniestros", "costo_total_empresa"]:
-        h, p = _kruskal(panel, col, metric)
-        tests.append({
-            "dimension": dim,
-            "metric": metric,
-            "test": "Kruskal-Wallis",
-            "statistic": h,
-            "pvalue": p,
-        })
-
-# Spearman for ordinal / continuous predictors
-for x_col, y_col, label in [
-    ("clase_riesgo", "frecuencia_x100", "clase_riesgo ~ frecuencia_x100"),
-    ("clase_riesgo", "n_siniestros", "clase_riesgo ~ n_siniestros"),
-    ("clase_riesgo", "costo_total_empresa", "clase_riesgo ~ costo_total"),
-    ("n_trabajadores", "n_siniestros", "n_trabajadores ~ n_siniestros"),
-    ("n_trabajadores", "frecuencia_x100", "n_trabajadores ~ frecuencia_x100"),
-    ("n_trabajadores", "costo_total_empresa", "n_trabajadores ~ costo_total"),
-    ("prima_anual", "costo_total_empresa", "prima_anual ~ costo_total"),
-    ("prima_anual", "frecuencia_x100", "prima_anual ~ frecuencia_x100"),
-]:
-    x = panel[x_col].astype(float) if x_col == "clase_riesgo" else panel[x_col]
-    r, p = _spearman(x, panel[y_col])
-    tests.append({
-        "dimension": label,
-        "metric": y_col,
-        "test": "Spearman",
-        "statistic": r,
-        "pvalue": p,
-    })
-
-tests_df = pd.DataFrame(tests)
-
 # Persist staging
 panel.to_parquet(DATA_STAGING / "empresa_siniestralidad_completa.parquet", index=False)
 resumen_clase.to_parquet(DATA_STAGING / "bivariado_resumen_clase_riesgo.parquet", index=False)
@@ -244,7 +179,11 @@ resumen_sector.to_parquet(DATA_STAGING / "bivariado_resumen_sector.parquet", ind
 resumen_segmento.to_parquet(DATA_STAGING / "bivariado_resumen_segmento.parquet", index=False)
 resumen_depto.to_parquet(DATA_STAGING / "bivariado_resumen_departamento.parquet", index=False)
 resumen_ciudad.to_parquet(DATA_STAGING / "bivariado_resumen_ciudad.parquet", index=False)
-tests_df.to_parquet(DATA_STAGING / "bivariado_tests_asociacion.parquet", index=False)
+
+# Drop legacy tests artifact if present (hypothesis tests belong to S01-1.3)
+legacy_tests = DATA_STAGING / "bivariado_tests_asociacion.parquet"
+if legacy_tests.exists():
+    legacy_tests.unlink()
 
 print(f"   ✅  Staging saved to {DATA_STAGING}")
 print(f"      - empresa_siniestralidad_completa.parquet : {panel.shape}")
@@ -253,7 +192,6 @@ print(f"      - bivariado_resumen_sector.parquet        : {resumen_sector.shape}
 print(f"      - bivariado_resumen_segmento.parquet      : {resumen_segmento.shape}")
 print(f"      - bivariado_resumen_departamento.parquet  : {resumen_depto.shape}")
 print(f"      - bivariado_resumen_ciudad.parquet        : {resumen_ciudad.shape}")
-print(f"      - bivariado_tests_asociacion.parquet      : {tests_df.shape}")
 
 # ──────────────────────────────────────────────────────────────────────────────
 #  4. BLOCK A – Clase de riesgo
@@ -328,9 +266,6 @@ ax3.set_xlabel("Clase de riesgo")
 ax3.set_ylabel("Días de incapacidad (media)")
 ax3.set_title("Severidad media")
 
-r_freq, p_freq = _spearman(panel["clase_riesgo"].astype(float), panel["frecuencia_x100"])
-_annotate_stat(ax1, f"Spearman ρ = {r_freq:.3f}\np < 0.001")
-
 sb.add_sura_footer(fig, text="S01 – EDA | 1.2 Análisis Bivariado | Clase de riesgo")
 _save_fig(fig, "02_A1_siniestralidad_por_clase_riesgo.png")
 
@@ -371,7 +306,6 @@ fig, ax = sb.create_report_figure(
     title="Participación del Costo del Portafolio por Clase de Riesgo",
     subtitle="% del costo total acumulado aportado por cada clase ARL",
 )
-ax = fig.axes[0]
 bars = ax.bar(
     x_labels, rc["share_costo_pct"],
     color=colors_grad, edgecolor="white",
@@ -398,8 +332,6 @@ fig, ax = sb.bar_chart(
 )
 ax.set_xlabel("Siniestros por 100 trabajadores (mediana)")
 ax.set_ylabel("Sector económico")
-h_sec, p_sec = _kruskal(panel, "sector", "frecuencia_x100")
-_annotate_stat(ax, f"Kruskal-Wallis H = {h_sec:.0f}\np < 0.001", x=0.55, y=0.15)
 sb.add_sura_footer(fig, text="S01 – EDA | 1.2 Análisis Bivariado | Sector – frecuencia")
 _save_fig(fig, "02_B1_frecuencia_por_sector.png")
 
@@ -438,7 +370,6 @@ fig, ax = sb.create_report_figure(
     subtitle="Interacción entre sector económico y clase ARL",
     figsize=(12, 9),
 )
-ax = fig.axes[0]
 im = ax.imshow(cross.values, aspect="auto", cmap=sb.get_cmap("sura_blues"))
 ax.set_xticks(range(len(cross.columns)))
 ax.set_xticklabels(cross.columns)
@@ -485,8 +416,6 @@ ax_l.set_xlabel("N° trabajadores (log)")
 ax_l.set_ylabel("N° siniestros + 0.5 (log)")
 ax_l.set_title("Conteo absoluto")
 ax_l.legend(fontsize=7, loc="upper left")
-r_abs, _ = _spearman(panel["n_trabajadores"], panel["n_siniestros"])
-_annotate_stat(ax_l, f"Spearman ρ = {r_abs:.3f}", x=0.55, y=0.12)
 
 for i, cr in enumerate(orden_clase):
     mask = sample["clase_riesgo"].astype(int) == int(cr)
@@ -501,8 +430,6 @@ ax_r.set_xlabel("N° trabajadores (log)")
 ax_r.set_ylabel("Siniestros / 100 trabajadores")
 ax_r.set_title("Tasa relativa")
 ax_r.legend(fontsize=7, loc="upper right")
-r_rel, _ = _spearman(panel["n_trabajadores"], panel["frecuencia_x100"])
-_annotate_stat(ax_r, f"Spearman ρ = {r_rel:.3f}", x=0.55, y=0.92)
 
 sb.add_sura_footer(fig, text="S01 – EDA | 1.2 Análisis Bivariado | Tamaño vs siniestralidad")
 _save_fig(fig, "02_C1_scatter_tamano_siniestralidad.png")
@@ -549,7 +476,6 @@ fig, ax = sb.create_report_figure(
     title="Prima Anual vs Costo Acumulado de Siniestros",
     subtitle="¿La prima refleja la carga de siniestralidad observada?",
 )
-ax = fig.axes[0]
 for i, cr in enumerate(orden_clase):
     mask = sample["clase_riesgo"].astype(int) == int(cr)
     ax.scatter(
@@ -563,8 +489,6 @@ ax.set_yscale("log")
 ax.set_xlabel("Prima anual (COP, log)")
 ax.set_ylabel("Costo acumulado siniestros (COP, log)")
 ax.legend(fontsize=8)
-r_prima, _ = _spearman(panel["prima_anual"], panel["costo_total_empresa"])
-_annotate_stat(ax, f"Spearman ρ = {r_prima:.3f}")
 sb.add_sura_footer(fig, text="S01 – EDA | 1.2 Análisis Bivariado | Prima vs costo")
 _save_fig(fig, "02_C3_scatter_prima_vs_costo.png")
 
@@ -604,9 +528,6 @@ ax_r.xaxis.set_major_formatter(mticker.FuncFormatter(_fmt_millones))
 ax_r.set_xlabel("Costo acumulado (mediana, COP)")
 ax_r.set_title("Costo total empresa")
 
-h_dep, p_dep = _kruskal(panel, "departamento", "frecuencia_x100")
-_annotate_stat(ax_l, f"KW H = {h_dep:.1f}\np = {p_dep:.3f}", x=0.55, y=0.15)
-
 sb.add_sura_footer(fig, text="S01 – EDA | 1.2 Análisis Bivariado | Departamento")
 _save_fig(fig, "02_D1_siniestralidad_por_departamento.png")
 
@@ -641,9 +562,6 @@ ax_r.xaxis.set_major_formatter(mticker.FuncFormatter(_fmt_millones))
 ax_r.set_xlabel("Costo acumulado (mediana, COP)")
 ax_r.set_title("Costo total empresa")
 
-h_ciu, p_ciu = _kruskal(panel, "ciudad", "frecuencia_x100")
-_annotate_stat(ax_l, f"KW H = {h_ciu:.1f}\np = {p_ciu:.3f}", x=0.55, y=0.15)
-
 sb.add_sura_footer(fig, text="S01 – EDA | 1.2 Análisis Bivariado | Ciudad")
 _save_fig(fig, "02_D2_siniestralidad_por_ciudad.png")
 
@@ -663,7 +581,6 @@ fig, ax = sb.create_report_figure(
     subtitle="¿Las diferencias geográficas reflejan mix de riesgo o efecto territorial?",
     figsize=(11, 6),
 )
-ax = fig.axes[0]
 bottom = np.zeros(len(comp_pct))
 x = np.arange(len(comp_pct))
 for i, col in enumerate(comp_pct.columns):
@@ -693,20 +610,20 @@ corr_cols = [
 corr_df = panel[corr_cols].copy()
 corr_df["clase_riesgo"] = corr_df["clase_riesgo"].astype(float)
 
-# Use Spearman for skewed insurance metrics
-spearman_corr = corr_df.corr(method="spearman")
+# Descriptive rank correlation matrix (no p-values / hypothesis tests here)
+rank_corr = corr_df.corr(method="spearman")
 fig, ax = sb.correlation_heatmap(
-    spearman_corr,
-    title="Correlación de Spearman – Predictores y Siniestralidad",
+    rank_corr,
+    title="Correlación por Rangos – Predictores y Siniestralidad",
     figsize=(10, 8),
 )
-sb.add_sura_footer(fig, text="S01 – EDA | 1.2 Análisis Bivariado | Matriz Spearman")
-_save_fig(fig, "02_E1_heatmap_spearman_predictores.png")
+sb.add_sura_footer(fig, text="S01 – EDA | 1.2 Análisis Bivariado | Matriz de correlación")
+_save_fig(fig, "02_E1_heatmap_correlacion_predictores.png")
 
 # ──────────────────────────────────────────────────────────────────────────────
-#  9. Print key stats for insights
+#  9. Print key descriptive stats for insights
 # ──────────────────────────────────────────────────────────────────────────────
-print("\n📈  Key bivariate statistics:")
+print("\n📈  Key bivariate descriptive statistics:")
 
 print("\n--- Clase de riesgo (medianas) ---")
 print(
@@ -716,10 +633,6 @@ print(
     ].to_string(index=False)
 )
 
-print(f"\n   Spearman clase~frecuencia : ρ = {r_freq:.3f}")
-print(f"   Spearman clase~costo      : ρ = {_spearman(panel['clase_riesgo'].astype(float), panel['costo_total_empresa'])[0]:.3f}")
-print(f"   Spearman clase~n_sin      : ρ = {_spearman(panel['clase_riesgo'].astype(float), panel['n_siniestros'])[0]:.3f}")
-
 print("\n--- Top / bottom sectores por frecuencia mediana ---")
 rs_sorted = resumen_sector.sort_values("frecuencia_x100_mediana", ascending=False)
 print("   TOP 5:")
@@ -728,7 +641,6 @@ for _, row in rs_sorted.head(5).iterrows():
 print("   BOTTOM 5:")
 for _, row in rs_sorted.tail(5).iterrows():
     print(f"      {row['sector']:<28} freq_med={row['frecuencia_x100_mediana']:.1f}")
-print(f"   Kruskal-Wallis sector~freq : H = {h_sec:.1f}, p = {p_sec:.2e}")
 
 print("\n--- Segmento de tamaño (medianas) ---")
 print(
@@ -737,13 +649,13 @@ print(
          "n_siniestros_mediana", "costo_total_mediana"]
     ].to_string(index=False)
 )
-print(f"   Spearman n_trab~n_sin     : ρ = {r_abs:.3f}")
-print(f"   Spearman n_trab~freq      : ρ = {r_rel:.3f}")
-print(f"   Spearman prima~costo      : ρ = {r_prima:.3f}")
 
-print("\n--- Geografía ---")
-print(f"   Kruskal-Wallis depto~freq : H = {h_dep:.1f}, p = {p_dep:.4f}")
-print(f"   Kruskal-Wallis ciudad~freq: H = {h_ciu:.1f}, p = {p_ciu:.4f}")
+print("\n--- Geografía (medianas) ---")
+print(
+    resumen_depto[
+        ["departamento", "n_empresas", "frecuencia_x100_mediana", "costo_total_mediana"]
+    ].sort_values("frecuencia_x100_mediana", ascending=False).to_string(index=False)
+)
 freq_range_depto = (
     resumen_depto["frecuencia_x100_mediana"].max()
     - resumen_depto["frecuencia_x100_mediana"].min()

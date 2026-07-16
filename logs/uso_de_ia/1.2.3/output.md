@@ -2,7 +2,6 @@
 
 **ID:** `1.2.3`
 **Tarea:** Análisis Bivariado EDA – S01 / 1.2 EDA
-**Fecha:** 2026-07-19
 **Sección del repositorio:** `sections/S01-Metodologia_EDA_Analisis/1_2_EDA/code/02-analisis_bivariado/`
 
 ---
@@ -31,13 +30,13 @@ Se utilizó IA asistida para acelerar la escritura del script de análisis bivar
 1. **`Axes.boxplot(labels=...)` deprecado/eliminado** en la versión de Matplotlib del `.venv`: reemplazado por `tick_labels=...` en los 5 boxplots del script.
 
 ### Documentación generada
-- `docs/staging_data.md`: ampliadas secciones 4–10 (panel completo + 5 resúmenes + tests).
-- `sections/.../results/Insights_EDA.md`: bloque **1.2.3 – Análisis Bivariado** con tablas, figuras y síntesis.
+- `docs/staging_data.md`: ampliadas secciones 4–9 (panel completo + 5 resúmenes descriptivos).
+- `sections/.../results/Insights_EDA.md`: bloque **1.2.3 – Análisis Bivariado** con tablas, figuras y síntesis descriptiva.
 
 ### Decisiones de diseño tomadas por la IA (alineadas al univariado)
 - Reutilizar staging de 1.2.2 (`empresas_staging`, `siniestralidad_empresa`) en lugar de releer raw.
 - Construir panel de **5 000 empresas** con ceros imputados (`empresa_siniestralidad_completa`) para evitar sesgo de selección.
-- Tests exploratorios: Kruskal-Wallis (categóricas) + Spearman (ordinales/continuas).
+- Análisis **solo descriptivo**; las pruebas formales de hipótesis se reservan para S01-1.3.
 - Prefijo de figuras `02_*` para diferenciarlas del univariado (`01_*`).
 
 ---
@@ -46,7 +45,7 @@ Se utilizó IA asistida para acelerar la escritura del script de análisis bivar
 
 - Primer intento de ejecución falló por `labels=` en `boxplot`; corregido a `tick_labels=` y re-ejecutado con éxito.
 - No se generaron mapas coropléticos (solo 7 departamentos; barras + composición de mix de riesgo son suficientes).
-- No se aplicó corrección por comparaciones múltiples en los p-valores (quedan como screening previo a 1.3 Hipótesis).
+- Se eliminaron Kruskal-Wallis, Spearman con p-valor, anotaciones de pruebas y `bivariado_tests_asociacion.parquet` (corresponden a 1.3).
 
 ---
 
@@ -61,7 +60,6 @@ Se utilizó IA asistida para acelerar la escritura del script de análisis bivar
 | `data/staging/S01/bivariado_resumen_segmento.parquet` | 4 | 15 |
 | `data/staging/S01/bivariado_resumen_departamento.parquet` | 7 | 15 |
 | `data/staging/S01/bivariado_resumen_ciudad.parquet` | 7 | 15 |
-| `data/staging/S01/bivariado_tests_asociacion.parquet` | 23 | 5 |
 
 ### Visualizaciones (13 figuras PNG a 150 DPI)
 | Código | Figura |
@@ -78,25 +76,18 @@ Se utilizó IA asistida para acelerar la escritura del script de análisis bivar
 | D1 | Frecuencia y costo por departamento |
 | D2 | Frecuencia y costo por ciudad |
 | D3 | Composición apilada de clase de riesgo por departamento |
-| E1 | Heatmap de correlación Spearman |
+| E1 | Heatmap de correlación por rangos (descriptivo) |
 
 ---
 
-## 6. Estadísticas clave obtenidas
+## 6. Estadísticas clave obtenidas (descriptivas)
 
 | Métrica | Valor |
 |---|---|
-| Spearman clase_riesgo ~ frecuencia×100 | ρ = 0.727 |
-| Spearman clase_riesgo ~ costo_total | ρ = 0.654 |
 | Ratio frecuencia mediana Clase5 / Clase1 | 6.9× |
 | Share costo clases 4+5 | 73.3% |
-| Kruskal-Wallis sector ~ frecuencia | H = 2 210, p ≈ 0 |
 | Top sector (freq. mediana) | Construcción 36.0 |
 | Bottom sector (freq. mediana) | TIC 5.9 |
-| Spearman n_trabajadores ~ n_siniestros | ρ = 0.601 |
-| Spearman n_trabajadores ~ frecuencia×100 | ρ = −0.160 |
-| Spearman prima_anual ~ costo_total | ρ = 0.801 |
-| Kruskal-Wallis departamento ~ frecuencia | H = 13.4, p = 0.037 |
 | Rango medianas frecuencia entre deptos | 2.9 pts |
 
 ---
@@ -106,7 +97,7 @@ Se utilizó IA asistida para acelerar la escritura del script de análisis bivar
 - En Matplotlib reciente, `boxplot(..., labels=)` fue reemplazado por `tick_labels=`; verificar al portar código de ejemplos antiguos.
 - Ciudad y departamento son **redundantes** en este dataset sintético (mapeo 1:1); documentarlo evita features duplicadas en modelado.
 - Preferir `empresa_siniestralidad_completa` sobre `siniestralidad_empresa` cuando el modelo deba incluir empresas sin siniestros.
-- Las asociaciones geográficas son estadísticamente detectables pero de **baja magnitud práctica** frente a clase y sector.
+- El bivariado 1.2.3 es descriptivo; las pruebas formales van en S01-1.3.
 
 ---
 

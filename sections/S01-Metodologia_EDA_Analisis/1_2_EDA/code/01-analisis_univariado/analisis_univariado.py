@@ -170,7 +170,8 @@ def _add_stats_box(ax: plt.Axes, data: pd.Series, prefix: str = "") -> None:
 def _save_fig(fig: plt.Figure, name: str) -> None:
     """Guarda figura en RESULTS_IMGS con DPI estándar."""
     path = RESULTS_IMGS / name
-    fig.savefig(path, dpi=150, bbox_inches="tight")
+    # Avoid bbox_inches='tight' — it collapses carefully reserved header/footer margins
+    fig.savefig(path, dpi=150, facecolor=fig.get_facecolor(), edgecolor="none")
     plt.close(fig)
     print(f"   💾  {name}")
 
@@ -519,7 +520,6 @@ fig, ax = sb.create_report_figure(
     title="Antigüedad de Afiliación por Clase de Riesgo",
     subtitle="Distribución de meses de afiliación según clase de riesgo ARL",
 )
-ax = fig.axes[0]
 for i, (cr, grp) in enumerate(empresas_stg.groupby("clase_riesgo")):
     ax.hist(
         grp["antiguedad_meses"].clip(upper=empresas_stg["antiguedad_meses"].quantile(0.99)),

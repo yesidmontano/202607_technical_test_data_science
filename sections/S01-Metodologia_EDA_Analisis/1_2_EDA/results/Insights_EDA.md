@@ -133,7 +133,7 @@ Realizar un análisis exploratorio completo: distribuciones univariadas de la fr
 
 ## 1.2.3 – Análisis Bivariado (resultados preliminares)
 
-> Generado a partir de `02-analisis_bivariado/analisis_bivariado.py` · Panel completo de 5 000 empresas (incluye ceros) · Pruebas Kruskal-Wallis y Spearman.
+> Generado a partir de `02-analisis_bivariado/analisis_bivariado.py` · Panel completo de 5 000 empresas (incluye ceros) · Exploración descriptiva (sin pruebas formales; estas se abordan en S01-1.3).
 
 ---
 
@@ -143,8 +143,6 @@ Realizar un análisis exploratorio completo: distribuciones univariadas de la fr
 ![Siniestralidad por clase de riesgo](imgs/02_A1_siniestralidad_por_clase_riesgo.png)
 
 - Gradiente monotónico claro en las tres métricas: a mayor clase ARL, mayor frecuencia relativa, mayor costo acumulado y mayor severidad media.
-- **Spearman ρ(clase, frecuencia×100) = 0.727** (p < 0.001) — asociación fuerte y ordenada.
-- Spearman con costo acumulado: **ρ = 0.654**; con n° siniestros: **ρ = 0.599**.
 
 **A2 – Medianas por clase**
 ![Gradiente de medianas](imgs/02_A2_gradiente_mediana_clase_riesgo.png)
@@ -172,10 +170,9 @@ Realizar un análisis exploratorio completo: distribuciones univariadas de la fr
 **B1 – Frecuencia relativa por sector**
 ![Frecuencia por sector](imgs/02_B1_frecuencia_por_sector.png)
 
-- **Kruskal-Wallis H = 2 210, p ≈ 0** → diferencias sectoriales muy significativas.
 - **Top 5 (mayor frecuencia mediana):** Construcción (36.0), Minería (33.3), Energía (30.2), Manufactura (27.1), Transporte (25.3).
 - **Bottom 5 (menor frecuencia):** TIC (5.9), Financiero (6.1), Inmobiliario (6.5), Servicios profesionales (7.1), Educación (9.8).
-- El spread top/bottom es ~6× — el sector es un predictor de primer orden, comparable en magnitud a la clase de riesgo.
+- El spread top/bottom es ~6× — el sector aparece como predictor de primer orden, comparable en magnitud a la clase de riesgo.
 
 **B2 – Costo acumulado por sector**
 ![Costo por sector](imgs/02_B2_costo_por_sector.png)
@@ -195,8 +192,8 @@ Realizar un análisis exploratorio completo: distribuciones univariadas de la fr
 **C1 – Scatter tamaño vs siniestralidad**
 ![Scatter tamaño](imgs/02_C1_scatter_tamano_siniestralidad.png)
 
-- **n_trabajadores ↔ n_siniestros: ρ = 0.601** — el conteo absoluto crece con la exposición (esperado).
-- **n_trabajadores ↔ frecuencia×100: ρ = −0.160** — correlación débil negativa: las microempresas muestran tasas relativas más altas (posible efecto de denominador pequeño / mayor volatilidad).
+- El conteo absoluto de siniestros crece con `n_trabajadores` (efecto de exposición).
+- La frecuencia relativa muestra patrón inverso leve: las microempresas tienden a tasas más altas (posible efecto de denominador pequeño / mayor volatilidad).
 
 **C2 – Boxplots por segmento**
 ![Boxplot segmento](imgs/02_C2_boxplot_segmento_tamano.png)
@@ -213,8 +210,8 @@ Realizar un análisis exploratorio completo: distribuciones univariadas de la fr
 **C3 – Prima vs costo**
 ![Prima vs costo](imgs/02_C3_scatter_prima_vs_costo.png)
 
-- **Spearman ρ(prima_anual, costo_total) = 0.801** — la prima refleja bien la carga de siniestralidad observada (proxy de exposición + riesgo tarifado).
-- Útil como feature o como baseline de pricing en S02/S03; vigilar colinealidad con `n_trabajadores` y `clase_riesgo`.
+- La prima anual se alinea visualmente con el costo acumulado de siniestros (proxy de exposición + riesgo tarifado).
+- Útil como feature o baseline de pricing en S02/S03; vigilar colinealidad con `n_trabajadores` y `clase_riesgo`.
 
 ---
 
@@ -223,8 +220,7 @@ Realizar un análisis exploratorio completo: distribuciones univariadas de la fr
 **D1 – Por departamento**
 ![Siniestralidad por departamento](imgs/02_D1_siniestralidad_por_departamento.png)
 
-- Kruskal-Wallis departamento~frecuencia: **H = 13.4, p = 0.037** (marginalmente significativo).
-- Rango de medianas entre departamentos: **solo 2.9 puntos** de frecuencia×100 (13.8–16.7) — efecto geográfico **débil en magnitud práctica**.
+- Rango de medianas entre departamentos: **solo 2.9 puntos** de frecuencia×100 — efecto geográfico **débil en magnitud práctica**.
 - Atlántico lidera en frecuencia y costo medianos; Santander en el extremo inferior.
 
 **D2 – Por ciudad**
@@ -240,18 +236,20 @@ Realizar un análisis exploratorio completo: distribuciones univariadas de la fr
 
 ---
 
-### E. Matriz de correlación (Spearman)
+### E. Matriz de correlación descriptiva
 
 **E1 – Predictores numéricos vs siniestralidad**
-![Heatmap Spearman](imgs/02_E1_heatmap_spearman_predictores.png)
+![Heatmap correlación](imgs/02_E1_heatmap_correlacion_predictores.png)
 
-| Par | ρ Spearman | Lectura |
+| Par | Correlación por rangos | Lectura descriptiva |
 |---|---|---|
-| `clase_riesgo` ~ `frecuencia_x100` | 0.73 | Predictor dominante |
-| `prima_anual` ~ `costo_total_empresa` | 0.80 | Proxy fuerte de carga |
-| `n_trabajadores` ~ `n_siniestros` | 0.60 | Efecto de exposición |
-| `n_trabajadores` ~ `frecuencia_x100` | −0.16 | Débil / inverso |
+| `clase_riesgo` ~ `frecuencia_x100` | ~0.73 | Asociación fuerte; predictor dominante |
+| `prima_anual` ~ `costo_total_empresa` | ~0.80 | Proxy fuerte de carga |
+| `n_trabajadores` ~ `n_siniestros` | ~0.60 | Efecto de exposición |
+| `n_trabajadores` ~ `frecuencia_x100` | ~−0.16 | Débil / inverso |
 | `antiguedad_meses` ~ métricas | ≈ 0 | Baja relevancia bivariada |
+
+> Las pruebas formales de estas asociaciones se realizarán en **S01-1.3**.
 
 ---
 
@@ -259,11 +257,11 @@ Realizar un análisis exploratorio completo: distribuciones univariadas de la fr
 
 | Hallazgo | Implicación para S02 / S03 / S04 / S05 |
 |---|---|
-| `clase_riesgo` ρ≈0.73 con frecuencia; clases 4–5 = 73% del costo | Feature obligatorio; posible estratificación o pesos por clase |
-| Sector discrimina ~6× entre extremos (KW H≈2210) | Incluir `sector` (o embedding CIIU); explorar interacción con clase |
+| Gradiente claro por `clase_riesgo`; clases 4–5 = 73% del costo | Feature obligatorio; posible estratificación o pesos por clase |
+| Sector discrimina ~6× entre extremos (Construcción vs TIC) | Incluir `sector` (o embedding CIIU); explorar interacción con clase |
 | Tamaño ↑ conteo y costo; ↓ levemente la tasa relativa | Usar offset/exposición (`n_trabajadores`) en modelos de conteo; no confundir tasa con volumen |
-| `prima_anual` ρ=0.80 con costo | Buen proxy / baseline; chequear VIF vs tamaño y clase |
-| Geografía p≈0.04 pero rango ~3 pts | Feature de baja prioridad; evitar sobreajustar con dummies geográficas |
+| Prima alineada con costo acumulado | Buen proxy / baseline; chequear VIF vs tamaño y clase |
+| Geografía: rango de medianas ~3 pts | Feature de baja prioridad; evitar sobreajustar con dummies geográficas |
 | Panel completo en staging (`empresa_siniestralidad_completa`) | Usar este dataset (no el de solo siniestros) para modelado con ceros |
 
 ---

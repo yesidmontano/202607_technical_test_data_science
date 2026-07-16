@@ -117,6 +117,10 @@ def add_sura_footer(
     """
     Agrega un footer con texto de fuente/contexto y logo SURA.
 
+    Si la figura fue creada con ``create_dashboard`` / ``create_report_figure``,
+    el texto se escribe dentro de la banda footer dedicada (sin solapar ejes).
+    En figuras standalone, se coloca en la franja inferior de la figura.
+
     Parameters
     ----------
     fig : Figure
@@ -131,16 +135,19 @@ def add_sura_footer(
     Figure
         La figura con el footer añadido.
     """
+    # Place footer in the reserved bottom band (below GridSpec bottom≈0.20).
     fig.text(
-        0.01, 0.01, text,
-        ha="left", va="bottom",
-        fontsize=8,
+        0.02, 0.055, text,
+        ha="left", va="center",
+        fontsize=7,
         color=GRIS_MEDIO.hex,
         style="italic",
         transform=fig.transFigure,
+        clip_on=False,
+        zorder=10,
     )
     if include_logo:
-        add_logo_watermark(fig, position="bottom-right", alpha=0.5, scale=0.08)
+        add_logo_watermark(fig, position="bottom-right", alpha=0.45, scale=0.065)
     return fig
 
 
@@ -257,8 +264,8 @@ def bar_chart(
                 )
 
     style_axes(ax, title=title, xlabel=xlabel, ylabel=ylabel)
-    add_sura_footer(fig)
-    fig.tight_layout(rect=[0, 0.04, 1, 1])
+    # Reserve bottom/top for caller-applied add_sura_footer
+    fig.tight_layout(rect=[0.02, 0.10, 0.98, 0.96])
     return fig, ax
 
 
@@ -312,8 +319,7 @@ def line_chart(
                 markersize=5, linewidth=2.5, **kwargs)
 
     style_axes(ax, title=title, xlabel=xlabel, ylabel=ylabel)
-    add_sura_footer(fig)
-    fig.tight_layout(rect=[0, 0.04, 1, 1])
+    fig.tight_layout(rect=[0.02, 0.10, 0.98, 0.96])
     return fig, ax
 
 
@@ -359,8 +365,7 @@ def dist_chart(
         **kwargs,
     )
     style_axes(ax, title=title, xlabel=xlabel, ylabel="Frecuencia")
-    add_sura_footer(fig)
-    fig.tight_layout(rect=[0, 0.04, 1, 1])
+    fig.tight_layout(rect=[0.02, 0.10, 0.98, 0.96])
     return fig, ax
 
 
@@ -420,8 +425,7 @@ def correlation_heatmap(
     style_axes(ax, title=title, remove_top_right=False)
     ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right", fontsize=9)
     ax.set_yticklabels(ax.get_yticklabels(), rotation=0, fontsize=9)
-    add_sura_footer(fig)
-    fig.tight_layout(rect=[0, 0.04, 1, 1])
+    fig.tight_layout(rect=[0.02, 0.12, 0.98, 0.96])
     return fig, ax
 
 
@@ -474,8 +478,7 @@ def scatter_chart(
         ax=ax, **kwargs,
     )
     style_axes(ax, title=title, xlabel=xlabel, ylabel=ylabel)
-    add_sura_footer(fig)
-    fig.tight_layout(rect=[0, 0.04, 1, 1])
+    fig.tight_layout(rect=[0.02, 0.10, 0.98, 0.96])
     return fig, ax
 
 
@@ -526,8 +529,7 @@ def boxplot_chart(
     if hue:
         ax.legend(title=hue, frameon=True)
     ax.set_xticklabels(ax.get_xticklabels(), rotation=30, ha="right")
-    add_sura_footer(fig)
-    fig.tight_layout(rect=[0, 0.04, 1, 1])
+    fig.tight_layout(rect=[0.02, 0.12, 0.98, 0.96])
     return fig, ax
 
 
@@ -588,5 +590,5 @@ def pie_chart(
     if title:
         ax.set_title(title, fontsize=14, fontweight="bold", pad=20)
 
-    add_sura_footer(fig)
+    fig.subplots_adjust(bottom=0.12, top=0.90)
     return fig, ax
