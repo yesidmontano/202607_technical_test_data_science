@@ -122,6 +122,61 @@ def _save_fig(fig: plt.Figure, name: str) -> None:
     print(f"   💾  {name}")
 
 
+def _wrap_pair_label(a: str, b: str, sep: str = "↔") -> str:
+    """Two-line pair label to reduce horizontal width on Y axis."""
+    return f"{a}\n{sep} {b}"
+
+
+def _fit_yaxis_labels(
+    fig: plt.Figure,
+    ax: plt.Axes,
+    min_left: float = 0.28,
+    max_left: float = 0.50,
+    pad: float = 0.03,
+) -> float:
+    """
+    Shift the axes panel to the right so long Y-tick labels are not clipped.
+
+    Two-pass strategy (avoids under-measuring already-clipped labels):
+    1. Temporarily set a generous ``left=max_left`` so labels render fully.
+    2. Measure how far labels extend left of the axes; set final ``left``
+       to keep a small pad from the figure edge (clamped to [min_left, max_left]).
+    """
+    for label in ax.get_yticklabels():
+        label.set_clip_on(False)
+        label.set_ha("right")
+
+    sp = fig.subplotpars
+    right = min(max(sp.right, 0.95), 0.98)
+
+    # Pass 1 — generous margin for accurate bbox measurement
+    fig.subplots_adjust(left=max_left, right=right, top=sp.top, bottom=sp.bottom)
+    fig.canvas.draw()
+    renderer = fig.canvas.get_renderer()
+    fig_w = fig.get_window_extent(renderer=renderer).width
+    if fig_w <= 0:
+        return max_left
+
+    ax_x0 = ax.get_window_extent(renderer=renderer).x0
+    min_label_x = ax_x0
+    for label in ax.get_yticklabels():
+        if not label.get_visible() or not str(label.get_text()).strip():
+            continue
+        min_label_x = min(
+            min_label_x,
+            label.get_window_extent(renderer=renderer).x0,
+        )
+
+    # Unused fraction to the left of the leftmost label pixel
+    spare = max(0.0, min_label_x / fig_w)
+    left = max_left - spare + pad
+    left = float(np.clip(left, min_left, max_left))
+
+    # Pass 2 — apply fitted margin (plot moves right as needed)
+    fig.subplots_adjust(left=left, right=right, top=sp.top, bottom=sp.bottom)
+    return left
+
+
 def _corr_heatmap(matrix: pd.DataFrame, title: str, figsize=(10, 8)):
     """Heatmap from a precomputed correlation matrix (avoids double .corr())."""
     fig, ax = plt.subplots(figsize=figsize)
@@ -594,7 +649,7 @@ _save_fig(fig, "05_A3_heatmap_predictor_vs_target.png")
 fig, ax = sb.create_report_figure(
     title="Factor de Inflación de Varianza (VIF) – Set panel con lag",
     subtitle=f"Umbral advertencia ≥ {VIF_WARN:.0f} · severo ≥ {VIF_SEVERE:.0f}",
-    figsize=(11, 6),
+    figsize=(12, 6),
 )
 vif_plot = vif_b.sort_values("vif", ascending=True)
 colors = [
@@ -609,6 +664,7 @@ ax.set_ylabel("")
 for y, v in zip(vif_plot["etiqueta"], vif_plot["vif"]):
     ax.text(v + 0.05, y, f"{v:.2f}", va="center", fontsize=9)
 ax.legend(frameon=True, loc="lower right")
+_fit_yaxis_labels(fig, ax, min_left=0.22, max_left=0.40)
 sb.add_sura_footer(fig, text="S01 – EDA | 1.2.6 Colinealidad | VIF set B")
 _save_fig(fig, "05_B1_vif_set_panel_lag.png")
 
@@ -617,11 +673,12 @@ pares_plot = pares_diag.head(12).copy() if len(pares_diag) else pares_staging.he
 fig, ax = sb.create_report_figure(
     title="Pares con |ρ Spearman| ≥ 0.70",
     subtitle="Diagnóstico de redundancia / asociación fuerte",
-    figsize=(11, 6),
+    figsize=(12, 6.5),
 )
 if len(pares_plot):
+    # Two-line labels + left-margin fit to avoid clipping on long pair names
     labels_pairs = [
-        f"{a} ↔ {b}"
+        _wrap_pair_label(a, b)
         for a, b in zip(pares_plot["etiqueta_a"], pares_plot["etiqueta_b"])
     ]
     vals = pares_plot["correlacion"].values
@@ -629,13 +686,14 @@ if len(pares_plot):
     y = np.arange(len(pares_plot))
     ax.barh(y, vals, color=colors, alpha=0.9)
     ax.set_yticks(y)
-    ax.set_yticklabels(labels_pairs, fontsize=8)
+    ax.set_yticklabels(labels_pairs, fontsize=8, linespacing=1.15)
     ax.axvline(0, color="#666", linewidth=0.8)
     ax.set_xlabel("Correlación Spearman")
     ax.invert_yaxis()
     for yi, v in zip(y, vals):
         ax.text(v + (0.01 if v >= 0 else -0.01), yi, f"{v:.2f}",
                 va="center", ha="left" if v >= 0 else "right", fontsize=8)
+    _fit_yaxis_labels(fig, ax, min_left=0.32, max_left=0.48, pad=0.035)
 else:
     ax.text(0.5, 0.5, "Sin pares ≥ 0.70 entre predictores numéricos",
             ha="center", va="center", transform=ax.transAxes)
@@ -735,24 +793,27 @@ pt_panel = pred_vs_tgt[pred_vs_tgt["alcance"] == "panel_empresa_anio"].copy()
 fig, ax = sb.create_report_figure(
     title="Asociación en panel empresa-año (con lag)",
     subtitle="Spearman entre predictores temporales y targets anuales",
-    figsize=(11, 6),
+    figsize=(13, 8),
 )
 if len(pt_panel):
     pt_panel = pt_panel.sort_values("abs_spearman", ascending=True)
+    # Two-line labels (predictor → target) + dynamic left margin
     labels_p = [
-        f"{r.etiqueta_predictor} → {r.etiqueta_target}"
+        _wrap_pair_label(r.etiqueta_predictor, r.etiqueta_target, sep="→")
         for r in pt_panel.itertuples()
     ]
     colors = [palette[0] if v >= 0 else palette[3] for v in pt_panel["spearman"]]
     y = np.arange(len(pt_panel))
-    ax.barh(y, pt_panel["spearman"].values, color=colors, alpha=0.9)
+    ax.barh(y, pt_panel["spearman"].values, color=colors, alpha=0.9, height=0.7)
     ax.set_yticks(y)
-    ax.set_yticklabels(labels_p, fontsize=8)
+    ax.set_yticklabels(labels_p, fontsize=7.5, linespacing=1.2)
     ax.axvline(0, color="#666", linewidth=0.8)
     ax.set_xlabel("Correlación Spearman")
+    ax.tick_params(axis="y", pad=6)
     for yi, v in zip(y, pt_panel["spearman"].values):
         ax.text(v + (0.01 if v >= 0 else -0.01), yi, f"{v:.2f}",
                 va="center", ha="left" if v >= 0 else "right", fontsize=8)
+    _fit_yaxis_labels(fig, ax, min_left=0.34, max_left=0.50, pad=0.035)
 sb.add_sura_footer(fig, text="S01 – EDA | 1.2.6 Correlaciones | Panel con lag")
 _save_fig(fig, "05_C3_asociacion_panel_lag.png")
 
