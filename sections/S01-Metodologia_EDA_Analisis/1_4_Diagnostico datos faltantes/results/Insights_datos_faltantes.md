@@ -312,4 +312,84 @@ Detalles técnicos:
 
 ### Pendiente
 
-- [ ] 1.4.4 – Evaluación del efecto sobre el modelado vs descartar registros.
+- [x] 1.4.4 – Evaluación del efecto sobre el modelado vs descartar registros.
+
+---
+
+## 1.4.4 – Impacto de la imputación vs listwise deletion
+
+> Generado a partir de `04_impacto/impacto_imputacion.py`.  
+> Reutiliza `empresas_imputadas`, `siniestros_imputados`, `empresa_siniestralidad_completa`.  
+> Escenarios: **(a)** listwise · **(b)** imputado · **(c)** imputado + flag `miss_*`.  
+> Holdout 80/20 evaluado solo sobre outcomes **originalmente observados** (comparación justa).
+
+![Resumen ejecutivo](imgs/04_impacto_resumen.png)
+
+### A. Diseño experimental
+
+| Modelo | Familia | Fórmula base | Listwise descarta |
+|---|---|---|---|
+| Frecuencia (empresa) | **Binomial Negativa** | `n_siniestros ~ C(clase_riesgo) + log_n_trab + log_prima` | `miss_prima` o `miss_geo` |
+| Severidad (siniestro) | **Lognormal** (OLS log) | `log(días) ~ C(tipo) + C(gravedad)` | `miss_dias` |
+| Costo asistencial | **Lognormal** (OLS log) | `log(costo_asist) ~ C(tipo)+C(gravedad)+log(prestación)` | `miss_costo_asist` |
+
+Escenario (c) añade el/los flag(s) correspondientes (`miss_prima`+`miss_geo`, `miss_dias`, o `miss_costo_asist`).
+
+---
+
+### B. Pérdida muestral y AIC
+
+![N train y AIC relativo](imgs/04_impacto_n_aic.png)
+
+| Modelo | N train (a) | N train (b=c) | % perdido listwise |
+|---|---:|---:|---:|
+| Frecuencia NB | 3 372 | 4 000 | **15.7%** |
+| Severidad días | 30 605 | 31 915 | 4.1% |
+| Costo asistencial | 29 883 | 31 915 | 6.4% |
+
+- El AIC crudo **no es comparable** entre (a) y (b) porque cambia n; se reporta AIC/AIC(b) en el plot.
+- El costo operativo de listwise es máximo en **frecuencia** (pierde ~1 de cada 6 empresas de train).
+
+---
+
+### C. Métricas predictivas (holdout)
+
+![Holdout por escenario](imgs/04_impacto_holdout_metricas.png)
+
+| Modelo | Métrica | (a) | (b) | (c) | Mejor |
+|---|---|---:|---:|---:|---|
+| Frecuencia NB | RMSE conteo | 6.429 | **6.398** | 6.396 | **b** |
+| Severidad días | RMSE log | 0.7657 | **0.7657** | 0.7656 | **b** |
+| Costo asistencial | RMSE log | 0.9809 | **0.9809** | 0.9809 | **b** |
+
+- En severidad/costo, imputar filas faltantes **casi no mueve** el error sobre casos originalmente observados (las relaciones tipo/gravedad ya estaban bien identificadas).
+- En frecuencia, (b)/(c) mejoran levemente el RMSE vs listwise; la ventaja de (c) sobre (b) es **despreciable** (<0.5%) y los flags no son significativos → se declara **(b)** como mejor operativo.
+
+---
+
+### D. Sesgo y variabilidad de coeficientes
+
+![Forest de coeficientes](imgs/04_impacto_coefs_forest.png)
+
+![Sesgo relativo a vs b](imgs/04_impacto_sesgo_coefs.png)
+
+**Frecuencia (donde más importa):**
+- Coefs de `clase_riesgo` 2–5 bajo listwise están ~**4.9–5.7%** por debajo de (b) (mediana \|sesgo relativo\| = **5.3%**).
+- EE de listwise ~**1.5×** los de (b) (menos precisión por menor n).
+- (c) ≈ (b): flags `miss_prima` / `miss_geo` **no significativos** (p≈0.78 / 0.91).
+
+**Severidad / costo:**
+- Mediana \|sesgo relativo\| a vs b: **0.17%** (días) y **0.94%** (costo) → desplazamiento despreciable.
+- Ratio EE ≈ 1.02–1.04.
+- Flag `miss_costo_asist` en (c): β≈0.005, **p=0.82** → no aporta señal residual detectablesobre el outcome (la imputación MAR no deja un “hueco” predictivo fuerte; la sospecha MNAR de 1.4.2 **no se traduce** en un flag informativo aquí).
+
+---
+
+### E. Veredicto operativo (cierre del bloque 1.4)
+
+1. **No usar listwise deletion** como default, especialmente en el baseline de **frecuencia** (pierde 15.7% de empresas, sesga ~5% los efectos de clase y infla EE ×1.5).
+2. **Preferir escenario (b) datos imputados** de 1.4.3 para S03/S05.
+3. **Escenario (c)** es inocuo pero innecesario: los flags no son significativos; se pueden conservar solo para auditoría/sensibilidad, no como features obligatorias.
+4. En severidad/costo el impacto predictivo de imputar vs descartar es **marginal** en holdout; el valor de imputar es conservar potencia y evitar sesgo de selección en la cola (gravedad alta).
+
+Staging: `faltantes_impacto_coefs`, `_metricas`, `_resumen` en `data/staging/S01/`.

@@ -56,6 +56,9 @@
 | [`siniestros_imputados.parquet`](#43-siniestros_imputadosparquet) | S01 – 1.4 Datos faltantes (imputación) | `data/staging/S01/` | 39 894 | 21 |
 | [`faltantes_imputacion_estrategia.parquet`](#44-faltantes_imputacion_estrategiaparquet) | S01 – 1.4 Datos faltantes (imputación) | `data/staging/S01/` | 6 | 10 |
 | [`faltantes_imputacion_diagnostico.parquet`](#45-faltantes_imputacion_diagnosticoparquet) | S01 – 1.4 Datos faltantes (imputación) | `data/staging/S01/` | 10 | 12 |
+| [`faltantes_impacto_coefs.parquet`](#46-faltantes_impacto_coefsparquet) | S01 – 1.4 Datos faltantes (impacto) | `data/staging/S01/` | 55 | 12 |
+| [`faltantes_impacto_metricas.parquet`](#47-faltantes_impacto_metricasparquet) | S01 – 1.4 Datos faltantes (impacto) | `data/staging/S01/` | 9 | 11 |
+| [`faltantes_impacto_resumen.parquet`](#48-faltantes_impacto_resumenparquet) | S01 – 1.4 Datos faltantes (impacto) | `data/staging/S01/` | 3 | 16 |
 
 ---
 
@@ -938,18 +941,74 @@ Estrategias:
 
 ---
 
+## 46. `faltantes_impacto_coefs.parquet`
+
+**Ruta:** `data/staging/S01/faltantes_impacto_coefs.parquet`
+**Script origen:** `sections/S01-Metodologia_EDA_Analisis/1_4_Diagnostico datos faltantes/code/04_impacto/impacto_imputacion.py`
+**Granularidad:** Una fila por modelo × escenario × término (55).
+
+Modelos: `frecuencia_NB`, `severidad_lognormal_dias`, `costo_lognormal_asistencial`.  
+Escenarios: `a_listwise`, `b_imputado`, `c_imputado_flag`.
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `modelo` / `escenario` / `termino` | `texto` | Identificación |
+| `coef` / `ee` / `pvalue` / `n_obs` | `numérico` | Estimación |
+| `coef_b` / `ee_b` | `numérico` | Referencia escenario (b) |
+| `delta_vs_b` / `sesgo_rel_pct` | `numérico` | Sesgo absoluto y relativo (%) vs (b) |
+| `ratio_ee_vs_b` | `numérico` | Inflación de error estándar vs (b) |
+
+---
+
+## 47. `faltantes_impacto_metricas.parquet`
+
+**Ruta:** `data/staging/S01/faltantes_impacto_metricas.parquet`
+**Script origen:** `04_impacto/impacto_imputacion.py`
+**Granularidad:** Una fila por modelo × escenario (9).
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `modelo` / `escenario` | `texto` | Identificación |
+| `n_train` / `n_test_eval` | `entero` | Tamaños (test = holdout con outcome originalmente observado) |
+| `aic` | `numérico` | AIC in-sample (no comparable entre distintos n) |
+| `mae` / `rmse` / `bias_medio` | `numérico` | Predictivo (conteo o escala original) |
+| `mae_log` / `rmse_log` / `r2_log` | `numérico` | Predictivo en escala log (modelos Lognormal) |
+
+---
+
+## 48. `faltantes_impacto_resumen.parquet`
+
+**Ruta:** `data/staging/S01/faltantes_impacto_resumen.parquet`
+**Script origen:** `04_impacto/impacto_imputacion.py`
+**Granularidad:** Una fila por modelo (3) — veredicto ejecutivo.
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `modelo` | `texto` | Baseline evaluado |
+| `n_train_a/b/c` / `pct_n_perdido_listwise` | — | Pérdida muestral de (a) |
+| `aic_a/b/c` | `numérico` | AIC por escenario |
+| `holdout_metric` / `holdout_a/b/c` | — | Métrica holdout principal |
+| `mejor_escenario_holdout` | `texto` | Escenario con mejor holdout |
+| `mediana_abs_sesgo_rel_a_vs_b_pct` | `numérico` | Mediana \|sesgo relativo\| de coefs (a) vs (b) |
+| `mediana_ratio_ee_a_vs_b` | `numérico` | Mediana EE_a / EE_b |
+| `recomendacion` | `texto` | Lectura operativa |
+
+> **Hallazgo 1.4.4:** el impacto material está en **frecuencia** (listwise −15.7% n, ~5% sesgo relativo en clase_riesgo, EE ×1.5). En severidad/costo el holdout es casi idéntico; preferir imputación por tamaño muestral. Flags `miss_*` no significativos.
+
+---
+
 ## Uso en secciones futuras
 
 | Sección | Dataset requerido | Propósito |
 |---|---|---|
 | S01 – 1.3 Hipótesis | `empresa_siniestralidad_completa`, `temporal_empresa_anio`, `temporal_persistencia_yoy`, `panel_empresa_lag_yoy`, `temporal_mensual`, `estacionalidad_mes` | Pruebas formales de diferencia / asociación / GOF |
 | S01 – 1.4 Datos faltantes | `faltantes_*`, `empresas_imputadas`, `siniestros_imputados` | Diagnóstico, mecanismo, imputación y evaluación |
-| S01 – 1.5 Baseline | `empresa_siniestralidad_completa`, `temporal_empresa_anio`, `panel_empresa_lag_yoy` | Definición del predictor baseline y target anual |
+| S01 – 1.5 Baseline | `empresa_siniestralidad_completa`, `temporal_empresa_anio`, `panel_empresa_lag_yoy`, `empresas_imputadas` | Definición del predictor baseline y target anual |
 | S02 – Modelación económica | `empresa_siniestralidad_completa`, `bivariado_resumen_sector`, `temporal_anual`, `predictores_recomendacion`, `hip_confirmaciones_resumen` | Caracterización sectorial; confirmar descarte de mes/geo |
-| S03 – Reto de negocio | `empresa_siniestralidad_tratada`, `siniestros_tratados` / `siniestros_imputados`, `temporal_empresa_anio`, `panel_empresa_lag_yoy`, `colinealidad_vif`, `predictores_recomendacion`, `hip_features_resumen`, `hip_p12_bondad_ajuste_costo` | Feature set + familia de severidad; CV temporal con lag |
+| S03 – Reto de negocio | `empresa_siniestralidad_tratada`, `siniestros_tratados` / `siniestros_imputados`, `temporal_empresa_anio`, `panel_empresa_lag_yoy`, `colinealidad_vif`, `predictores_recomendacion`, `hip_features_resumen`, `hip_p12_bondad_ajuste_costo`, `faltantes_impacto_resumen` | Feature set + familia de severidad; CV temporal con lag |
 | S04 – Inferencia causal | `empresa_siniestralidad_completa` / `_tratada`, `hip_p10_retencion_top10` | Grupo tratado / control; estabilidad del target |
 | S05 – Recomendador | `empresas_staging` / `empresas_imputadas`, `empresa_siniestralidad_completa`, `hip_p10_retencion_top10` | Perfil de empresa; priorizar recurrentes Top 10% |
 
 ---
 
-*Actualizado por: `S01 – 1.2 EDA` + `S01 – 1.3` + `S01 – 1.4.1/1.4.2/1.4.3` — Prueba Técnica Grupo SURA.*
+*Actualizado por: `S01 – 1.2 EDA` + `S01 – 1.3` + `S01 – 1.4.1/1.4.2/1.4.3/1.4.4` — Prueba Técnica Grupo SURA.*
