@@ -20,6 +20,11 @@
 | [`bivariado_resumen_segmento.parquet`](#7-bivariado_resumen_segmentoparquet) | S01 – 1.2 EDA (bivariado) | `data/staging/S01/` | 4 | 15 |
 | [`bivariado_resumen_departamento.parquet`](#8-bivariado_resumen_departamentoparquet) | S01 – 1.2 EDA (bivariado) | `data/staging/S01/` | 7 | 15 |
 | [`bivariado_resumen_ciudad.parquet`](#9-bivariado_resumen_ciudadparquet) | S01 – 1.2 EDA (bivariado) | `data/staging/S01/` | 7 | 15 |
+| [`temporal_mensual.parquet`](#10-temporal_mensualparquet) | S01 – 1.2 EDA (temporal) | `data/staging/S01/` | 84 | 15 |
+| [`temporal_anual.parquet`](#11-temporal_anualparquet) | S01 – 1.2 EDA (temporal) | `data/staging/S01/` | 7 | 14 |
+| [`estacionalidad_mes.parquet`](#12-estacionalidad_mesparquet) | S01 – 1.2 EDA (temporal) | `data/staging/S01/` | 12 | 15 |
+| [`temporal_empresa_anio.parquet`](#13-temporal_empresa_anioparquet) | S01 – 1.2 EDA (temporal) | `data/staging/S01/` | 35 000 | 13 |
+| [`temporal_persistencia_yoy.parquet`](#14-temporal_persistencia_yoyparquet) | S01 – 1.2 EDA (temporal) | `data/staging/S01/` | 6 | 4 |
 
 ---
 
@@ -197,18 +202,119 @@ Campos agregados (comunes a todos los resúmenes bivariados 5–9):
 
 ---
 
+## 10. `temporal_mensual.parquet`
+
+**Ruta:** `data/staging/S01/temporal_mensual.parquet`
+**Script origen:** `sections/S01-Metodologia_EDA_Analisis/1_2_EDA/code/03-analisis_temporal/analisis_temporal.py`
+**Granularidad:** Una fila por año-mes (84 registros = 7 años × 12 meses).
+**Base:** Agregación de `siniestros_staging` por `anio` y `mes`.
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `anio` / `mes` | `entero` | Componentes de calendario |
+| `anio_mes` | `texto` | Clave `YYYY-MM` |
+| `n_siniestros` | `entero` | Conteo de siniestros en el mes |
+| `n_empresas` | `entero` | Empresas distintas con al menos un siniestro |
+| `costo_total` / `costo_medio` | `numérico` | Costo acumulado y medio (COP) |
+| `severidad_media` / `severidad_mediana` | `numérico` | Días de incapacidad |
+| `n_at` / `n_el` / `pct_at` / `pct_el` | `entero` / `numérico` | Mix AT vs EL |
+| `ma3_n_siniestros` / `ma3_costo_total` | `numérico` | Media móvil de 3 meses |
+
+> **Uso:** series temporales de portafolio, dashboards y diagnóstico de estacionalidad.
+
+---
+
+## 11. `temporal_anual.parquet`
+
+**Ruta:** `data/staging/S01/temporal_anual.parquet`
+**Script origen:** `03-analisis_temporal/analisis_temporal.py`
+**Granularidad:** Una fila por año calendario (2018–2024).
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `anio` | `entero` | Año de ocurrencia |
+| `n_siniestros` / `n_empresas` | `entero` | Volumen y cobertura |
+| `costo_total` / `costo_medio` / `costo_por_siniestro` | `numérico` | Métricas de costo (COP) |
+| `severidad_media` / `severidad_mediana` | `numérico` | Días de incapacidad |
+| `n_at` / `n_el` / `pct_at` / `pct_el` | `entero` / `numérico` | Mix AT vs EL |
+| `yoy_n_siniestros_pct` / `yoy_costo_total_pct` | `numérico` | Variación interanual (%) |
+
+> **Uso:** tendencias de portafolio y definición de ventanas train/test temporales (T-1 → T).
+
+---
+
+## 12. `estacionalidad_mes.parquet`
+
+**Ruta:** `data/staging/S01/estacionalidad_mes.parquet`
+**Script origen:** `03-analisis_temporal/analisis_temporal.py`
+**Granularidad:** Una fila por mes calendario (1–12), promediando años 2018–2024.
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `mes` / `mes_label` | `entero` / `texto` | Mes numérico y etiqueta (Ene…Dic) |
+| `n_siniestros_media` / `_std` / `_min` / `_max` | `numérico` | Distribución del volumen entre años |
+| `costo_total_media` / `_std` | `numérico` | Costo mensual promedio |
+| `severidad_media` / `_std` | `numérico` | Severidad mensual promedio |
+| `indice_estacional_n` | `numérico` | Media del mes / media global de volumen |
+| `indice_estacional_costo` / `_sev` | `numérico` | Índices análogos para costo y severidad |
+| `cv_n` | `numérico` | Coeficiente de variación interanual del mes |
+| `n_anios` | `entero` | Años con observación (7) |
+
+> **Uso:** cuantificar amplitud estacional; en este portafolio el índice de volumen oscila ~±2% (estacionalidad débil).
+
+---
+
+## 13. `temporal_empresa_anio.parquet`
+
+**Ruta:** `data/staging/S01/temporal_empresa_anio.parquet`
+**Script origen:** `03-analisis_temporal/analisis_temporal.py`
+**Granularidad:** Una fila por empresa × año (5 000 × 7 = 35 000 registros), con ceros imputados.
+**Base:** Producto cartesiano `empresas_staging` × años observados + agregados de siniestros.
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `id_empresa` / `anio` | `texto` / `entero` | Clave del panel |
+| `n_siniestros` / `costo_total` | `entero` / `numérico` | Agregados del año (0 si sin eventos) |
+| `severidad_media` | `numérico` | Días medios (`NaN` si n_siniestros=0) |
+| `n_at` / `n_el` | `entero` | Conteos por tipo |
+| `n_trabajadores` / `clase_riesgo` / `sector` | — | Atributos de empresa (de staging) |
+| `frecuencia_x100` | `numérico` | Siniestros / 100 trabajadores en el año |
+| `tiene_siniestro` | `entero` | Flag 1 si hubo al menos un siniestro |
+| `alta_siniestralidad` | `entero` | 1 si `n_siniestros` > media del año (definición operativa CRISP-DM) |
+
+> **Uso recomendado:** panel para validación temporal (entrenar hasta T-1, validar en T), features de lag y target anual.
+> **Riesgo de leakage:** no usar `n_siniestros` / costos del año T como features para predecir el target del mismo año T.
+
+---
+
+## 14. `temporal_persistencia_yoy.parquet`
+
+**Ruta:** `data/staging/S01/temporal_persistencia_yoy.parquet`
+**Script origen:** `03-analisis_temporal/analisis_temporal.py`
+**Granularidad:** Una fila por par de años consecutivos (6 pares: 2018→2019 … 2023→2024).
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `anio_t` / `anio_t1` | `entero` | Par de años consecutivos |
+| `corr_n_siniestros` | `numérico` | Correlación Pearson del conteo empresa entre t y t+1 |
+| `corr_frecuencia_x100` | `numérico` | Correlación Pearson de la tasa relativa entre t y t+1 |
+
+> **Uso:** evidencia de que el conteo absoluto es un predictor lag fuerte (~0.70); la tasa relativa persiste menos (~0.18).
+
+---
+
 ## Uso en secciones futuras
 
 | Sección | Dataset requerido | Propósito |
 |---|---|---|
 | S01 – 1.3 Hipótesis | `empresa_siniestralidad_completa`, `bivariado_resumen_*` | Pruebas formales de diferencia / asociación (no incluidas en 1.2.3) |
 | S01 – 1.4 Datos faltantes | `siniestros_staging`, `empresas_staging` | Diagnóstico de nulos y patrones |
-| S01 – 1.5 Baseline | `empresa_siniestralidad_completa` | Definición del predictor baseline |
-| S02 – Modelación económica | `empresa_siniestralidad_completa`, `bivariado_resumen_sector` | Caracterización sectorial |
-| S03 – Reto de negocio | `empresa_siniestralidad_completa` | Modelado frecuencia-severidad |
+| S01 – 1.5 Baseline | `empresa_siniestralidad_completa`, `temporal_empresa_anio` | Definición del predictor baseline y target anual |
+| S02 – Modelación económica | `empresa_siniestralidad_completa`, `bivariado_resumen_sector`, `temporal_anual` | Caracterización sectorial y tendencias |
+| S03 – Reto de negocio | `empresa_siniestralidad_completa`, `temporal_empresa_anio` | Modelado frecuencia-severidad con CV temporal |
 | S04 – Inferencia causal | `empresa_siniestralidad_completa` | Grupo tratado / control |
 | S05 – Recomendador | `empresas_staging`, `empresa_siniestralidad_completa` | Perfil de empresa para recomendación |
 
 ---
 
-*Actualizado por: `S01 – 1.2 EDA | analisis_univariado.py` + `analisis_bivariado.py` — Prueba Técnica Grupo SURA.*
+*Actualizado por: `S01 – 1.2 EDA | analisis_univariado.py` + `analisis_bivariado.py` + `analisis_temporal.py` — Prueba Técnica Grupo SURA.*

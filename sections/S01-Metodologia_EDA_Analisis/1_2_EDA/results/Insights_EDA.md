@@ -266,4 +266,109 @@ Realizar un análisis exploratorio completo: distribuciones univariadas de la fr
 
 ---
 
+## 1.2.4 – Análisis Temporal y Estacionalidad (resultados preliminares)
+
+> Generado a partir de `03-analisis_temporal/analisis_temporal.py` · 39 894 siniestros · 2018–2024 · Panel empresa×año de 35 000 filas.
+
+---
+
+### A. Estructura temporal del portafolio
+
+**A1 – Serie mensual de volumen**
+![Serie mensual](imgs/03_A1_serie_mensual_siniestros.png)
+
+- El volumen mensual oscila en torno a ~450–550 siniestros, con picos en 2019 y un valle marcado en 2020–2022.
+- La media móvil de 3 meses suaviza el ruido sin revelar un ciclo estacional fuerte a simple vista.
+
+**A2 – Estructura anual (volumen, costo, severidad)**
+![Estructura anual](imgs/03_A2_estructura_anual.png)
+
+| Año | Siniestros | YoY vol. | Costo total | YoY costo | Severidad media | % AT |
+|---|---|---|---|---|---|---|
+| 2018 | 5 618 | — | $17.9B | — | 15.3 días | 85.9% |
+| 2019 | 6 502 | **+15.7%** | $22.5B | +25.3% | 17.3 días | 87.6% |
+| 2020 | 5 587 | **−14.1%** | $17.7B | −21.0% | 16.1 días | 85.8% |
+| 2021 | 5 319 | −4.8% | $18.2B | +2.3% | 16.3 días | 85.3% |
+| 2022 | 5 188 | −2.5% | $16.4B | −9.7% | 16.1 días | 84.7% |
+| 2023 | 5 994 | **+15.5%** | $22.3B | +36.0% | 16.6 días | 86.9% |
+| 2024 | 5 686 | −5.1% | $17.8B | −20.1% | 15.6 días | 86.8% |
+
+- Hay **oscilación interanual relevante** (±15% en volumen en 2019 y 2023), no una tendencia monotónica.
+- La severidad media se mantiene estable (~15–17 días); el costo del portafolio es más volátil que el volumen.
+
+**A3 – Mix AT / EL**
+![Composición AT/EL](imgs/03_A3_composicion_at_el_anual.png)
+
+- El mix es **estable en el tiempo**: AT ≈ 85–88%, EL ≈ 12–15%. No hay cambio estructural de composición que justifique features de año × tipo.
+
+---
+
+### B. Estacionalidad
+
+**B1 – Índice estacional de volumen**
+![Índice estacional](imgs/03_B1_indice_estacional_mensual.png)
+
+- Amplitud del índice de volumen: **solo 3.8 puntos porcentuales** (pico ene 1.018 → valle jun 0.980).
+- Patrón leve: ligeramente más alto a inicios/finales de año; más bajo en abril–agosto. En la práctica es **estacionalidad débil / casi nula**.
+
+**B2 – Heatmap año × mes**
+![Heatmap año×mes](imgs/03_B2_heatmap_anio_mes.png)
+
+- 2019 concentra los meses más intensos (pico nov = 582); mayo-2020 es el mínimo absoluto (399).
+- La variación **entre años** domina a la variación **entre meses** dentro del mismo año.
+
+**B3 – Boxplots mensuales entre años**
+![Boxplot por mes](imgs/03_B3_boxplot_volumen_por_mes.png)
+
+- Las cajas se solapan ampliamente entre meses; el CV interanual medio por mes es ~0.09.
+- Confirma que dummies de mes aportarían poca señal frente al ruido interanual.
+
+---
+
+### C. YoY, costo/severidad y persistencia empresa-año
+
+**C1 – Variación interanual**
+![YoY](imgs/03_C1_variacion_yoy.png)
+
+- El costo total amplifica los movimientos de volumen (p. ej. 2023: +15.5% vol. → +36% costo).
+- **Implicación:** para nowcast / proyección de portafolio (S02/S03) conviene modelar volumen y severidad/costo por separado.
+
+**C2 – Estacionalidad de costo y severidad**
+![Estacionalidad costo/sev](imgs/03_C2_estacionalidad_costo_severidad.png)
+
+- Índices de costo y severidad oscilan más que el volumen (~±8–9% de amplitud), pero con 7 años y colas pesadas esta amplitud es **ruidosa**, no un ciclo operativo claro.
+- No se recomienda priorizar features estacionales de mes para el modelo de clasificación empresa-año.
+
+**C3 – Persistencia empresa–año**
+![Persistencia](imgs/03_C3_persistencia_empresa_anio.png)
+
+| Par | corr `n_siniestros` | corr `frecuencia_x100` |
+|---|---|---|
+| 2018→2019 | 0.72 | 0.16 |
+| 2019→2020 | 0.73 | 0.19 |
+| 2020→2021 | 0.68 | 0.22 |
+| 2021→2022 | 0.65 | 0.16 |
+| 2022→2023 | 0.68 | 0.23 |
+| 2023→2024 | 0.74 | 0.15 |
+| **Media** | **0.70** | **0.18** |
+
+- El **conteo absoluto del año anterior es un predictor lag fuerte** (corr ≈ 0.70).
+- La **tasa relativa persiste poco** (corr ≈ 0.18) — coherente con el efecto de exposición/denominador visto en el bivariado.
+- ~24–27% de empresas caen en `alta_siniestralidad` cada año (n > media del año), estable en el tiempo.
+
+---
+
+## Síntesis temporal y condicionantes para el modelado
+
+| Hallazgo | Implicación para S02 / S03 / S04 / S05 |
+|---|---|
+| Estacionalidad mensual de volumen ≈ ±2% | Features de mes/calendario de **baja prioridad**; no invertir complejidad estacional |
+| Oscilación YoY de volumen ±15% (sin tendencia monotónica) | Validación temporal T-1→T es crítica; el año de holdout importa |
+| Mix AT/EL estable (~86%/14%) | No modelar cambio de composición; sí estratificar severidad AT vs EL (univariado) |
+| Persistencia `n_siniestros` t→t+1 ≈ 0.70 | Incluir **lags** del conteo (y posiblemente costo) como features baseline fuertes |
+| Persistencia de tasa relativa ≈ 0.18 | Preferir lags de conteo + offset de exposición sobre lags de tasa sola |
+| Panel `temporal_empresa_anio` (35k filas) | Dataset listo para CV temporal y target `alta_siniestralidad` sin leakage |
+
+---
+
 *Análisis realizado con `sura_brand` · Sección S01-1.2 EDA · Prueba Técnica Grupo SURA.*
