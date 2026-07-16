@@ -23,8 +23,8 @@
 | [`temporal_mensual.parquet`](#10-temporal_mensualparquet) | S01 – 1.2 EDA (temporal) | `data/staging/S01/` | 84 | 15 |
 | [`temporal_anual.parquet`](#11-temporal_anualparquet) | S01 – 1.2 EDA (temporal) | `data/staging/S01/` | 7 | 14 |
 | [`estacionalidad_mes.parquet`](#12-estacionalidad_mesparquet) | S01 – 1.2 EDA (temporal) | `data/staging/S01/` | 12 | 15 |
-| [`temporal_empresa_anio.parquet`](#13-temporal_empresa_anioparquet) | S01 – 1.2 EDA (temporal) | `data/staging/S01/` | 35 000 | 13 |
-| [`temporal_persistencia_yoy.parquet`](#14-temporal_persistencia_yoyparquet) | S01 – 1.2 EDA (temporal) | `data/staging/S01/` | 6 | 4 |
+| [`temporal_empresa_anio.parquet`](#13-temporal_empresa_anioparquet) | S01 – 1.2 EDA (temporal) | `data/staging/S01/` | 35 000 | 14 |
+| [`temporal_persistencia_yoy.parquet`](#14-temporal_persistencia_yoyparquet) | S01 – 1.2 EDA (temporal) | `data/staging/S01/` | 6 | 7 |
 
 ---
 
@@ -280,9 +280,11 @@ Campos agregados (comunes a todos los resúmenes bivariados 5–9):
 | `n_trabajadores` / `clase_riesgo` / `sector` | — | Atributos de empresa (de staging) |
 | `frecuencia_x100` | `numérico` | Siniestros / 100 trabajadores en el año |
 | `tiene_siniestro` | `entero` | Flag 1 si hubo al menos un siniestro |
-| `alta_siniestralidad` | `entero` | 1 si `n_siniestros` > media del año (definición operativa CRISP-DM) |
+| `alta_siniestralidad` | `entero` | Target operativo: 1 si la empresa está en el **Top 10%** de `n_siniestros` del año (rank descendente; ~500 positivas / año) |
+| `umbral_n_siniestros_top10` | `entero` | Mínimo `n_siniestros` observado entre las positivas del año (corte inclusivo del Top 10%) |
 
 > **Uso recomendado:** panel para validación temporal (entrenar hasta T-1, validar en T), features de lag y target anual.
+> **Definición alineada a CRISP-DM:** Top 10% por conteo de siniestros dentro de cada año (no “por encima de la media”).
 > **Riesgo de leakage:** no usar `n_siniestros` / costos del año T como features para predecir el target del mismo año T.
 
 ---
@@ -298,8 +300,11 @@ Campos agregados (comunes a todos los resúmenes bivariados 5–9):
 | `anio_t` / `anio_t1` | `entero` | Par de años consecutivos |
 | `corr_n_siniestros` | `numérico` | Correlación Pearson del conteo empresa entre t y t+1 |
 | `corr_frecuencia_x100` | `numérico` | Correlación Pearson de la tasa relativa entre t y t+1 |
+| `n_alta_t` | `entero` | Empresas en Top 10% en el año t |
+| `n_alta_retenidas` | `entero` | De esas, cuántas siguen en Top 10% en t+1 |
+| `tasa_retencion_top10` | `numérico` | `n_alta_retenidas / n_alta_t` |
 
-> **Uso:** evidencia de que el conteo absoluto es un predictor lag fuerte (~0.70); la tasa relativa persiste menos (~0.18).
+> **Uso:** evidencia de que el conteo absoluto es un predictor lag fuerte (~0.70); la tasa relativa persiste menos (~0.18). La retención del label Top 10% cuantifica estabilidad del target binario.
 
 ---
 

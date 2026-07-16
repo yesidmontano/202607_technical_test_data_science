@@ -53,7 +53,7 @@ Cuantifico los datos faltantes y qué fenómeno los explica, analizo los outlier
 
 - **Variable objetivo (y)**: Variable binaria definida como 1 si la empresa presentará alta siniestralidad en el próximo año, y 0 en caso contrario.
 
-- **Definición operativa de 'Alta siniestralidad'**: Empresas que presentan cantidad de número de siniestros superior al promedio de ese año. Adicionalmente, dependiendo de la distribución encontrada en el EDA, también se puede considerar el top 10% de las empresas con mayor número de siniestros.
+- **Definición operativa de 'Alta siniestralidad'**: Top 10% de las empresas con mayor número de siniestros.
 
 - **Esquema de validación**: Se utilizará un esquema de validación temporal, donde se dividirán los datos en entrenamiento y prueba basándose en la fecha. Específicamente, se entrenará el modelo con los datos hasta el año T-1 y se validará con los datos del año T. Esto permitirá evaluar el rendimiento del modelo en datos no vistos y simular un escenario de producción real. Adicionalmente, se utilizará una validación cruzada temporal para obtener una estimación más robusta del rendimiento del modelo.
 
@@ -69,7 +69,7 @@ Cuantifico los datos faltantes y qué fenómeno los explica, analizo los outlier
         - *Reducción de costos*: La reducción de costos se medirá como el costo evitado en seguros por la reducción en la tasa de siniestros en las empresas que presentarán alta siniestralidad, debido a la priorización en la intervención. 
         - *Porcentaje de mejora*: Calcular el porcentaje de mejora en la tasa de siniestros en comparación con la línea base.
 
-- **Baseline (Línea base)**: La línea base para este caso será un modelo que predice que todas las empresas presentarán alta siniestralidad, es decir, un modelo que predice 1 para todas las empresas.
+- **Baseline (Línea base)**: La línea base para este caso será un modelo que predice el mismo top 10% de empresas del año anterior.
 
 - **Riesgos de fuga de información (Data Leakage)**: El principal riesgo de fuga de información es que se utilicen los datos de prueba (del futuro) de los siniestros en el entrenamiento del modelo.
 

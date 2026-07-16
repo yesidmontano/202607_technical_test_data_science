@@ -339,22 +339,25 @@ Realizar un análisis exploratorio completo: distribuciones univariadas de la fr
 - Índices de costo y severidad oscilan más que el volumen (~±8–9% de amplitud), pero con 7 años y colas pesadas esta amplitud es **ruidosa**, no un ciclo operativo claro.
 - No se recomienda priorizar features estacionales de mes para el modelo de clasificación empresa-año.
 
-**C3 – Persistencia empresa–año**
+**C3 – Persistencia empresa–año (conteo y target Top 10%)**
 ![Persistencia](imgs/03_C3_persistencia_empresa_anio.png)
 
-| Par | corr `n_siniestros` | corr `frecuencia_x100` |
-|---|---|---|
-| 2018→2019 | 0.72 | 0.16 |
-| 2019→2020 | 0.73 | 0.19 |
-| 2020→2021 | 0.68 | 0.22 |
-| 2021→2022 | 0.65 | 0.16 |
-| 2022→2023 | 0.68 | 0.23 |
-| 2023→2024 | 0.74 | 0.15 |
-| **Media** | **0.70** | **0.18** |
+> **Target operativo (CRISP-DM):** `alta_siniestralidad` = Top 10% de empresas por `n_siniestros` dentro de cada año (~500 / 5 000). Umbral observado: **≥ 3 siniestros** en todos los años 2018–2024.
+
+| Par | corr `n_siniestros` | corr `frecuencia_x100` | Retención Top 10% |
+|---|---|---|---|
+| 2018→2019 | 0.72 | 0.16 | 50.2% |
+| 2019→2020 | 0.73 | 0.19 | 51.2% |
+| 2020→2021 | 0.68 | 0.22 | 50.6% |
+| 2021→2022 | 0.65 | 0.16 | 47.0% |
+| 2022→2023 | 0.68 | 0.23 | 48.4% |
+| 2023→2024 | 0.74 | 0.15 | 53.2% |
+| **Media** | **0.70** | **0.18** | **50.1%** |
 
 - El **conteo absoluto del año anterior es un predictor lag fuerte** (corr ≈ 0.70).
 - La **tasa relativa persiste poco** (corr ≈ 0.18) — coherente con el efecto de exposición/denominador visto en el bivariado.
-- ~24–27% de empresas caen en `alta_siniestralidad` cada año (n > media del año), estable en el tiempo.
+- Del Top 10% en t, **~50% permanece en el Top 10% en t+1** → el target binario es parcialmente estable; hay rotación material (~50%) que el modelo debe capturar más allá de un lag naive.
+- Clase positiva fija en **10%** → métricas prioritarias Recall / Precision / F1 en el decil superior (no accuracy).
 
 ---
 
@@ -367,7 +370,8 @@ Realizar un análisis exploratorio completo: distribuciones univariadas de la fr
 | Mix AT/EL estable (~86%/14%) | No modelar cambio de composición; sí estratificar severidad AT vs EL (univariado) |
 | Persistencia `n_siniestros` t→t+1 ≈ 0.70 | Incluir **lags** del conteo (y posiblemente costo) como features baseline fuertes |
 | Persistencia de tasa relativa ≈ 0.18 | Preferir lags de conteo + offset de exposición sobre lags de tasa sola |
-| Panel `temporal_empresa_anio` (35k filas) | Dataset listo para CV temporal y target `alta_siniestralidad` sin leakage |
+| Target = Top 10%; retención label ≈ 50% | Baseline lag útil pero insuficiente; evaluar lift vs “repetir Top 10% del año anterior” |
+| Panel `temporal_empresa_anio` (35k filas) | Dataset listo para CV temporal y target `alta_siniestralidad` (Top 10%) sin leakage |
 
 ---
 

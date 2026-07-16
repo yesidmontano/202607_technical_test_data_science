@@ -274,7 +274,7 @@ import sura_brand as sb
 
 ### Variable objetivo
 - **Clasificación binaria**: 1 si la empresa tendrá alta siniestralidad el próximo año, 0 si no.
-- **Definición operativa de "alta siniestralidad"**: número de siniestros superior al promedio del año (revisar también top 10% según distribución del EDA).
+- **Definición operativa de "alta siniestralidad"**: Top 10% de las empresas con mayor número de siniestros en el año (definición fijada en CRISP-DM / EDA).
 - **Unidad de análisis**: `id_empresa`.
 
 ### Esquema de validación temporal

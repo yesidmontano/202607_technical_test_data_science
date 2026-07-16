@@ -2,7 +2,6 @@
 
 **ID:** `1.2.4`
 **Tarea:** Análisis Temporal y de Estacionalidad – S01 / 1.2 EDA
-**Fecha:** 2026-07-19
 **Sección del repositorio:** `sections/S01-Metodologia_EDA_Analisis/1_2_EDA/code/03-analisis_temporal/`
 
 ---
@@ -35,8 +34,12 @@ Se utilizó IA asistida para acelerar la escritura del script de análisis tempo
 - Reutilizar `siniestros_staging` / `empresas_staging` (no releer raw).
 - Prefijo de figuras `03_*`.
 - Panel empresa×año con producto cartesiano y ceros (análogo al panel completo del bivariado).
-- Target operativo `alta_siniestralidad` = n > media del año (definición CRISP-DM).
+- Target operativo `alta_siniestralidad` = **Top 10%** por `n_siniestros` dentro de cada año (definición CRISP-DM ajustada por el usuario; reemplaza “> media”).
 - Análisis descriptivo; sin descomposición statsmodels (no instalado) ni pruebas formales (reservadas a 1.3).
+
+### Ajuste posterior (misma sesión / follow-up)
+- Regenerado staging y figura `03_C3` para reflejar Top 10% + tasa de retención del label (~50%).
+- Actualizados `docs/staging_data.md`, `Insights_EDA.md` (1.2.4) y `.agents/AGENTS.md`.
 
 ---
 
@@ -83,7 +86,8 @@ Se utilizó IA asistida para acelerar la escritura del script de análisis tempo
 | Mix AT medio | ~86% |
 | Persistencia media `n_siniestros` t→t+1 | 0.70 |
 | Persistencia media `frecuencia_x100` t→t+1 | 0.18 |
-| % empresas alta siniestralidad / año | 23–27% |
+| Target `alta_siniestralidad` | Top 10% (~500 empresas/año; umbral n ≥ 3) |
+| Retención media del label Top 10% t→t+1 | 50.1% |
 
 ---
 

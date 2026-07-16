@@ -244,32 +244,53 @@ temporal_empresa_anio["frecuencia_x100"] = (
 temporal_empresa_anio["tiene_siniestro"] = (
     temporal_empresa_anio["n_siniestros"] > 0
 ).astype(int)
+# Operational target (CRISP-DM): Top 10% by claim count within each year.
+# rank(method='first') yields exactly ~10% positives even with ties.
 temporal_empresa_anio["alta_siniestralidad"] = (
     temporal_empresa_anio.groupby("anio")["n_siniestros"]
-    .transform(lambda s: (s > s.mean()).astype(int))
+    .transform(
+        lambda s: (
+            s.rank(method="first", ascending=False) <= max(1, int(round(len(s) * 0.10)))
+        ).astype(int)
+    )
+)
+# Threshold = minimum n_siniestros among positives that year (inclusive cutoff)
+umbral_por_anio = (
+    temporal_empresa_anio.loc[
+        temporal_empresa_anio["alta_siniestralidad"] == 1
+    ]
+    .groupby("anio")["n_siniestros"]
+    .min()
+    .rename("umbral_n_siniestros_top10")
+)
+temporal_empresa_anio = temporal_empresa_anio.merge(
+    umbral_por_anio.reset_index(), on="anio", how="left"
 )
 
-# Persistence correlations (company-level n_siniestros year t vs t+1)
+# Persistence: correlations + Top-10% label retention (t → t+1)
 piv_n = temporal_empresa_anio.pivot(
     index="id_empresa", columns="anio", values="n_siniestros"
 ).fillna(0)
+piv_freq = temporal_empresa_anio.pivot(
+    index="id_empresa", columns="anio", values="frecuencia_x100"
+).fillna(0)
+piv_alta = temporal_empresa_anio.pivot(
+    index="id_empresa", columns="anio", values="alta_siniestralidad"
+).fillna(0)
+
 persist_rows = []
 for y1, y2 in zip(anios[:-1], anios[1:]):
+    alta_t = piv_alta[y1] == 1
+    n_alta_t = int(alta_t.sum())
+    retenidas = int(((piv_alta[y1] == 1) & (piv_alta[y2] == 1)).sum())
     persist_rows.append({
         "anio_t": y1,
         "anio_t1": y2,
         "corr_n_siniestros": piv_n[y1].corr(piv_n[y2]),
-        "corr_frecuencia_x100": (
-            temporal_empresa_anio.pivot(
-                index="id_empresa", columns="anio", values="frecuencia_x100"
-            )
-            .fillna(0)[y1]
-            .corr(
-                temporal_empresa_anio.pivot(
-                    index="id_empresa", columns="anio", values="frecuencia_x100"
-                ).fillna(0)[y2]
-            )
-        ),
+        "corr_frecuencia_x100": piv_freq[y1].corr(piv_freq[y2]),
+        "n_alta_t": n_alta_t,
+        "n_alta_retenidas": retenidas,
+        "tasa_retencion_top10": retenidas / n_alta_t if n_alta_t else np.nan,
     })
 persistencia = pd.DataFrame(persist_rows)
 
@@ -550,34 +571,57 @@ ax2.tick_params(axis="x", rotation=45)
 sb.add_sura_footer(fig, text="S01 – EDA | 1.2 Análisis Temporal | Estacionalidad costo/sev")
 _save_fig(fig, "03_C2_estacionalidad_costo_severidad.png")
 
-# C3. Company-year persistence
-fig, ax = sb.create_report_figure(
-    title="Persistencia Empresa–Año de la Siniestralidad",
-    subtitle="Correlación del conteo de siniestros entre años consecutivos (t vs t+1)",
-    figsize=(12, 6),
+# C3. Company-year persistence (counts + Top-10% label retention)
+fig, axes = sb.create_dashboard(
+    1, 2,
+    title="Persistencia Empresa–Año (conteo y target Top 10%)",
+    subtitle="Correlación del conteo y tasa de retención del label alta_siniestralidad (t → t+1)",
 )
+ax1, ax2 = axes[0], axes[1]
 pair_labels = [f"{int(r.anio_t)}→{int(r.anio_t1)}" for _, r in persistencia.iterrows()]
-ax.bar(
+
+ax1.bar(
     pair_labels, persistencia["corr_n_siniestros"],
     color=sb.AZUL_SURA.hex, alpha=0.88, label="n_siniestros",
 )
-ax.plot(
+ax1.plot(
     pair_labels, persistencia["corr_frecuencia_x100"],
     color=sb.AQUA_SURA.hex, marker="D", linewidth=2, markersize=7,
     label="frecuencia_x100",
 )
 mean_corr = persistencia["corr_n_siniestros"].mean()
-ax.axhline(
+ax1.axhline(
     mean_corr, color="#C0392B", linestyle="--", linewidth=1.5,
     label=f"Media n = {mean_corr:.2f}",
 )
-ax.set_ylabel("Correlación de Pearson")
-ax.set_xlabel("Par de años")
-ax.set_ylim(0, 1)
-ax.legend(frameon=True, loc="lower right")
+ax1.set_title("Correlación de conteo / tasa")
+ax1.set_ylabel("Correlación de Pearson")
+ax1.set_xlabel("Par de años")
+ax1.set_ylim(0, 1)
+ax1.tick_params(axis="x", rotation=30)
+ax1.legend(frameon=True, loc="lower right", fontsize=8)
 for i, v in enumerate(persistencia["corr_n_siniestros"]):
-    ax.text(i, v + 0.02, f"{v:.2f}", ha="center", va="bottom", fontsize=9)
-sb.add_sura_footer(fig, text="S01 – EDA | 1.2 Análisis Temporal | Persistencia YoY")
+    ax1.text(i, v + 0.02, f"{v:.2f}", ha="center", va="bottom", fontsize=8)
+
+ax2.bar(
+    pair_labels, persistencia["tasa_retencion_top10"] * 100,
+    color=sb.AQUA_SURA.hex, alpha=0.88,
+)
+mean_ret = persistencia["tasa_retencion_top10"].mean() * 100
+ax2.axhline(
+    mean_ret, color="#C0392B", linestyle="--", linewidth=1.5,
+    label=f"Media = {mean_ret:.1f}%",
+)
+ax2.set_title("Retención del Top 10% (label)")
+ax2.set_ylabel("% del Top 10% en t que sigue en t+1")
+ax2.set_xlabel("Par de años")
+ax2.set_ylim(0, 100)
+ax2.tick_params(axis="x", rotation=30)
+ax2.legend(frameon=True, loc="lower right", fontsize=8)
+for i, v in enumerate(persistencia["tasa_retencion_top10"] * 100):
+    ax2.text(i, v + 1.5, f"{v:.1f}%", ha="center", va="bottom", fontsize=8)
+
+sb.add_sura_footer(fig, text="S01 – EDA | 1.2 Análisis Temporal | Persistencia YoY / Top 10%")
 _save_fig(fig, "03_C3_persistencia_empresa_anio.png")
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -630,15 +674,20 @@ print(
 
 print("\n--- Persistencia empresa-año ---")
 print(persistencia.to_string(index=False))
-print(f"Media corr n_siniestros  : {persistencia['corr_n_siniestros'].mean():.3f}")
+print(f"Media corr n_siniestros     : {persistencia['corr_n_siniestros'].mean():.3f}")
 print(
-    f"Media corr frecuencia_x100: "
+    f"Media corr frecuencia_x100  : "
     f"{persistencia['corr_frecuencia_x100'].mean():.3f}"
+)
+print(
+    f"Media retención Top 10%     : "
+    f"{persistencia['tasa_retencion_top10'].mean() * 100:.1f}%"
 )
 
 pct_alta = temporal_empresa_anio.groupby("anio")["alta_siniestralidad"].mean() * 100
-print("\n--- % empresas con alta siniestralidad (n > media del año) ---")
-print(pct_alta.round(1).to_string())
+umbral = temporal_empresa_anio.groupby("anio")["umbral_n_siniestros_top10"].first()
+print("\n--- Alta siniestralidad = Top 10% por n_siniestros (por año) ---")
+print(pd.DataFrame({"pct_positiva": pct_alta.round(1), "umbral_n": umbral}).to_string())
 
 print("\n✅  Análisis temporal y de estacionalidad completado.")
 print(f"   Figuras en: {RESULTS_IMGS}")
