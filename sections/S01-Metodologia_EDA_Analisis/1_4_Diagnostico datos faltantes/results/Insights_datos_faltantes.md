@@ -393,3 +393,125 @@ Escenario (c) añade el/los flag(s) correspondientes (`miss_prima`+`miss_geo`, `
 4. En severidad/costo el impacto predictivo de imputar vs descartar es **marginal** en holdout; el valor de imputar es conservar potencia y evitar sesgo de selección en la cola (gravedad alta).
 
 Staging: `faltantes_impacto_coefs`, `_metricas`, `_resumen` en `data/staging/S01/`.
+
+---
+
+## Síntesis Consolidada de Hallazgos – S01-1.4 Diagnóstico de Datos Faltantes
+
+> Esta sección integra los resultados de las **cuatro subsecciones** (cuantificación, mecanismos, estrategia de imputación e impacto sobre el modelado), extrae los condicionantes que afectan el pipeline S03–S05 y distingue las decisiones adoptadas, las descartadas y las que permanecen sujetas a sensibilidad.
+
+---
+
+### Panorama Global de los Faltantes
+
+| Dataset | Completitud celda | Filas con ≥1 nulo | Variables afectadas | Mecanismo dominante |
+|---|---:|---:|---:|---|
+| `empresas.csv` | **97.95%** | 15.50% | 3 de 10 | MAR (`prima_anual`) + MCAR (geo) |
+| `siniestros.csv` | **98.38%** | 13.90% | 3 de 9 | MAR (`dias`, `costo`) + MCAR (`parte_cuerpo`) |
+
+A nivel celda, ambos datasets son altamente completos (>97%). A nivel fila, ~1 de cada 6–7 registros tiene al menos un nulo, lo que hace inviable la eliminación ingenua de filas.
+
+---
+
+### Veredictos por Variable (mecanismo → estrategia → impacto)
+
+| Variable | % falt. | Mecanismo (1.4.2) | Estrategia adoptada (1.4.3) | Impacto modelado (1.4.4) |
+|---|---:|---|---|---|
+| `ciudad` / `departamento` | 4.48% | **MCAR** | Categoría `desconocido` | Despreciable (geo ya descartada como predictor — P11) |
+| `parte_cuerpo` | 4.01% | **MCAR** | Categoría `desconocido` | Despreciable (no es feature de S03) |
+| `prima_anual` | 11.58% | **MAR** (antigüedad + tamaño) | OLS estocástica log; R²=0.89 | Listwise sesga ~5.3% coefs `clase_riesgo`; infla EE ×1.5 |
+| `dias_incapacidad` | 4.15% | **MAR** (tipo EL 4× AT) | OLS estocástica log por tipo; R²=0.975 | Marginal en holdout (RMSE log ≈ estable); protege representatividad EL |
+| `costo_asistencial` | 6.42% | **MAR + sospecha MNAR** (gravedad + prestación) | OLS estocástica log; R²=0.411 | Marginal en holdout; imputados concentrados en gravedad alta (esperado) |
+
+---
+
+### Lo que el Diagnóstico Confirma (Decisiones Adoptadas)
+
+#### 1. No usar listwise deletion como default
+
+El mayor costo de eliminar filas incompletas recae sobre el **modelo de frecuencia**: se pierden 628 empresas de entrenamiento (15.7%), los coeficientes de `clase_riesgo` se sesgan ~5.3% a la baja y los errores estándar aumentan ×1.5. Para severidad/costo el impacto en holdout es marginal, pero persiste el sesgo de selección en la cola: los faltantes de `costo_asistencial` se concentran en `gravedad = grave/mortal` — exactamente el subconjunto de mayor interés actuarial.
+
+**Decisión adoptada:** usar los datasets imputados (`empresas_imputadas`, `siniestros_imputados`) como insumo para S03/S05 en lugar de los staging originales.
+
+#### 2. Imputación MAR condicional como estrategia estándar
+
+Las tres variables numéricas con faltantes responden a mecanismo MAR identificado. Las covariables condicionantes son observables y forman parte del feature set ya planificado:
+- `prima_anual` ← antigüedad + tamaño + sector (R²=0.89)
+- `dias_incapacidad` ← tipo + gravedad + log(prestación) (R²=0.975)
+- `costo_asistencial` ← tipo + gravedad + log(prestación) + log(días) (R²=0.41)
+
+Los modelos de imputación son reproducibles y están documentados en `faltantes_imputacion_estrategia.parquet`.
+
+#### 3. Variables geográficas: nivel `desconocido` es suficiente
+
+`ciudad` y `departamento` son MCAR (ningún test rechaza tras Holm). La asignación de un nivel explícito `desconocido` es estadísticamente defendible y no introduce sesgo. Además, la geografía ya fue descartada como predictor principal en P11 (η²=0.002). El 4.5% de nulos no cambia esta decisión.
+
+#### 4. Flags de missingness: conservar solo para auditoría
+
+Los indicadores `miss_prima`, `miss_geo`, `miss_dias`, `miss_costo_asist` generados en 1.4.3 **no aportan señal predictiva residual** tras la imputación MAR (p ≈ 0.78–0.91 en el escenario c; β≈0.005 para `miss_costo_asist`). Se conservan en los datasets imputados exclusivamente para trazabilidad y análisis de sensibilidad, **no** como features obligatorios en S03.
+
+---
+
+### Lo que el Diagnóstico Descarta
+
+| Elemento | Razón |
+|---|---|
+| **Listwise deletion** como default | Pierde 15.7% de empresas; sesga clase_riesgo ~5%; infla EE ×1.5 |
+| **Zero-imputation o media global** para `prima_anual` | Empresas faltantes son más nuevas/pequeñas (MAR); la media global ignora esta heterogeneidad |
+| **Flag `miss_costo_asist` como predictor** en S03 | β≈0.005, p=0.82; no hay señal MNAR detectable sobre el outcome de modelado |
+| **`parte_cuerpo`** como variable de interés prioritaria | MCAR, 4.01% faltante, no alineada con el feature set de frecuencia/severidad |
+| **Sentinels tipo "NA"/"-"** como fuente adicional | No existen; todos los nulos son NaN explícitos del CSV |
+
+---
+
+### Lo que Permanece Condicionado o Sujeto a Sensibilidad
+
+| Elemento | Estado | Condición de revisión |
+|---|---|---|
+| `costo_asistencial` MNAR | Sospecha no confirmada (R²=0.41, flag p=0.82) | Revisitar con datos reales si en S03 los residuales del modelo de costo muestran patrón sistemático en `miss_costo_asist=1` |
+| Escenario (c) imputado + flags | Inocuo pero disponible | Activar solo para análisis de robustez o auditoría regulatoria |
+| `prima_anual` en modelos de S03 | Feature opcional (VIF < 1.7, pero 11.6% imputado) | Evaluar contribución marginal vs riesgo de amplificar error de imputación |
+
+---
+
+### Mapa de Impacto → Pipeline S03–S05
+
+```
+Diagnóstico S01-1.4
+      │
+      ├─► S03 Reto de negocio (frecuencia + severidad)
+      │     ├─ Usar empresas_imputadas (no staging original) como fuente de train
+      │     ├─ prima_anual ya imputada → disponible como feature opcional
+      │     ├─ Modelos de severidad sobre siniestros_imputados (dias, costo)
+      │     └─ NO añadir miss_* como features (señal nula en holdout)
+      │
+      ├─► S04 Inferencia causal
+      │     └─ Verificar que el grupo de tratamiento/control no esté sesgado
+      │        por la distribución de faltantes (concentración en EL / gravedad alta)
+      │
+      └─► S05 Sistema recomendador
+            └─ empresas_imputadas habilita cobertura completa del portafolio
+               (no se excluyen las 775 empresas que tenían al menos un nulo)
+```
+
+---
+
+### Datasets Generados (Staging S01/1.4)
+
+| Archivo en `data/staging/S01/` | Contenido | Uso posterior |
+|---|---|---|
+| `empresas_imputadas.parquet` | 5 000 × 20, 0 NaN, flags `miss_*` | Fuente de train para S03 / S05 |
+| `siniestros_imputados.parquet` | 39 894 × 21, 0 NaN, flags `miss_*` | Severidad y costo en S03 |
+| `faltantes_resumen_datasets.parquet` | Completitud global | Referencia documental |
+| `faltantes_resumen_columnas.parquet` | % por columna | Referencia documental |
+| `faltantes_patrones.parquet` | Patrones de co-ocurrencia | Referencia documental |
+| `faltantes_por_estrato.parquet` | Tasas estratificadas | Referencia documental |
+| `faltantes_mecanismos_tests.parquet` | Tests χ² / MWU / logit | Auditoría de mecanismos |
+| `faltantes_imputacion_estrategia.parquet` | Catálogo estrategias | Reproducibilidad |
+| `faltantes_imputacion_diagnostico.parquet` | Stats antes/después | Validación imputación |
+| `faltantes_impacto_coefs.parquet` | Coeficientes escenarios a/b/c | Análisis de sesgo |
+| `faltantes_impacto_metricas.parquet` | RMSE holdout escenarios a/b/c | Evaluación predictiva |
+
+---
+
+*Análisis realizado con `sura_brand` · Sección S01-1.4 Diagnóstico de Datos Faltantes · Prueba Técnica Grupo SURA.*
