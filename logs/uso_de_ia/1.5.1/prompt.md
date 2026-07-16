@@ -1,4 +1,4 @@
-Simular una predicción de un modelo de clasificación binaria, que precide 1 (la empresa va estar en el top 10% de empresas con mayor siniestralidad) y 0 (no lo estará), en esta simulación para el último año de datos, calularemos el baseline, donde la predicción es equivalente a las mismas empresas que estuvieron en el top 10% del año previo. Con base a esa predicción baseline, calcula las métricas de Área bajo la curva ROC (AUC-ROC), Sensibilidad (Recall), Precisión, y F1-Score.
+Simular una predicción de un modelo de clasificación binaria, que precide 1 (la empresa va estar en el top 10% de empresas con mayor siniestralidad, ('alta_siniestralidad'=1)) y 0 (no lo estará, ('alta_siniestralidad'=0)), en esta simulación para el último año de datos, calularemos el baseline, donde la predicción es equivalente a las mismas empresas que estuvieron en el top 10% del año previo. Con base a esa predicción baseline, calcula las métricas de Área bajo la curva ROC (AUC-ROC), Sensibilidad (Recall), Precisión, y F1-Score.
 Incluir código en (sections/S01-Metodologia_EDA_Analisis/1_5_Definición de baseline/code/01_cuantificacion_baseline).
 
 Transversal: 

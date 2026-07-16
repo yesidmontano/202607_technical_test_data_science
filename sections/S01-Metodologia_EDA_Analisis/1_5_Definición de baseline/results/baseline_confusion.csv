@@ -1,0 +1,5 @@
+anio_prev,anio_eval,celda,n,descripcion
+2023,2024,tp,266,Verdaderos positivos: Top10% en T−1 y en T
+2023,2024,fp,234,Falsos positivos: Top10% en T−1 pero no en T
+2023,2024,fn,234,Falsos negativos: no Top10% en T−1 pero sí en T
+2023,2024,tn,4266,Verdaderos negativos: fuera del Top10% en T−1 y en T

@@ -59,6 +59,9 @@
 | [`faltantes_impacto_coefs.parquet`](#46-faltantes_impacto_coefsparquet) | S01 – 1.4 Datos faltantes (impacto) | `data/staging/S01/` | 55 | 12 |
 | [`faltantes_impacto_metricas.parquet`](#47-faltantes_impacto_metricasparquet) | S01 – 1.4 Datos faltantes (impacto) | `data/staging/S01/` | 9 | 11 |
 | [`faltantes_impacto_resumen.parquet`](#48-faltantes_impacto_resumenparquet) | S01 – 1.4 Datos faltantes (impacto) | `data/staging/S01/` | 3 | 16 |
+| [`baseline_predicciones.parquet`](#49-baseline_prediccionesparquet) | S01 – 1.5 Baseline (cuantificación) | `data/staging/S01/` | 5 000 | 12 |
+| [`baseline_metricas.parquet`](#50-baseline_metricasparquet) | S01 – 1.5 Baseline (cuantificación) | `data/staging/S01/` | 6 | 17 |
+| [`baseline_confusion.parquet`](#51-baseline_confusionparquet) | S01 – 1.5 Baseline (cuantificación) | `data/staging/S01/` | 4 | 5 |
 
 ---
 
@@ -997,18 +1000,82 @@ Escenarios: `a_listwise`, `b_imputado`, `c_imputado_flag`.
 
 ---
 
+## 49. `baseline_predicciones.parquet`
+
+**Ruta:** `data/staging/S01/baseline_predicciones.parquet`
+**Script origen:** `sections/S01-Metodologia_EDA_Analisis/1_5_Definición de baseline/code/01-cuantificacion_baseline/cuantificacion_baseline.py`
+**Granularidad:** Una fila por empresa en el año de evaluación principal (5 000; 2024).
+**Base:** Reutiliza `temporal_empresa_anio` (labels `alta_siniestralidad` de T−1 y T). No regenera el panel.
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `id_empresa` | `texto` | Identificador de empresa |
+| `anio_prev` / `anio_eval` | `entero` | Par predictor → evaluación (2023 → 2024) |
+| `y_true` | `entero` | Target real: `alta_siniestralidad` en `anio_eval` |
+| `y_pred` | `entero` | Predicción baseline: `alta_siniestralidad` en `anio_prev` |
+| `y_score` | `numérico` | Score usado para AUC (= `y_pred`, etiqueta dura 0/1) |
+| `n_siniestros_prev` / `n_siniestros_eval` | `entero` | Conteos en T−1 y T (auditoría) |
+| `clase_riesgo` / `sector` | — | Atributos de empresa en el año de evaluación |
+| `regla` | `texto` | `top10_anio_previo` |
+| `acierto` | `entero` | 1 si `y_true == y_pred` |
+
+> **Regla baseline (CRISP-DM):** ŷᵢ(T) = 1 sii la empresa i estuvo en el Top 10% de `n_siniestros` en T−1.
+> **No duplica** `panel_empresa_lag_yoy` (panel multi-año para hipótesis); este dataset es el **corte de evaluación** del baseline con score/predicción explícitos.
+
+---
+
+## 50. `baseline_metricas.parquet`
+
+**Ruta:** `data/staging/S01/baseline_metricas.parquet`
+**Script origen:** `01-cuantificacion_baseline/cuantificacion_baseline.py`
+**Granularidad:** Una fila por par YoY (6 pares: 2018→2019 … 2023→2024).
+**Base:** Misma regla baseline aplicada a cada par consecutivo del panel.
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `anio_prev` / `anio_eval` | `entero` | Par de años |
+| `es_evaluacion_principal` | `entero` | 1 para el último año (2024) |
+| `regla` | `texto` | `top10_anio_previo` |
+| `n` / `n_positivos_true` / `n_positivos_pred` | `entero` | Tamaños (5 000 / 500 / 500) |
+| `tp` / `fp` / `fn` / `tn` | `entero` | Matriz de confusión |
+| `auc_roc` | `numérico` | Área bajo la curva ROC (score = etiqueta T−1) |
+| `recall` | `numérico` | Sensibilidad = TP / (TP+FN) |
+| `precision` | `numérico` | Precisión = TP / (TP+FP) |
+| `f1` | `numérico` | Media armónica de precisión y recall |
+| `specificity` / `accuracy` | `numérico` | Complementarias (contexto) |
+
+> **Uso:** umbral mínimo que un modelo más complejo debe superar en validación temporal (S03).
+> **Nota:** con prevalencia simétrica (exactamente 10% predicho y 10% real), Recall = Precisión = F1 = tasa de retención del Top 10%.
+
+---
+
+## 51. `baseline_confusion.parquet`
+
+**Ruta:** `data/staging/S01/baseline_confusion.parquet`
+**Script origen:** `01-cuantificacion_baseline/cuantificacion_baseline.py`
+**Granularidad:** Una fila por celda de la matriz de confusión del año de evaluación (4).
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `anio_prev` / `anio_eval` | `entero` | Par de evaluación principal |
+| `celda` | `texto` | `tp` / `fp` / `fn` / `tn` |
+| `n` | `entero` | Conteo de empresas en la celda |
+| `descripcion` | `texto` | Interpretación de negocio |
+
+---
+
 ## Uso en secciones futuras
 
 | Sección | Dataset requerido | Propósito |
 |---|---|---|
 | S01 – 1.3 Hipótesis | `empresa_siniestralidad_completa`, `temporal_empresa_anio`, `temporal_persistencia_yoy`, `panel_empresa_lag_yoy`, `temporal_mensual`, `estacionalidad_mes` | Pruebas formales de diferencia / asociación / GOF |
 | S01 – 1.4 Datos faltantes | `faltantes_*`, `empresas_imputadas`, `siniestros_imputados` | Diagnóstico, mecanismo, imputación y evaluación |
-| S01 – 1.5 Baseline | `empresa_siniestralidad_completa`, `temporal_empresa_anio`, `panel_empresa_lag_yoy`, `empresas_imputadas` | Definición del predictor baseline y target anual |
+| S01 – 1.5 Baseline | `temporal_empresa_anio`, `baseline_predicciones`, `baseline_metricas`, `baseline_confusion` | Definición y cuantificación del predictor baseline |
 | S02 – Modelación económica | `empresa_siniestralidad_completa`, `bivariado_resumen_sector`, `temporal_anual`, `predictores_recomendacion`, `hip_confirmaciones_resumen` | Caracterización sectorial; confirmar descarte de mes/geo |
-| S03 – Reto de negocio | `empresa_siniestralidad_tratada`, `siniestros_tratados` / `siniestros_imputados`, `temporal_empresa_anio`, `panel_empresa_lag_yoy`, `colinealidad_vif`, `predictores_recomendacion`, `hip_features_resumen`, `hip_p12_bondad_ajuste_costo`, `faltantes_impacto_resumen` | Feature set + familia de severidad; CV temporal con lag |
+| S03 – Reto de negocio | `empresa_siniestralidad_tratada`, `siniestros_tratados` / `siniestros_imputados`, `temporal_empresa_anio`, `panel_empresa_lag_yoy`, `colinealidad_vif`, `predictores_recomendacion`, `hip_features_resumen`, `hip_p12_bondad_ajuste_costo`, `faltantes_impacto_resumen`, `baseline_metricas` | Feature set + familia de severidad; CV temporal; superar baseline |
 | S04 – Inferencia causal | `empresa_siniestralidad_completa` / `_tratada`, `hip_p10_retencion_top10` | Grupo tratado / control; estabilidad del target |
 | S05 – Recomendador | `empresas_staging` / `empresas_imputadas`, `empresa_siniestralidad_completa`, `hip_p10_retencion_top10` | Perfil de empresa; priorizar recurrentes Top 10% |
 
 ---
 
-*Actualizado por: `S01 – 1.2 EDA` + `S01 – 1.3` + `S01 – 1.4.1/1.4.2/1.4.3/1.4.4` — Prueba Técnica Grupo SURA.*
+*Actualizado por: `S01 – 1.2 EDA` + `S01 – 1.3` + `S01 – 1.4` + `S01 – 1.5.1` — Prueba Técnica Grupo SURA.*
