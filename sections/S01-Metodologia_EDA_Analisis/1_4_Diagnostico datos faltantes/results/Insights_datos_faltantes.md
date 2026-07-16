@@ -117,10 +117,126 @@ Cuantificación condicionada (aún **sin** test formal de mecanismo):
 4. **`costo_asistencial` / `dias_incapacidad`**: outcomes o componentes de severidad; imputar o modelar con missingness informativa puede sesgar el resultado técnico — evaluar en 1.4.3–1.4.4 frente a descartar solo esas filas en modelos de severidad.
 5. Staging de resumen reutilizable: `faltantes_resumen_datasets`, `faltantes_resumen_columnas`, `faltantes_patrones`, `faltantes_por_estrato` en `data/staging/S01/`.
 
+
 ---
 
-### Pendiente (siguientes procesos de 1.4)
+## 1.4.2 – Mecanismos formales (MCAR / MAR / MNAR)
 
-- [ ] 1.4.2 – Hipótesis de mecanismo (MCAR / MAR / MNAR) con pruebas formales sobre las señales de la sección D.
+> Generado a partir de `02-mecanismos/mecanismos_faltantes.py`.  
+> Reutiliza `faltantes_por_estrato` y `faltantes_patrones` (1.4.1).  
+> Marco: H₀ = MCAR (R ⊥ X_obs). Rechazo → evidencia compatible con **MAR**. **MNAR** no es identificable solo con observados; se reporta sospecha cuando procede.
+
+![Veredictos por variable](imgs/02_mecanismos_veredictos.png)
+
+### A. Resumen de veredictos
+
+| Dataset | Variable | % falt. | Rechazos Holm (univar.) | LR p Holm (logit) | Mecanismo |
+|---|---|---:|---:|---:|---|
+| empresas | `ciudad` | 4.48% | 0 | 0.62 | **MCAR (no se rechaza)** |
+| empresas | `departamento` | 4.48% | 0 | 0.62 | **MCAR (no se rechaza)** (= ciudad) |
+| empresas | `prima_anual` | 11.58% | 3 | ~10⁻⁹⁴ | **MAR** |
+| siniestros | `parte_cuerpo` | 4.01% | 0 | 0.42 | **MCAR (no se rechaza)** |
+| siniestros | `dias_incapacidad` | 4.15% | 2 | ~10⁻¹⁴⁴ | **MAR** |
+| siniestros | `costo_asistencial` | 6.42% | 4 | ~10⁻³⁰² | **MAR con sospecha MNAR** |
+
+---
+
+### B. Señales §D — pruebas formales
+
+![Señales D con χ²](imgs/02_mecanismos_senales_D.png)
+
+| Señal (1.4.1 §D) | Prueba | p Holm | Efecto | ¿Rechaza MCAR? |
+|---|---|---:|---|---|
+| `dias_incapacidad` × `tipo` | χ² | **1.04×10⁻¹⁹⁸** | V=0.151 (pequeño) | **Sí → MAR** |
+| `costo_asistencial` × `gravedad` | χ² | **≈ 0** | V=0.215 (pequeño) | **Sí → MAR** |
+| `prima_anual` × `clase_riesgo` | χ² | 1.00 | V=0.023 (despreciable) | No (confirma “casi plano”) |
+| `ciudad` × `sector` | χ² | 1.00 | V=0.054 (despreciable) | No |
+
+![Señales empresas](imgs/02_mecanismos_empresas_senales.png)
+
+- La intuición de §D se **confirma** para días×tipo y costo×gravedad.
+- Para `prima_anual`, la clase de riesgo **no** explica el faltante; el MAR proviene de otras covariables (abajo).
+
+---
+
+### C. Mapa de evidencia y logit
+
+![Heatmap −log₁₀ p Holm](imgs/02_mecanismos_heatmap_pvalores.png)
+
+![Odds ratios logit](imgs/02_mecanismos_logit_OR.png)
+
+**Asociaciones univariadas que sobreviven Holm (principales):**
+
+| Variable R | Covariable | Prueba | p Holm | Efecto |
+|---|---|---|---:|---|
+| `dias_incapacidad` | `tipo` | χ² | 1.0×10⁻¹⁹⁸ | V=0.151 |
+| `dias_incapacidad` | `costo_prestacion_economica` | MWU | 1.2×10⁻⁶ | δ=0.07 |
+| `costo_asistencial` | `gravedad` | χ² | ≈0 | V=0.215 |
+| `costo_asistencial` | `costo_prestacion_economica` | MWU | 3.5×10⁻¹³⁸ | δ=0.30 |
+| `costo_asistencial` | `dias_incapacidad` | MWU | 3.0×10⁻¹³⁰ | δ=0.29 |
+| `prima_anual` | `antiguedad_meses` | MWU | 7.6×10⁻⁷⁶ | δ=−0.47 (**mediano**) |
+| `prima_anual` | `n_trabajadores` | MWU | 3.3×10⁻²⁵ | δ=−0.27 |
+| `prima_anual` | `sector` | χ² | 0.040 | V=0.075 |
+
+**Logit primario (LR vs nulo, Holm entre 5 modelos full):**
+
+| Variable | Modelo | n | LR p Holm | pseudo-R² McFadden |
+|---|---|---:|---:|---:|
+| `ciudad` | sector + clase + tamaño + antigüedad | 5 000 | 0.62 | 0.010 |
+| `prima_anual` | clase + sector + tamaño + antigüedad + miss_geo | 5 000 | **1.2×10⁻⁹⁴** | **0.143** |
+| `parte_cuerpo` | tipo + gravedad + log(prestación) | 39 894 | 0.42 | 0.000 |
+| `dias_incapacidad` | tipo + gravedad + log(prestación) | 39 894 | **3.4×10⁻¹⁴⁴** | 0.049 |
+| `costo_asistencial` | gravedad + tipo + log(prestación) | 39 894 | **5.1×10⁻³⁰²** | 0.074 |
+
+Supuestos: χ² con chequeo de frecuencias esperadas (Fisher 2×2 si aplica); para numéricas, Shapiro → Welch-t si normal, si no **Mann-Whitney U** (caso dominante por sesgo).
+
+---
+
+### D. Interpretación por variable
+
+**1. `ciudad` / `departamento` — MCAR (no se rechaza)**  
+- Indicadoras idénticas (bloque geográfico 1.4.1).  
+- Ningún test univariado rechaza tras Holm; logit full p=0.62.  
+- Implicación: imputación simple / categoría “desconocido” es defendible; ya descartadas como predictores principales (P11).
+
+**2. `prima_anual` — MAR**  
+- §D tenía razón: **no** depende de `clase_riesgo`.  
+- Sí depende de **antigüedad** (δ≈−0.47) y **tamaño**: las empresas con prima faltante tienden a ser más nuevas / de distinto porte.  
+- Logit full pseudo-R²≈0.14 (el más alto del set).  
+- Implicación: imputar condicionando por antigüedad, tamaño y sector (no media global).
+
+**3. `parte_cuerpo` — MCAR (no se rechaza)**  
+- Logit y univariados no rechazan MCAR.  
+- Implicación: moda / “desconocido” aceptable si se usa la variable.
+
+**4. `dias_incapacidad` — MAR**  
+- Dependencia dominante de `tipo` (EL 11.7% vs AT 2.9%).  
+- Implicación: imputación o modelo de severidad **estratificado por tipo**; listwise deletion sesgaría EL.
+
+**5. `costo_asistencial` — MAR con sospecha MNAR**  
+- MAR claro vía `gravedad` (V=0.22; mortal 35.8%).  
+- Además, `costo_prestacion_economica` (proxy de magnitud económica, siempre observado) predice el faltante (δ=0.30, p≈0) → el hueco no es solo “etiqueta administrativa”, sino que se alinea con la escala económica del evento.  
+- Eso **no prueba** MNAR, pero motiva sospecha: costos asistenciales no reportados en eventos caros/mortales (expediente abierto, liquidación pendiente).  
+- Implicación: imputación MAR condicionada por gravedad (+ prestación); en 1.4.3–1.4.4 añadir **análisis de sensibilidad** / flag de missing.
+
+---
+
+### E. Implicaciones para 1.4.3 (imputación)
+
+| Variable | Mecanismo | Estrategia sugerida |
+|---|---|---|
+| ciudad / departamento | MCAR | Categoría “desconocido” o imputación simple |
+| parte_cuerpo | MCAR | Moda / “desconocido” |
+| prima_anual | MAR | MICE / regresión con antigüedad, tamaño, sector |
+| dias_incapacidad | MAR | Imputación condicionada por `tipo` (y gravedad) |
+| costo_asistencial | MAR (+ sospecha MNAR) | Condicionar por gravedad + prestación; sensibilidad MNAR |
+
+Staging nuevo: `faltantes_mecanismos_tests`, `_logit`, `_logit_coefs`, `_veredicto` en `data/staging/S01/`.
+
+
+---
+
+### Pendiente
+
 - [ ] 1.4.3 – Estrategia de imputación (y aplicación).
 - [ ] 1.4.4 – Evaluación del efecto sobre el modelado vs descartar registros.

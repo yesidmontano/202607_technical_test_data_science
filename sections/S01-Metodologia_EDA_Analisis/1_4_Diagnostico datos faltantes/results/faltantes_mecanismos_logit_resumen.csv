@@ -1,0 +1,10 @@
+dataset,variable_faltante,modelo,formula,n,llf,llf_null,lr_stat,lr_df,lr_p,pseudo_r2_mcfadden,converged,es_modelo_primario,lr_p_ajustado_holm,rechaza_mcar_logit
+empresas,ciudad,geo_base,miss_geo ~ C(sector) + C(clase_riesgo),5000,-907.0303,-914.5483,15.036,18,0.6594956133397457,0.0082,True,False,,
+empresas,ciudad,geo_full,miss_geo ~ C(sector) + C(clase_riesgo) + log_n_trabajadores + antiguedad_meses,5000,-905.8226,-914.5483,17.4515,20,0.6234935512577667,0.0095,True,True,0.6234935512577667,False
+empresas,prima_anual,prima_base,miss_prima ~ C(clase_riesgo) + C(sector),5000,-1773.7913,-1792.362,37.1414,18,0.005022616753640067,0.0104,True,False,,
+empresas,prima_anual,prima_full,miss_prima ~ C(clase_riesgo) + C(sector) + log_n_trabajadores + antiguedad_meses + miss_geo,5000,-1536.2141,-1792.362,512.2958,21,3.972467464266228e-95,0.1429,True,True,1.1917402392798684e-94,True
+siniestros,dias_incapacidad,dias_tipo,miss_dias ~ C(tipo),39894,-6556.4671,-6893.3785,673.8228,1,1.4731709799284528e-148,0.0489,True,False,,
+siniestros,dias_incapacidad,dias_full,miss_dias ~ C(tipo) + C(gravedad) + log_costo_prestacion,39894,-6555.8124,-6893.3785,675.1323,4,8.44348740893514e-145,0.049,True,True,3.377394963574056e-144,True
+siniestros,costo_asistencial,costo_gravedad,miss_costo_asist ~ C(gravedad),39894,-8811.4132,-9511.7255,1400.6247,2,7.214618726811992e-305,0.0736,True,False,,
+siniestros,costo_asistencial,costo_full,miss_costo_asist ~ C(gravedad) + C(tipo) + log_costo_prestacion,39894,-8809.811,-9511.7255,1403.829,4,1.021654228759489e-302,0.0738,True,True,5.108271143797445e-302,True
+siniestros,parte_cuerpo,parte_full,miss_parte ~ C(tipo) + C(gravedad) + log_costo_prestacion,39894,-6713.6666,-6716.6079,5.8826,4,0.20808742294790458,0.0004,True,True,0.41617484589580916,False

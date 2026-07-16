@@ -48,6 +48,10 @@
 | [`faltantes_resumen_columnas.parquet`](#35-faltantes_resumen_columnasparquet) | S01 – 1.4 Datos faltantes (cuantificación) | `data/staging/S01/` | 19 | 9 |
 | [`faltantes_patrones.parquet`](#36-faltantes_patronesparquet) | S01 – 1.4 Datos faltantes (cuantificación) | `data/staging/S01/` | 12 | 11 |
 | [`faltantes_por_estrato.parquet`](#37-faltantes_por_estratoparquet) | S01 – 1.4 Datos faltantes (cuantificación) | `data/staging/S01/` | 54 | 7 |
+| [`faltantes_mecanismos_tests.parquet`](#38-faltantes_mecanismos_testsparquet) | S01 – 1.4 Datos faltantes (mecanismos) | `data/staging/S01/` | 23 | 18 |
+| [`faltantes_mecanismos_logit.parquet`](#39-faltantes_mecanismos_logitparquet) | S01 – 1.4 Datos faltantes (mecanismos) | `data/staging/S01/` | 9 | 15 |
+| [`faltantes_mecanismos_logit_coefs.parquet`](#40-faltantes_mecanismos_logit_coefsparquet) | S01 – 1.4 Datos faltantes (mecanismos) | `data/staging/S01/` | 92 | 9 |
+| [`faltantes_mecanismos_veredicto.parquet`](#41-faltantes_mecanismos_veredictoparquet) | S01 – 1.4 Datos faltantes (mecanismos) | `data/staging/S01/` | 6 | 14 |
 
 ---
 
@@ -780,12 +784,88 @@ Estratos calculados:
 
 ---
 
+## 38. `faltantes_mecanismos_tests.parquet`
+
+**Ruta:** `data/staging/S01/faltantes_mecanismos_tests.parquet`
+**Script origen:** `sections/S01-Metodologia_EDA_Analisis/1_4_Diagnostico datos faltantes/code/02-mecanismos/mecanismos_faltantes.py`
+**Granularidad:** Una fila por test univariado R ⊥ covariable observada (23 tests).
+**Base:** Indicadoras de faltantes sobre CSV raw; covariables observadas (sin usar el valor faltante mismo).
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `dataset` / `variable_faltante` / `covariable` | `texto` | Qué R se prueba y contra qué |
+| `tipo_covariable` | `texto` | `categorica` o `numerica` |
+| `prueba` | `texto` | `chi2` / `fisher_exact` / `welch_t` / `mannwhitney_u` |
+| `n` / `estadistico` / `gl` | — | Inferencia |
+| `p_valor` / `p_valor_ajustado_holm` | `numérico` | p crudo y Holm **dentro** de la misma `variable_faltante` |
+| `rechaza_h0_ajustado` | `bool` | Rechazo de independencia tras Holm (α=0.05) |
+| `efecto` / `metrica_efecto` / `magnitud_efecto` | — | Cramér V, Cliff δ o Cohen d |
+| `supuesto_ok` / `nota_supuesto` | — | Chequeo de supuestos (expected≥5, Shapiro, etc.) |
+
+> H₀ del test univariado: R ⊥ covariable (compatible con MCAR respecto de esa covariable).
+
+---
+
+## 39. `faltantes_mecanismos_logit.parquet`
+
+**Ruta:** `data/staging/S01/faltantes_mecanismos_logit.parquet`
+**Script origen:** `02-mecanismos/mecanismos_faltantes.py`
+**Granularidad:** Una fila por modelo logit de la indicadora R (9 modelos: base/señal + full por variable).
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `dataset` / `variable_faltante` / `modelo` / `formula` | `texto` | Identificación del modelo |
+| `n` | `entero` | Observaciones usadas |
+| `llf` / `llf_null` / `lr_stat` / `lr_df` / `lr_p` | `numérico` | Razón de verosimilitud vs nulo |
+| `pseudo_r2_mcfadden` | `numérico` | Bondad de ajuste relativa |
+| `es_modelo_primario` | `bool` | Modelo usado para el veredicto (full / señal principal) |
+| `lr_p_ajustado_holm` / `rechaza_mcar_logit` | `numérico` / `bool` | Holm entre los 5 modelos primarios |
+
+> Rechazo del LR test ⇒ R depende de X_obs ⇒ evidencia contra MCAR (a favor de MAR).
+
+---
+
+## 40. `faltantes_mecanismos_logit_coefs.parquet`
+
+**Ruta:** `data/staging/S01/faltantes_mecanismos_logit_coefs.parquet`
+**Script origen:** `02-mecanismos/mecanismos_faltantes.py`
+**Granularidad:** Una fila por término (sin intercepto) de cada logit (92).
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `dataset` / `variable_faltante` / `modelo` / `termino` | `texto` | Coeficiente |
+| `coef` | `numérico` | β en escala logit |
+| `or` / `or_ic95_lo` / `or_ic95_hi` | `numérico` | Odds ratio e IC 95% |
+| `p_valor` | `numérico` | Wald |
+
+---
+
+## 41. `faltantes_mecanismos_veredicto.parquet`
+
+**Ruta:** `data/staging/S01/faltantes_mecanismos_veredicto.parquet`
+**Script origen:** `02-mecanismos/mecanismos_faltantes.py`
+**Granularidad:** Una fila por variable con nulos (6: ciudad, departamento, prima_anual, parte_cuerpo, dias_incapacidad, costo_asistencial).
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `dataset` / `variable_faltante` | `texto` | Variable evaluada |
+| `n_faltantes` / `pct_faltantes` | `entero` / `numérico` | Carga de nulos |
+| `n_tests_univariados` / `n_rechazos_holm` | `entero` | Evidencia univariada |
+| `lr_p_modelo_primario` / `lr_p_ajustado_holm` / `pseudo_r2_mcfadden` | `numérico` | Evidencia multivariada |
+| `mecanismo` | `texto` | `MCAR (no se rechaza)` / `MAR (depende de observados)` / `MAR con sospecha MNAR` |
+| `sospecha_mnar` | `bool` | Flag de sospecha (no prueba) |
+| `evidencia` / `nota_mnar` / `implicacion_imputacion` | `texto` | Narrativa para Insights / 1.4.3 |
+
+> **Nota:** MNAR no es identificable solo con datos observados; la sospecha en `costo_asistencial` se basa en dependencia residual de proxies económicos tras el patrón MAR por gravedad.
+
+---
+
 ## Uso en secciones futuras
 
 | Sección | Dataset requerido | Propósito |
 |---|---|---|
 | S01 – 1.3 Hipótesis | `empresa_siniestralidad_completa`, `temporal_empresa_anio`, `temporal_persistencia_yoy`, `panel_empresa_lag_yoy`, `temporal_mensual`, `estacionalidad_mes` | Pruebas formales de diferencia / asociación / GOF |
-| S01 – 1.4 Datos faltantes | `empresas_staging`, `siniestros_staging`, `faltantes_resumen_*`, `faltantes_patrones`, `faltantes_por_estrato` | Diagnóstico de nulos, mecanismo e imputación |
+| S01 – 1.4 Datos faltantes | `empresas_staging`, `siniestros_staging`, `faltantes_resumen_*`, `faltantes_patrones`, `faltantes_por_estrato`, `faltantes_mecanismos_*` | Diagnóstico de nulos, mecanismo e imputación |
 | S01 – 1.5 Baseline | `empresa_siniestralidad_completa`, `temporal_empresa_anio`, `panel_empresa_lag_yoy` | Definición del predictor baseline y target anual |
 | S02 – Modelación económica | `empresa_siniestralidad_completa`, `bivariado_resumen_sector`, `temporal_anual`, `predictores_recomendacion`, `hip_confirmaciones_resumen` | Caracterización sectorial; confirmar descarte de mes/geo |
 | S03 – Reto de negocio | `empresa_siniestralidad_tratada`, `siniestros_tratados`, `temporal_empresa_anio`, `panel_empresa_lag_yoy`, `colinealidad_vif`, `predictores_recomendacion`, `hip_features_resumen`, `hip_p12_bondad_ajuste_costo` | Feature set + familia de severidad; CV temporal con lag |
@@ -794,4 +874,4 @@ Estratos calculados:
 
 ---
 
-*Actualizado por: `S01 – 1.2 EDA` + `S01 – 1.3` (hipótesis) + `S01 – 1.4.1 cuantificacion_faltantes.py` — Prueba Técnica Grupo SURA.*
+*Actualizado por: `S01 – 1.2 EDA` + `S01 – 1.3` (hipótesis) + `S01 – 1.4.1 cuantificacion_faltantes.py` + `S01 – 1.4.2 mecanismos_faltantes.py` — Prueba Técnica Grupo SURA.*

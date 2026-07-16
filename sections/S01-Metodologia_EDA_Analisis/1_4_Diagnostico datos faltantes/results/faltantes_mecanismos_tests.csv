@@ -1,0 +1,24 @@
+dataset,variable_faltante,covariable,tipo_covariable,prueba,n,estadistico,gl,p_valor,p_valor_ajustado_holm,rechaza_h0_ajustado,efecto,metrica_efecto,magnitud_efecto,supuesto_ok,nota_supuesto,n_completo_R0,n_faltante_R1
+empresas,ciudad,sector,categorica,chi2,5000,14.7241,14.0,0.39727379207619895,1.0,False,0.0543,cramers_v,despreciable,True,expected≥5 ok,,
+empresas,ciudad,clase_riesgo,categorica,chi2,5000,1.5215,4.0,0.8228292266683535,1.0,False,0.0174,cramers_v,despreciable,True,expected≥5 ok,,
+empresas,ciudad,n_trabajadores,numerica,mannwhitney_u,5000,505345.5,,0.16139876883242188,0.8069938441621094,False,0.0553,cliffs_delta,despreciable,True,no normalidad → MWU; Levene p=0.461,4776.0,224.0
+empresas,ciudad,antiguedad_meses,numerica,mannwhitney_u,5000,547443.0,,0.5528849090393342,1.0,False,-0.0234,cliffs_delta,despreciable,True,no normalidad → MWU; Levene p=0.144,4776.0,224.0
+empresas,ciudad,prima_anual,numerica,mannwhitney_u,4421,394410.0,,0.26089886745788793,1.0,False,0.0474,cliffs_delta,despreciable,True,no normalidad → MWU; Levene p=0.0515,4225.0,196.0
+empresas,prima_anual,sector,categorica,chi2,5000,28.1955,14.0,0.013401117382014953,0.04020335214604486,True,0.0751,cramers_v,despreciable,True,expected≥5 ok,,
+empresas,prima_anual,clase_riesgo,categorica,chi2,5000,2.7096,4.0,0.6075316550653056,1.0,False,0.0233,cramers_v,despreciable,True,expected≥5 ok,,
+empresas,prima_anual,_geo_cat,categorica,chi2,5000,0.1112,1.0,0.738785450513961,1.0,False,0.0062,cramers_v,despreciable,True,expected≥5 ok,,
+empresas,prima_anual,n_trabajadores,numerica,mannwhitney_u,5000,1622940.5,,8.222934014653034e-26,3.2891736058612136e-25,True,-0.268,cliffs_delta,pequeño,True,no normalidad → MWU; Levene p=5.51e-08,4421.0,579.0
+empresas,prima_anual,antiguedad_meses,numerica,mannwhitney_u,5000,1884647.0,,1.524591777034507e-76,7.622958885172535e-76,True,-0.4725,cliffs_delta,mediano,True,no normalidad → MWU; Levene p=1.13e-20,4421.0,579.0
+siniestros,parte_cuerpo,tipo,categorica,chi2,39894,0.0611,1.0,0.8046887366623499,1.0,False,0.0014,cramers_v,despreciable,True,expected≥5 ok,,
+siniestros,parte_cuerpo,gravedad,categorica,chi2,39894,4.2348,2.0,0.12034372983309634,0.6017186491654817,False,0.0103,cramers_v,despreciable,True,expected≥5 ok,,
+siniestros,parte_cuerpo,costo_prestacion_economica,numerica,mannwhitney_u,39894,30389703.0,,0.5589409121764034,1.0,False,0.0086,cliffs_delta,despreciable,True,no normalidad → MWU; Levene p=0.994,38293.0,1601.0
+siniestros,parte_cuerpo,dias_incapacidad,numerica,mannwhitney_u,38237,28007528.0,,0.7026937907800801,1.0,False,0.0057,cliffs_delta,despreciable,True,no normalidad → MWU; Levene p=0.136,36702.0,1535.0
+siniestros,parte_cuerpo,costo_asistencial,numerica,mannwhitney_u,37332,26539585.5,,0.6897711552499954,1.0,False,0.0061,cliffs_delta,despreciable,True,no normalidad → MWU; Levene p=0.631,35842.0,1490.0
+siniestros,dias_incapacidad,tipo,categorica,chi2,39894,907.2588,1.0,2.5932359377786385e-199,1.0372943751114554e-198,True,0.151,cramers_v,pequeño,True,expected≥5 ok,,
+siniestros,dias_incapacidad,gravedad,categorica,chi2,39894,0.6054,2.0,0.7388217384993365,1.0,False,0.0039,cramers_v,despreciable,True,expected≥5 ok,,
+siniestros,dias_incapacidad,costo_prestacion_economica,numerica,mannwhitney_u,39894,29353175.0,,4.011619193489277e-07,1.2034857580467831e-06,True,0.0734,cliffs_delta,despreciable,True,no normalidad → MWU; Levene p=0.645,38237.0,1657.0
+siniestros,dias_incapacidad,costo_asistencial,numerica,mannwhitney_u,37332,27683968.0,,0.8772159903657557,1.0,False,0.0023,cliffs_delta,despreciable,True,no normalidad → MWU; Levene p=0.745,35781.0,1551.0
+siniestros,costo_asistencial,tipo,categorica,chi2,39894,4.0319,1.0,0.04464720987000247,0.04464720987000247,True,0.0102,cramers_v,despreciable,True,expected≥5 ok,,
+siniestros,costo_asistencial,gravedad,categorica,chi2,39894,1849.5845,2.0,0.0,0.0,True,0.2153,cramers_v,pequeño,True,expected≥5 ok,,
+siniestros,costo_asistencial,costo_prestacion_economica,numerica,mannwhitney_u,39894,33687836.5,,1.176552551284707e-138,3.529657653854121e-138,True,0.2956,cliffs_delta,pequeño,True,no normalidad → MWU; Levene p=5.03e-127,37332.0,2562.0
+siniestros,costo_asistencial,dias_incapacidad,numerica,mannwhitney_u,38237,31111239.0,,1.5023678863575182e-130,3.0047357727150364e-130,True,0.2919,cliffs_delta,pequeño,True,no normalidad → MWU; Levene p=4.86e-129,35781.0,2456.0
