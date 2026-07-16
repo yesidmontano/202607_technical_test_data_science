@@ -31,6 +31,12 @@
 | [`siniestros_tratados.parquet`](#18-siniestros_tratadosparquet) | S01 – 1.2 EDA (outliers) | `data/staging/S01/` | 39 894 | 22 |
 | [`empresa_siniestralidad_tratada.parquet`](#19-empresa_siniestralidad_tratadaparquet) | S01 – 1.2 EDA (outliers) | `data/staging/S01/` | 5 000 | 37 |
 | [`outliers_tratamiento_impacto.parquet`](#20-outliers_tratamiento_impactoparquet) | S01 – 1.2 EDA (outliers) | `data/staging/S01/` | 9 | 17 |
+| [`correlacion_predictores_spearman.parquet`](#21-correlacion_predictores_spearmanparquet) | S01 – 1.2 EDA (correlaciones) | `data/staging/S01/` | 64 | 5 |
+| [`correlacion_predictores_pearson.parquet`](#22-correlacion_predictores_pearsonparquet) | S01 – 1.2 EDA (correlaciones) | `data/staging/S01/` | 16 | 5 |
+| [`correlacion_pares_altos.parquet`](#23-correlacion_pares_altosparquet) | S01 – 1.2 EDA (correlaciones) | `data/staging/S01/` | 3 | 8 |
+| [`correlacion_predictor_vs_target.parquet`](#24-correlacion_predictor_vs_targetparquet) | S01 – 1.2 EDA (correlaciones) | `data/staging/S01/` | 28 | 7 |
+| [`colinealidad_vif.parquet`](#25-colinealidad_vifparquet) | S01 – 1.2 EDA (correlaciones) | `data/staging/S01/` | 17 | 8 |
+| [`predictores_recomendacion.parquet`](#26-predictores_recomendacionparquet) | S01 – 1.2 EDA (correlaciones) | `data/staging/S01/` | 7 | 9 |
 
 ---
 
@@ -428,6 +434,127 @@ Campos agregados (comunes a todos los resúmenes bivariados 5–9):
 
 ---
 
+## 21. `correlacion_predictores_spearman.parquet`
+
+**Ruta:** `data/staging/S01/correlacion_predictores_spearman.parquet`
+**Script origen:** `sections/S01-Metodologia_EDA_Analisis/1_2_EDA/code/05-analisis_correlaciones/analisis_correlaciones.py`
+**Granularidad:** Matriz Spearman en formato largo (64 celdas = 8×8).
+**Base:** `empresa_siniestralidad_tratada` — predictores candidatos + outcomes.
+
+Variables en la matriz:
+- **Predictores:** `clase_riesgo`, `log_n_trabajadores_w`, `log_prima_anual_w`, `antiguedad_meses`
+- **Outcomes:** `log_n_siniestros_w`, `frecuencia_x100_w`, `log_costo_total_empresa_w`, `tiene_siniestro`
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `variable_a` / `variable_b` | `texto` | Par de variables |
+| `correlacion` | `numérico` | ρ de Spearman |
+| `metodo` | `texto` | `spearman` |
+| `alcance` | `texto` | `empresa_transversal` |
+
+---
+
+## 22. `correlacion_predictores_pearson.parquet`
+
+**Ruta:** `data/staging/S01/correlacion_predictores_pearson.parquet`
+**Script origen:** `05-analisis_correlaciones/analisis_correlaciones.py`
+**Granularidad:** Matriz Pearson en formato largo (16 celdas = 4×4) — **solo predictores** en escala log/winsor.
+**Base:** mismas features numéricas de empresa tratada.
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `variable_a` / `variable_b` | `texto` | Par de predictores |
+| `correlacion` | `numérico` | r de Pearson |
+| `metodo` | `texto` | `pearson` |
+| `alcance` | `texto` | `empresa_transversal` |
+
+> **Nota:** Pearson en escala log suele ser menor que Spearman cuando la asociación es monótona no lineal (p. ej. prima ↔ clase).
+
+---
+
+## 23. `correlacion_pares_altos.parquet`
+
+**Ruta:** `data/staging/S01/correlacion_pares_altos.parquet`
+**Script origen:** `05-analisis_correlaciones/analisis_correlaciones.py`
+**Granularidad:** Una fila por par con \|ρ Spearman\| ≥ 0.70 (diagnóstico predictores + outcomes clave).
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `variable_a` / `variable_b` | `texto` | Par |
+| `etiqueta_a` / `etiqueta_b` | `texto` | Etiquetas legibles |
+| `correlacion` / `abs_correlacion` | `numérico` | ρ y valor absoluto |
+| `metodo` | `texto` | `spearman` (u ocasionalmente `pearson`) |
+| `alcance` | `texto` | `solo_predictores` o `predictores_y_outcomes` |
+
+> En el corte actual **no hay pares ≥ 0.70 solo entre predictores numéricos**; los pares altos mezclan predictor–outcome u outcome–outcome.
+
+---
+
+## 24. `correlacion_predictor_vs_target.parquet`
+
+**Ruta:** `data/staging/S01/correlacion_predictor_vs_target.parquet`
+**Script origen:** `05-analisis_correlaciones/analisis_correlaciones.py`
+**Granularidad:** Una fila por par predictor × target (transversal + panel con lag).
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `predictor` / `target` | `texto` | Variables |
+| `etiqueta_predictor` / `etiqueta_target` | `texto` | Etiquetas |
+| `spearman` / `abs_spearman` | `numérico` | Asociación por rangos |
+| `alcance` | `texto` | `empresa_transversal` o `panel_empresa_anio` |
+
+> El alcance panel usa `temporal_empresa_anio` con `log_lag_n_siniestros` (shift 1 por empresa) para evitar leakage del mismo año.
+
+---
+
+## 25. `colinealidad_vif.parquet`
+
+**Ruta:** `data/staging/S01/colinealidad_vif.parquet`
+**Script origen:** `05-analisis_correlaciones/analisis_correlaciones.py`
+**Granularidad:** Una fila por variable × set de features (17 filas).
+
+Sets evaluados:
+| Set | Features |
+|---|---|
+| `A_transversal_base` | clase, log(trab)_w, log(prima)_w, antigüedad |
+| `B_panel_con_lag` | clase, log(trab), log(prima)_w, antigüedad, log(lag N sin.) |
+| `C_panel_reducido_sin_prima` | B sin prima |
+| `D_panel_reducido_sin_tamano` | B sin tamaño |
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `variable` / `etiqueta` | `texto` | Predictor |
+| `vif` | `numérico` | Variance Inflation Factor (OLS auxiliar en numpy) |
+| `r2_aux` | `numérico` | R² de la regresión auxiliar |
+| `n_obs` | `entero` | Observaciones usadas (dropna) |
+| `nivel_colinealidad` | `texto` | `bajo` (&lt;5) / `moderado` (5–10) / `severo` (≥10) |
+| `set_features` | `texto` | Identificador del set |
+| `condition_number` | `numérico` | κ de la matriz de correlación del set |
+
+> **Hallazgo operativo:** en todos los sets el VIF máximo &lt; 2 → no hay colinealidad severa entre predictores numéricos candidatos.
+
+---
+
+## 26. `predictores_recomendacion.parquet`
+
+**Ruta:** `data/staging/S01/predictores_recomendacion.parquet`
+**Script origen:** `05-analisis_correlaciones/analisis_correlaciones.py`
+**Granularidad:** Una fila por predictor candidato (numérico o categórico documentado).
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `variable` | `texto` | Nombre del predictor |
+| `rol` | `texto` | `predictor_obligatorio` / `predictor_fuerte` / `exposición_o_feature` / etc. |
+| `prioridad` | `entero` | 1 = alta, 3 = baja |
+| `vif_set_B` | `numérico` | VIF en set panel+lag (`NaN` si categórico) |
+| `spearman_target_ref` | `numérico` | Asociación de referencia con un target |
+| `target_ref` | `texto` | Target usado en la referencia |
+| `decision` | `texto` | Recomendación de inclusión |
+| `nota` | `texto` | Contexto / advertencias |
+| `veredicto_vif_set_B` | `texto` | Resumen global de colinealidad del set B |
+
+---
+
 ## Uso en secciones futuras
 
 | Sección | Dataset requerido | Propósito |
@@ -435,11 +562,11 @@ Campos agregados (comunes a todos los resúmenes bivariados 5–9):
 | S01 – 1.3 Hipótesis | `empresa_siniestralidad_completa`, `bivariado_resumen_*` | Pruebas formales de diferencia / asociación (no incluidas en 1.2.3) |
 | S01 – 1.4 Datos faltantes | `siniestros_staging`, `empresas_staging` | Diagnóstico de nulos y patrones |
 | S01 – 1.5 Baseline | `empresa_siniestralidad_completa`, `temporal_empresa_anio` | Definición del predictor baseline y target anual |
-| S02 – Modelación económica | `empresa_siniestralidad_completa`, `bivariado_resumen_sector`, `temporal_anual` | Caracterización sectorial y tendencias |
-| S03 – Reto de negocio | `empresa_siniestralidad_tratada`, `siniestros_tratados`, `temporal_empresa_anio` | Features winsorizadas + CV temporal; cola original para severidad catastrófica |
+| S02 – Modelación económica | `empresa_siniestralidad_completa`, `bivariado_resumen_sector`, `temporal_anual`, `predictores_recomendacion` | Caracterización sectorial; baseline de pricing (prima) |
+| S03 – Reto de negocio | `empresa_siniestralidad_tratada`, `siniestros_tratados`, `temporal_empresa_anio`, `colinealidad_vif`, `predictores_recomendacion` | Feature set + vigilancia VIF; CV temporal con lag |
 | S04 – Inferencia causal | `empresa_siniestralidad_completa` / `_tratada` | Grupo tratado / control; evaluar sensibilidad a winsorización |
 | S05 – Recomendador | `empresas_staging`, `empresa_siniestralidad_completa` | Perfil de empresa para recomendación |
 
 ---
 
-*Actualizado por: `S01 – 1.2 EDA | analisis_univariado.py` + `analisis_bivariado.py` + `analisis_temporal.py` + `analisis_outliers.py` — Prueba Técnica Grupo SURA.*
+*Actualizado por: `S01 – 1.2 EDA | analisis_univariado.py` + `analisis_bivariado.py` + `analisis_temporal.py` + `analisis_outliers.py` + `analisis_correlaciones.py` — Prueba Técnica Grupo SURA.*

@@ -481,4 +481,133 @@ Realizar un análisis exploratorio completo: distribuciones univariadas de la fr
 
 ---
 
+## 1.2.6 – Correlación y Colinealidad entre Predictores Candidatos (resultados preliminares)
+
+> Generado a partir de `05-analisis_correlaciones/analisis_correlaciones.py` · Base: `empresa_siniestralidad_tratada` (5 000) + `temporal_empresa_anio` con lag · Métodos: Spearman / Pearson / VIF / número de condición κ.
+
+---
+
+### A. Correlación entre predictores y con outcomes
+
+**A1 – Matriz Spearman (predictores + outcomes)**
+![Heatmap Spearman](imgs/05_A1_heatmap_spearman_predictores_outcomes.png)
+
+| Par (predictores) | ρ Spearman | Lectura |
+|---|---|---|
+| `log_prima_anual_w` ~ `log_n_trabajadores_w` | 0.59 | Asociación **moderada** (no ≥ 0.70) |
+| `log_prima_anual_w` ~ `clase_riesgo` | 0.58 | Prima crece con clase (pricing ARL) |
+| `clase_riesgo` ~ `log_n_trabajadores_w` | ≈ 0.02 | Independientes |
+| `antiguedad_meses` ~ resto | ≤ 0.15 | Irrelevante bivariada |
+
+**A2 – Pearson en escala log/winsor (solo predictores)**
+![Heatmap Pearson](imgs/05_A2_heatmap_pearson_predictores.png)
+
+- Pearson prima↔tamaño ≈ **0.30** y prima↔clase ≈ **0.17** — claramente menores que Spearman → la asociación es **monótona/por rangos**, no lineal fuerte.
+- Implicación: reportar Spearman como métrica principal de asociación en este portafolio sesgado.
+
+**A3 – Predictores × targets (transversal)**
+![Predictor vs target](imgs/05_A3_heatmap_predictor_vs_target.png)
+
+| Predictor | Target | ρ Spearman |
+|---|---|---|
+| `clase_riesgo` | `frecuencia_x100_w` | **0.73** |
+| `log_prima_anual_w` | `log_n_siniestros_w` | **0.71** |
+| `log_prima_anual_w` | `log_costo_total_empresa_w` | 0.67 |
+| `clase_riesgo` | `log_costo_total_empresa_w` | 0.65 |
+| `log_n_trabajadores_w` | `log_n_siniestros_w` | 0.60 |
+| `log_n_trabajadores_w` | `frecuencia_x100_w` | **−0.16** |
+| `antiguedad_meses` | outcomes | ≈ 0 |
+
+- Confirma el gradiente de clase sobre frecuencia y el efecto de exposición (tamaño ↑ conteo; ↓ levemente la tasa).
+- `log_n_siniestros_w` ~ `log_costo_total_empresa_w` = **0.90** (outcomes casi redundantes entre sí — no son features).
+
+---
+
+### B. Colinealidad (VIF y pares altos)
+
+**B1 – VIF del set panel con lag**
+![VIF set B](imgs/05_B1_vif_set_panel_lag.png)
+
+| Variable | VIF (set B) | Nivel |
+|---|---|---|
+| `log_lag_n_siniestros` | 1.68 | bajo |
+| `log_n_trabajadores` | 1.49 | bajo |
+| `clase_riesgo` | 1.32 | bajo |
+| `log_prima_anual_w` | 1.22 | bajo |
+| `antiguedad_meses` | 1.07 | bajo |
+
+- **VIF máximo ≈ 1.68 ≪ 5** → **no hay colinealidad severa** entre predictores numéricos candidatos.
+- Prima y tamaño **pueden coexistir** en el mismo modelo lineal/GLM sin inflación grave de varianza.
+
+**B2 – Pares \|ρ\| ≥ 0.70**
+![Pares altos](imgs/05_B2_pares_alta_correlacion.png)
+
+| Par | ρ | Tipo |
+|---|---|---|
+| `log_n_siniestros_w` ↔ `log_costo_total_empresa_w` | 0.90 | outcome ↔ outcome |
+| `clase_riesgo` ↔ `frecuencia_x100_w` | 0.73 | predictor ↔ outcome |
+| `log_prima_anual_w` ↔ `log_n_siniestros_w` | 0.71 | predictor ↔ outcome |
+
+- **Ningún par predictor–predictor** supera 0.70. La “colinealidad percibida” prima–tamaño (ρ≈0.59) es moderada y compatible con VIF bajo.
+
+**B3 – Scatter prima vs tamaño**
+![Scatter prima vs tamaño](imgs/05_B3_scatter_prima_vs_tamano.png)
+
+- Nube con tendencia positiva pero dispersión material; no es una relación casi perfecta que fuerce a descartar una de las dos.
+
+---
+
+### C. Sets de features y panel con lag
+
+**C1 – Comparación de VIF entre sets**
+![Comparación VIF](imgs/05_C1_vif_comparacion_sets.png)
+
+| Set | Features | max VIF | κ (condición) |
+|---|---|---|---|
+| A Transversal | clase + tamaño + prima + antigüedad | 1.22 | 10.3 |
+| B Panel + lag | A + log(lag N sin.) | **1.68** | 13.6 |
+| C Sin prima | clase + tamaño + antigüedad + lag | 1.68 | **4.0** |
+| D Sin tamaño | clase + prima + antigüedad + lag | **1.25** | 5.2 |
+
+- El set **C** tiene la mejor condición numérica (κ≈4); B es aceptable y más completo.
+- Reducir por colinealidad **no es obligatorio**; sí es opcional si se busca máxima estabilidad numérica.
+
+**C2 – Heatmap set recomendado C**
+![Set C](imgs/05_C2_heatmap_set_recomendado.png)
+
+**C3 – Asociaciones en panel empresa-año (con lag)**
+![Panel lag](imgs/05_C3_asociacion_panel_lag.png)
+
+| Predictor | Target anual | ρ Spearman |
+|---|---|---|
+| `log_prima_anual_w` | `n_siniestros` | 0.51 |
+| `log_n_trabajadores` | `n_siniestros` | 0.44 |
+| `log_lag_n_siniestros` | `n_siniestros` | 0.44 |
+| `log_lag_n_siniestros` | `alta_siniestralidad` | 0.38 |
+| `clase_riesgo` | `frecuencia_x100` | 0.43 |
+| `clase_riesgo` | `alta_siniestralidad` | 0.28 |
+
+- El lag aporta señal material al target binario Top 10% (coherente con persistencia 1.2.4), sin VIF problemático.
+- En panel, las ρ son menores que en el corte transversal agregado (escala año vs acumulado multi-año).
+
+---
+
+## Síntesis correlación / colinealidad y condicionantes para el modelado
+
+| Hallazgo | Implicación para S02 / S03 / S04 / S05 |
+|---|---|
+| VIF max ≈ 1.7 en todos los sets | **No hace falta eliminar** predictores por colinealidad clásica |
+| ρ Spearman prima↔tamaño ≈ 0.59 | Redundancia parcial; ambas OK, o elegir una si se prioriza interpretabilidad |
+| `clase_riesgo` ↔ frecuencia ≈ 0.73 | Feature obligatorio; fuerte separación de riesgo |
+| Lag de conteo ↔ target / alta_siniestralidad | Incluir `log_lag_n_siniestros` con shift estricto (anti-leakage) |
+| Antigüedad ≈ 0 con outcomes | Baja prioridad en el feature set |
+| Sector (categórico, 1.2.3) | Incluir vía encoding; no evaluado en VIF numérico |
+| Geografía (1.2.3) | Control secundario; evitar overfit de dummies |
+| Staging `predictores_recomendacion` + `colinealidad_vif` | Contrato de features para S03 / baseline S01-1.5 |
+
+**Feature set numérico sugerido para S03 (panel):**
+`clase_riesgo` + `log_n_trabajadores` (exposición/offset) + `log_lag_n_siniestros` + (`log_prima_anual_w` opcional) + `sector` (encoding) · antigüedad/geografía opcionales.
+
+---
+
 *Análisis realizado con `sura_brand` · Sección S01-1.2 EDA · Prueba Técnica Grupo SURA.*
