@@ -1,4 +1,4 @@
-Cuentifica los datos faltantes de empresas.csv y siniestros.csv. Incluir código en (sections/S01-Metodologia_EDA_Analisis/1_4_Diagnostico datos faltantes/code/01-cuantificacion).
+Cuantifica los datos faltantes de empresas.csv y siniestros.csv. Incluir código en (sections/S01-Metodologia_EDA_Analisis/1_4_Diagnostico datos faltantes/code/01-cuantificacion).
 
 Transversal: 
 1. Guardar datasets de staging en data/staging/S01/ para que estos sean reutilizados por futuros procesos que los requieran. Guarda la descripción detallada de cada dataset en docs/staging_data.md. Nota: No crees datasets nuevos sin antes revisar en docs/staging_data.md si ya existe uno que se pueda reutilizar.

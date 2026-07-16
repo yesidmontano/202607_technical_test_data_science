@@ -1,0 +1,13 @@
+dataset,patron_binario,descripcion,n_filas,pct_filas,n_columnas_faltantes_en_patron,miss_ciudad,miss_departamento,miss_prima_anual,miss_parte_cuerpo,miss_dias_incapacidad,miss_costo_asistencial
+empresas,000,completo,4225,84.5,0,False,False,False,,,
+empresas,001,faltan: prima_anual,551,11.02,1,False,False,True,,,
+empresas,110,"faltan: ciudad, departamento",196,3.92,2,True,True,False,,,
+empresas,111,"faltan: ciudad, departamento, prima_anual",28,0.56,3,True,True,True,,,
+siniestros,000,completo,34350,86.1032,0,,,,False,False,False
+siniestros,001,faltan: costo_asistencial,2352,5.8956,1,,,,False,False,True
+siniestros,010,faltan: dias_incapacidad,1492,3.7399,1,,,,False,True,False
+siniestros,100,faltan: parte_cuerpo,1431,3.587,1,,,,True,False,False
+siniestros,101,"faltan: parte_cuerpo, costo_asistencial",104,0.2607,2,,,,True,False,True
+siniestros,011,"faltan: dias_incapacidad, costo_asistencial",99,0.2482,2,,,,False,True,True
+siniestros,110,"faltan: parte_cuerpo, dias_incapacidad",59,0.1479,2,,,,True,True,False
+siniestros,111,"faltan: parte_cuerpo, dias_incapacidad, costo_asistencial",7,0.0175,3,,,,True,True,True

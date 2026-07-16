@@ -44,6 +44,10 @@
 | [`hip_p10_retencion_top10.parquet`](#31-hip_p10_retencion_top10parquet) | S01 – 1.3 Hipótesis (features) | `data/staging/S01/` | 6 | 8 |
 | [`hip_confirmaciones_resumen.parquet`](#32-hip_confirmaciones_resumenparquet) | S01 – 1.3 Hipótesis (confirmación) | `data/staging/S01/` | 3 | 12 |
 | [`hip_p12_bondad_ajuste_costo.parquet`](#33-hip_p12_bondad_ajuste_costoparquet) | S01 – 1.3 Hipótesis (confirmación) | `data/staging/S01/` | 1 | 20 |
+| [`faltantes_resumen_datasets.parquet`](#34-faltantes_resumen_datasetsparquet) | S01 – 1.4 Datos faltantes (cuantificación) | `data/staging/S01/` | 2 | 11 |
+| [`faltantes_resumen_columnas.parquet`](#35-faltantes_resumen_columnasparquet) | S01 – 1.4 Datos faltantes (cuantificación) | `data/staging/S01/` | 19 | 9 |
+| [`faltantes_patrones.parquet`](#36-faltantes_patronesparquet) | S01 – 1.4 Datos faltantes (cuantificación) | `data/staging/S01/` | 12 | 11 |
+| [`faltantes_por_estrato.parquet`](#37-faltantes_por_estratoparquet) | S01 – 1.4 Datos faltantes (cuantificación) | `data/staging/S01/` | 54 | 7 |
 
 ---
 
@@ -692,12 +696,96 @@ Sets evaluados:
 
 ---
 
+## 34. `faltantes_resumen_datasets.parquet`
+
+**Ruta:** `data/staging/S01/faltantes_resumen_datasets.parquet`
+**Script origen:** `sections/S01-Metodologia_EDA_Analisis/1_4_Diagnostico datos faltantes/code/01-cuantificacion/cuantificacion_faltantes.py`
+**Granularidad:** Una fila por dataset raw (`empresas`, `siniestros`).
+**Base:** Conteos de NaN sobre `data/raw/empresas.csv` y `data/raw/siniestros.csv` (contrastados con staging; nulos de columnas raw coinciden).
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `dataset` | `texto` | `empresas` o `siniestros` |
+| `n_filas` / `n_columnas` / `n_celdas` | `entero` | Dimensiones |
+| `n_celdas_faltantes` / `pct_celdas_faltantes` | `entero` / `numérico` | Carga de nulos a nivel celda |
+| `pct_completitud_celdas` | `numérico` | 100 − % celdas faltantes |
+| `n_filas_con_algun_faltante` / `pct_filas_con_algun_faltante` | `entero` / `numérico` | Filas con ≥1 NaN |
+| `n_columnas_con_faltantes` | `entero` | Columnas afectadas |
+| `columnas_con_faltantes` | `texto` | Lista separada por comas |
+
+> **Hallazgo de referencia (corrida 1.4.1):** empresas 97.95% completitud celdas / 15.5% filas con ≥1 nulo; siniestros 98.38% / 13.9%.
+
+---
+
+## 35. `faltantes_resumen_columnas.parquet`
+
+**Ruta:** `data/staging/S01/faltantes_resumen_columnas.parquet`
+**Script origen:** `01-cuantificacion/cuantificacion_faltantes.py`
+**Granularidad:** Una fila por columna de cada CSV raw (19 = 10 + 9).
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `dataset` / `columna` / `dtype` | `texto` | Identificación |
+| `n_filas` / `n_faltantes` / `n_completos` | `entero` | Conteos |
+| `pct_faltantes` / `pct_completos` | `numérico` | Tasas (%) |
+| `tiene_faltantes` | `bool` | Flag |
+
+> Columnas con nulos: `ciudad`, `departamento`, `prima_anual` (empresas); `parte_cuerpo`, `dias_incapacidad`, `costo_asistencial` (siniestros). El resto está 100% completo.
+
+---
+
+## 36. `faltantes_patrones.parquet`
+
+**Ruta:** `data/staging/S01/faltantes_patrones.parquet`
+**Script origen:** `01-cuantificacion/cuantificacion_faltantes.py`
+**Granularidad:** Una fila por patrón de co-ocurrencia de faltantes (combinación binaria de columnas con nulos).
+
+Columnas con nulos consideradas:
+- empresas: `ciudad` \| `departamento` \| `prima_anual`
+- siniestros: `parte_cuerpo` \| `dias_incapacidad` \| `costo_asistencial`
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `dataset` | `texto` | Origen |
+| `patron_binario` | `texto` | Cadena de 0/1 en el orden de columnas arriba |
+| `descripcion` | `texto` | Legible (`completo` o `faltan: …`) |
+| `n_filas` / `pct_filas` | `entero` / `numérico` | Frecuencia del patrón |
+| `n_columnas_faltantes_en_patron` | `entero` | Hamming weight del patrón |
+| `miss_<columna>` | `bool` | Indicador por columna del patrón |
+
+> **Uso:** priorizar imputación / descarte por patrón (p. ej. geo siempre junta; en siniestros predominan faltantes univariados).
+
+---
+
+## 37. `faltantes_por_estrato.parquet`
+
+**Ruta:** `data/staging/S01/faltantes_por_estrato.parquet`
+**Script origen:** `01-cuantificacion/cuantificacion_faltantes.py`
+**Granularidad:** Una fila por estrato × columna objetivo (tasas de faltantes condicionadas).
+
+Estratos calculados:
+| Dataset | Estrato | Columnas objetivo |
+|---|---|---|
+| empresas | `clase_riesgo`, `sector` | `prima_anual`, `ciudad` |
+| siniestros | `tipo`, `gravedad` | `parte_cuerpo`, `dias_incapacidad`, `costo_asistencial` |
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `dataset` | `texto` | Origen |
+| `estrato_variable` / `estrato_valor` | `texto` | Dimensión y nivel |
+| `columna` | `texto` | Variable con nulos |
+| `n_filas` / `n_faltantes` / `pct_faltantes` | `entero` / `entero` / `numérico` | Tasa dentro del estrato |
+
+> **Uso en 1.4.2:** evidencia preliminar de dependencia (p. ej. `dias_incapacidad`×`tipo`, `costo_asistencial`×`gravedad`) para hipótesis MAR vs MCAR. No sustituye tests formales de mecanismo.
+
+---
+
 ## Uso en secciones futuras
 
 | Sección | Dataset requerido | Propósito |
 |---|---|---|
 | S01 – 1.3 Hipótesis | `empresa_siniestralidad_completa`, `temporal_empresa_anio`, `temporal_persistencia_yoy`, `panel_empresa_lag_yoy`, `temporal_mensual`, `estacionalidad_mes` | Pruebas formales de diferencia / asociación / GOF |
-| S01 – 1.4 Datos faltantes | `siniestros_staging`, `empresas_staging` | Diagnóstico de nulos y patrones |
+| S01 – 1.4 Datos faltantes | `empresas_staging`, `siniestros_staging`, `faltantes_resumen_*`, `faltantes_patrones`, `faltantes_por_estrato` | Diagnóstico de nulos, mecanismo e imputación |
 | S01 – 1.5 Baseline | `empresa_siniestralidad_completa`, `temporal_empresa_anio`, `panel_empresa_lag_yoy` | Definición del predictor baseline y target anual |
 | S02 – Modelación económica | `empresa_siniestralidad_completa`, `bivariado_resumen_sector`, `temporal_anual`, `predictores_recomendacion`, `hip_confirmaciones_resumen` | Caracterización sectorial; confirmar descarte de mes/geo |
 | S03 – Reto de negocio | `empresa_siniestralidad_tratada`, `siniestros_tratados`, `temporal_empresa_anio`, `panel_empresa_lag_yoy`, `colinealidad_vif`, `predictores_recomendacion`, `hip_features_resumen`, `hip_p12_bondad_ajuste_costo` | Feature set + familia de severidad; CV temporal con lag |
@@ -706,4 +794,4 @@ Sets evaluados:
 
 ---
 
-*Actualizado por: `S01 – 1.2 EDA` + `S01 – 1.3 hip_arquitectura_modelo.py` + `hip_features.py` + `hip_confirmaciones.py` — Prueba Técnica Grupo SURA.*
+*Actualizado por: `S01 – 1.2 EDA` + `S01 – 1.3` (hipótesis) + `S01 – 1.4.1 cuantificacion_faltantes.py` — Prueba Técnica Grupo SURA.*

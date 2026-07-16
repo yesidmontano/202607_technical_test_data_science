@@ -1,0 +1,56 @@
+dataset,estrato_variable,estrato_valor,columna,n_filas,n_faltantes,pct_faltantes
+empresas,clase_riesgo,1,prima_anual,1322,144,10.8926
+empresas,clase_riesgo,1,ciudad,1322,58,4.3873
+empresas,clase_riesgo,2,prima_anual,950,115,12.1053
+empresas,clase_riesgo,2,ciudad,950,45,4.7368
+empresas,clase_riesgo,3,prima_anual,1001,124,12.3876
+empresas,clase_riesgo,3,ciudad,1001,39,3.8961
+empresas,clase_riesgo,4,prima_anual,1056,113,10.7008
+empresas,clase_riesgo,4,ciudad,1056,48,4.5455
+empresas,clase_riesgo,5,prima_anual,671,83,12.3696
+empresas,clase_riesgo,5,ciudad,671,34,5.0671
+empresas,sector,Administracion publica,prima_anual,243,42,17.284
+empresas,sector,Administracion publica,ciudad,243,11,4.5267
+empresas,sector,Agricultura,prima_anual,259,42,16.2162
+empresas,sector,Agricultura,ciudad,259,18,6.9498
+empresas,sector,Alojamiento y comida,prima_anual,242,25,10.3306
+empresas,sector,Alojamiento y comida,ciudad,242,8,3.3058
+empresas,sector,Comercio,prima_anual,652,74,11.3497
+empresas,sector,Comercio,ciudad,652,28,4.2945
+empresas,sector,Construccion,prima_anual,442,52,11.7647
+empresas,sector,Construccion,ciudad,442,26,5.8824
+empresas,sector,Educacion,prima_anual,284,29,10.2113
+empresas,sector,Educacion,ciudad,284,14,4.9296
+empresas,sector,Energia,prima_anual,177,18,10.1695
+empresas,sector,Energia,ciudad,177,5,2.8249
+empresas,sector,Financiero,prima_anual,343,30,8.7464
+empresas,sector,Financiero,ciudad,343,14,4.0816
+empresas,sector,Inmobiliario,prima_anual,350,40,11.4286
+empresas,sector,Inmobiliario,ciudad,350,22,6.2857
+empresas,sector,Manufactura,prima_anual,392,48,12.2449
+empresas,sector,Manufactura,ciudad,392,17,4.3367
+empresas,sector,Mineria,prima_anual,153,13,8.4967
+empresas,sector,Mineria,ciudad,153,8,5.2288
+empresas,sector,Salud,prima_anual,321,23,7.1651
+empresas,sector,Salud,ciudad,321,10,3.1153
+empresas,sector,Servicios profesionales,prima_anual,460,65,14.1304
+empresas,sector,Servicios profesionales,ciudad,460,16,3.4783
+empresas,sector,TIC,prima_anual,414,50,12.0773
+empresas,sector,TIC,ciudad,414,19,4.5894
+empresas,sector,Transporte,prima_anual,268,28,10.4478
+empresas,sector,Transporte,ciudad,268,8,2.9851
+siniestros,tipo,AT,parte_cuerpo,34391,1384,4.0243
+siniestros,tipo,AT,dias_incapacidad,34391,1014,2.9484
+siniestros,tipo,AT,costo_asistencial,34391,2243,6.5221
+siniestros,tipo,EL,parte_cuerpo,5503,217,3.9433
+siniestros,tipo,EL,dias_incapacidad,5503,643,11.6845
+siniestros,tipo,EL,costo_asistencial,5503,319,5.7968
+siniestros,gravedad,grave,parte_cuerpo,10263,447,4.3555
+siniestros,gravedad,grave,dias_incapacidad,10263,421,4.1021
+siniestros,gravedad,grave,costo_asistencial,10263,1318,12.8422
+siniestros,gravedad,leve,parte_cuerpo,29097,1134,3.8973
+siniestros,gravedad,leve,dias_incapacidad,29097,1217,4.1826
+siniestros,gravedad,leve,costo_asistencial,29097,1053,3.6189
+siniestros,gravedad,mortal,parte_cuerpo,534,20,3.7453
+siniestros,gravedad,mortal,dias_incapacidad,534,19,3.5581
+siniestros,gravedad,mortal,costo_asistencial,534,191,35.7678

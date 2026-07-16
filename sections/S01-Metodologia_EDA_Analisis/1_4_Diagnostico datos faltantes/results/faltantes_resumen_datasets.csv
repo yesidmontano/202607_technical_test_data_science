@@ -1,0 +1,3 @@
+dataset,n_filas,n_columnas,n_celdas,n_celdas_faltantes,pct_celdas_faltantes,pct_completitud_celdas,n_filas_con_algun_faltante,pct_filas_con_algun_faltante,n_columnas_con_faltantes,columnas_con_faltantes
+empresas,5000,10,50000,1027,2.054,97.946,775,15.5,3,"ciudad, departamento, prima_anual"
+siniestros,39894,9,359046,5820,1.621,98.379,5544,13.8968,3,"parte_cuerpo, dias_incapacidad, costo_asistencial"
