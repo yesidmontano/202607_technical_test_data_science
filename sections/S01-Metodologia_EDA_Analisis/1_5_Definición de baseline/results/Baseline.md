@@ -97,3 +97,9 @@ Rango histórico F1 ≈ **0.47–0.53**; el último año es el más favorable de
 | Confusión (celdas) | `data/staging/S01/baseline_confusion.parquet` |
 | CSV espejo | `results/baseline_*.csv` |
 | Figuras | `results/imgs/01_baseline_*.png` |
+
+
+## 1.5.2 Justificación del costo de un modelo más complejo
+
+De por si el modelo baseline es capaz de predicir aprox. el 50% de las empresas que van a estar en el top 10% del año siguiente, lo que se traduce en un recall del 50%, para justificar el costo de un modelo más complejo, este debe ser capaz de predecir al menos el 80% de las empresas que van a estar en el top 10% del año siguiente, lo que se traduce en un recall del 80%.
+
