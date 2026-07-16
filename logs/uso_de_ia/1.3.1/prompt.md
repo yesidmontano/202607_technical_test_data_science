@@ -1,0 +1,1 @@
+Que preguntas abiertas quedan de este analisis exploratorio a las cuales les podamos proponer y justificar la realización de pruebas de hipotesis. Nota: no realices el analisis completo solo dame el listado de preguntas y su justificacion de porque ameritan prueba de hipotesis.
