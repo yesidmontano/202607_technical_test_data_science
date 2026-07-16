@@ -260,11 +260,15 @@ import sura_brand as sb
 
 ---
 
-## Condicionantes del Modelado (EDA → S02-S05)
+## Condicionantes del Modelado (EDA + Pruebas de Hipótesis → S02-S05)
 
-> **Referencia autoritativa:** `sections/S01-Metodologia_EDA_Analisis/1_2_EDA/results/Insights_EDA.md`
+> **Referencia autoritativa 1 (EDA):** `sections/S01-Metodologia_EDA_Analisis/1_2_EDA/results/Insights_EDA.md`
 > Sección **"Síntesis Consolidada – Lo que Condiciona el Modelado"** (19 condicionantes).
-> Leer ese documento antes de iniciar cualquier tarea de modelado en S02, S03, S04 o S05.
+>
+> **Referencia autoritativa 2 (Pruebas de Hipótesis):** `sections/S01-Metodologia_EDA_Analisis/1_3_Pruebas de hipotesis/results/Insights_pruebas_hipotesis.md`
+> Sección **"Síntesis Consolidada de Hallazgos – S01-1.3"** (12 pruebas; confirma, descarta y condiciona decisiones de S03–S05).
+>
+> Leer **ambos** documentos antes de iniciar cualquier tarea de modelado en S02, S03, S04 o S05.
 
 ### Feature Set Obligatorio (contrato EDA → S03)
 
@@ -279,17 +283,20 @@ import sura_brand as sb
 | `departamento` | Dummy nacional | Control geográfico | Baja prioridad |
 | `mes` / `año` | Dummies o excluir | Control temporal | Baja prioridad |
 
-### Decisiones de Diseño Derivadas del EDA
+### Decisiones de Diseño Derivadas del EDA y Confirmadas por Pruebas de Hipótesis
 
-- **Modelo de frecuencia:** Binomial Negativa o Zero-Inflated Poisson (sobredispersión + 7.5% ceros). **Nunca OLS directa.**
-- **Modelo de severidad:** Gamma o Lognormal en escala log. Modelos **separados por tipo AT vs EL**.
+- **Modelo de frecuencia:** **Binomial Negativa** obligatoria (φ=17.4, ΔAIC=−34 151 vs Poisson — P1). **Nunca OLS directa ni Poisson.**
+- **Componente Zero-Inflated:** **No** añadir ZIP/ZINB. La NB predice más ceros que los observados (7.5% obs < 12% NB — P2).
+- **Modelo de severidad:** **Lognormal** como familia preferida para costo (ΔAIC=+11 257 vs Gamma — P12). Modelos **separados por tipo AT vs EL** (Cliff's δ=0.24, medianas 10 vs 6 días — P6).
 - **Métrica principal:** Recall / Precisión / F1 en el **decil superior** de costo (no accuracy global). Gini ≈ 0.70; top 10% = 56.5% del costo.
 - **Validación:** esquema temporal T-1 → T estricto. El año de holdout importa (oscilación YoY ≈ ±15%).
 - **Anti-leakage:** `log_lag_n_siniestros` calculado con shift estricto año t-1. No usar variables del año de predicción.
 - **Colinealidad:** VIF máx ≈ 1.7 — no hace falta eliminar predictores. Todos los candidatos son incluibles.
-- **Geografía:** efecto de ~3 pts entre departamentos — feature de baja prioridad; no sobreajustar con dummies por ciudad.
+- **Geografía:** η²=0.002, 0/21 pares Dunn significativos tras Holm (P11) — feature de baja prioridad; usar solo como control descriptivo, **no** como predictor principal.
+- **Estacionalidad mensual:** descartada — amplitud 3.8 pp, Kendall W=0.037 (P8). **No** incluir dummies de mes.
+- **Clase de riesgo:** 5 niveles distinguibles (η²=0.53, δ≈0.40 en saltos adyacentes — P3). **No colapsar** clases.
 - **Winsorización:** P1–P99 en variables numéricas de siniestro y empresa. Usar columnas `*_w` del staging. No borrar filas.
-- **PyMEs dominan** (86.4% del portafolio): recomendaciones en S05 deben ser factibles para empresas con recursos limitados.
+- **PyMEs dominan** (86.4% del portafolio): recomendaciones en S05 deben ser factibles para empresas con recursos limitados. Flag `es_micro` útil para estratificación (P7, δ=0.25).
 
 ### Datasets de Staging Listos para Modelado
 

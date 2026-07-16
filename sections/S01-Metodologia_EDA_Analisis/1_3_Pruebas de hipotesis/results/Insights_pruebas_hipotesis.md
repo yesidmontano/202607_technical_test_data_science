@@ -674,6 +674,142 @@ Holm familiar: P12 sigue rechazando (p-ajustado ≈ 0). No altera la lectura pr�
 
 ---
 
+---
+
+## Síntesis Consolidada de Hallazgos – S01-1.3 Pruebas de Hipótesis
+
+> Esta sección integra los resultados de las **12 pruebas de hipótesis** organizadas en tres bloques, extrae los condicionantes que impactan el pipeline de modelado (S02–S05) y distingue lo que el análisis estadístico confirma, descarta y deja abierto para etapas posteriores.
+
+---
+
+### Panorama Global de las 12 Pruebas
+
+| # | Prueba | Bloque | Resultado | Efecto práctico |
+|---|---|---|---|---|
+| P1 | Sobredispersión conteo | Arquitectura | **RECHAZA H₀** | φ = 17.4 → NB obligatoria |
+| P2 | Exceso de ceros | Arquitectura | **NO rechaza H₀** | NB predice más ceros; ZI innecesario |
+| P3 | Clases de riesgo | Feature set | **RECHAZA H₀** | η² = 0.53; 5 niveles distinguibles |
+| P4 | Sector incremental | Arquitectura | **RECHAZA H₀** | LR p=0.004; efecto moderado |
+| P5 | Interacción sector×clase | Feature set | **RECHAZA H₀** | Pseudo-R² incr. = 0.0012; prioridad baja |
+| P6 | Severidad AT vs EL | Arquitectura | **RECHAZA H₀** | δ=0.24; medianas 10 vs 6 días |
+| P7 | Microempresas | Feature set | **RECHAZA H₀** | δ=0.25; frecuencia 1.7× mayor |
+| P8 | Estacionalidad mensual | Confirmación | **NO rechaza H₀** | Amplitud 3.8 pp; W=0.037 |
+| P9 | Persistencia lag t→t+1 | Feature set | **RECHAZA H₀** | Spearman ρ=0.44; Pearson r=0.70 |
+| P10 | Retención Top 10% | Feature set | **RECHAZA H₀** | Lift 5×; Cohen h=0.93 |
+| P11 | Heterogeneidad departamento | Confirmación | **NO rechaza H₀** | η²=0.002; 0/21 pares Dunn |
+| P12 | Bondad ajuste costo | Confirmación | **RECHAZA H₀** (Normal exacta) | AIC: Lognormal > Gamma |
+
+**Balance:** 9 pruebas rechazan H₀ / 3 no rechazan. Las tres no-rechazadas son precisamente las pruebas de descarte (P2, P8, P11), lo que valida la consistencia del análisis: la ausencia de señal donde se buscaba descartar es un resultado positivo, no un error de potencia.
+
+---
+
+### Lo que las Pruebas Confirman (Incluir en el Modelo)
+
+#### 1. Arquitectura del modelo de frecuencia → **Binomial Negativa**
+
+La sobredispersión es masiva (φ = 17.4, ΔAIC = −34 151). Usar Poisson generaría intervalos de confianza incorrectos y tarifas mal calibradas. La NB es el modelo base **no negociable** para frecuencia de siniestros en S03.
+
+Adicionalmente, la NB absorbe los ceros observados sin necesidad de componente Zero-Inflated: el 7.5% de ceros observados está *por debajo* del 12% que predice la NB. Añadir ZIP/ZINB sería sobreparametrización.
+
+#### 2. Sector económico → **Feature con señal incremental real pero moderada**
+
+El sector aporta señal más allá de la clase de riesgo (LR p=0.004; η² marginal = 0.44). No obstante, el efecto incremental ajustado es pequeño (pseudo-R² = 0.0012). La decisión de diseño es: **incluir sector**, pero con la expectativa de que su peso en el modelo final será secundario respecto a `clase_riesgo` y `log_lag_n_siniestros`. Target encoding o embeddings CIIU son los métodos de codificación recomendados.
+
+#### 3. Clase de riesgo → **5 niveles completos, sin colapsar**
+
+Todos los saltos adyacentes (1↔2, 2↔3, 3↔4, 4↔5) son estadísticamente distinguibles con magnitud mediano-grande (δ ≈ 0.40). Colapsar dos o más clases eliminaría gradientes reales. `clase_riesgo` es el predictor estructural de mayor peso en el portafolio.
+
+#### 4. Historial de siniestros → **Feature obligatorio (lag t-1)**
+
+La persistencia del conteo entre años consecutivos es robusta: Spearman ρ = 0.44, Pearson r = 0.70, confirmada en los 6 pares de años disponibles. La tasa de retención en el Top 10% es del 50% (lift 5× vs azar aleatorio), con Cohen h = 0.93. El historial no es ruido — es el predictor dinámico más defendible del portafolio y justifica tanto el feature `log_lag_n_siniestros` en S03 como el diseño del recomendador en S05.
+
+#### 5. Modelos de severidad separados → **AT ≠ EL**
+
+Las distribuciones de días de incapacidad difieren en forma *y* localización entre accidentes de trabajo y enfermedades laborales (KS p < 10⁻¹²⁸; MWU δ = 0.24). Un único modelo de severidad mezclaría dos procesos generadores distintos. La mediana en EL (10 días) duplica la de AT (6 días); en P90, la brecha se amplifica aún más (60 vs 35 días). **Modelos separados por tipo de siniestro son una exigencia metodológica, no una preferencia.**
+
+#### 6. Familia distribucional de costo → **Lognormal como primera opción**
+
+Aunque la normalidad exacta del log-costo se rechaza (esperado con n≈37k), la forma es casi simétrica (skew=0.41, kurtosis≈0) y el AIC favorece Lognormal sobre Gamma por amplio margen (ΔAIC = +11 257). Para S03 se usa Lognormal; Gamma permanece como runner-up. La winsorización P1–P99 ya aplicada controla las colas extremas.
+
+---
+
+### Lo que las Pruebas Descartan (Excluir o Bajar Prioridad)
+
+| Elemento | Prueba | Razón para descartar |
+|---|---|---|
+| **Modelo Poisson** | P1 | φ = 17.4 → subestima varianza masivamente |
+| **Componente Zero-Inflated** | P2 | NB ya supera los ceros observados; ZI sobreparametriza |
+| **Dummies de mes / estacionalidad** | P8 | Amplitud 3.8 pp < umbral 5 pp; W=0.037 (trivial) |
+| **Departamento/ciudad como predictor principal** | P11 | η²=0.002; 0/21 pares distinguibles tras Holm |
+| **Interacción sector×clase como feature prioritario** | P5 | Pseudo-R² incremental = 0.0012; coste vs beneficio negativo en V1 |
+
+---
+
+### Lo que las Pruebas Dejan Abierto o Condicionado
+
+| Elemento | Estado | Condición para revisión |
+|---|---|---|
+| Interacción sector×clase | Estadísticamente real, prácticamente débil | Revisitar si residuales del modelo aditivo muestran patrón sistemático por celda sector×clase |
+| Flag `es_micro` / segmento tamaño | Signal moderada (δ=0.25) | Útil para estratificación y S05; no desplaza clase ni lag como predictores |
+| Geografía como control descriptivo | No como predictor principal | Puede mantenerse para reporting por región sin incluirlo en el modelo predictivo |
+| Distribución Gamma para severidad | Runner-up vs Lognormal | Evaluar con datos reales de S03 antes de descartar definitivamente |
+
+---
+
+### Mapa de Decisiones → Pipeline S02–S05
+
+```
+Pruebas S01-1.3
+      │
+      ├─► S02 Modelación económica
+      │     └─ P8  → Sin componente estacional en nowcast/series de tiempo
+      │     └─ P11 → Geografía solo como agregado descriptivo, no predictor
+      │
+      ├─► S03 Reto de negocio (frecuencia + severidad)
+      │     ├─ P1  → Frecuencia: Binomial Negativa (no Poisson)
+      │     ├─ P2  → No añadir Zero-Inflated; NB estándar suficiente
+      │     ├─ P3  → clase_riesgo: 5 niveles ordinales (obligatorio)
+      │     ├─ P4  → sector: incluir con target encoding (efecto moderado)
+      │     ├─ P5  → Interacción sector×clase: modelo aditivo primero
+      │     ├─ P6  → Severidad: modelos separados AT y EL
+      │     ├─ P9  → log_lag_n_siniestros: feature obligatorio (r=0.70)
+      │     └─ P12 → Severidad (costo): familia Lognormal > Gamma
+      │
+      ├─► S04 Inferencia causal
+      │     └─ P10 → Top 10% persiste 50% YoY (lift 5×) → el target
+      │              tiene memoria real, no ruido; valida diseño DiD/PSM
+      │              sobre empresas en riesgo persistente
+      │
+      └─► S05 Sistema recomendador
+            ├─ P7  → Microempresas: flag es_micro / estratificación especial
+            ├─ P9  → Historial: input clave del sistema de scoring
+            └─ P10 → Empresas recurrentes en Top 10%: segmento prioritario
+                     de intervención proactiva
+```
+
+---
+
+### Síntesis de Tamaños de Efecto
+
+| Prueba | Métrica de efecto | Valor | Magnitud convencional |
+|---|---|---|---|
+| P1 – Sobredispersión | φ = (Var−E)/E | **17.37** | Extrema |
+| P3 – Clase de riesgo | η² K-W | **0.53** | Grande |
+| P4 – Sector (marginal) | η² K-W | **0.44** | Grande |
+| P4 – Sector (incremental) | Pseudo-R² LR | 0.0012 | Muy pequeño |
+| P5 – Interacción | Pseudo-R² LR | 0.0012 | Muy pequeño |
+| P6 – AT vs EL (días) | Cliff's δ | **0.24** | Mediano |
+| P7 – Microempresas | Cliff's δ | **0.25** | Mediano |
+| P8 – Estacionalidad | Kendall W | 0.037 | Despreciable |
+| P9 – Persistencia | Spearman ρ | **0.44** | Moderado-fuerte |
+| P10 – Retención Top 10% | Cohen h | **0.93** | Grande |
+| P11 – Geografía | η² K-W | 0.002 | Despreciable |
+| P12 – Bondad ajuste | ΔAIC Lognormal−Gamma | **−11 257** | Fuerte preferencia |
+
+**Observación clave:** El tamaño de efecto desambigua los casos donde n grande genera p-valores pequeños con señal práctica despreciable (P4 incremental, P5, P11) de los casos donde la señal es genuinamente importante (P1, P3, P9, P10).
+
+---
+
 ## Cierre del bloque S01-1.3 (12 preguntas)
 
 | Bloque | Preguntas | Resultado neto |
