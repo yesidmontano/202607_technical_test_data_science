@@ -2,15 +2,13 @@
 
 **ID:** `1.2.2`
 **Tarea:** Análisis Univariado EDA – S01 / 1.2 EDA
-**Fecha:** 2026-07-19
 **Sección del repositorio:** `sections/S01-Metodologia_EDA_Analisis/1_2_EDA/code/01-analisis_univariado/`
 
 ---
 
-## 1. Herramienta utilizada
+## 1. Modelo utilizado
 
-- **Modelo:** Claude Sonnet 4.5 (Thinking) vía Antigravity IDE
-- **Plataforma:** Google DeepMind Antigravity (IDE integrado)
+- **Modelo:** Claude Sonnet 4.5 (Thinking)
 - **Modo:** Conversación interactiva con ejecución de comandos en terminal
 
 ---
@@ -107,4 +105,4 @@ Se utilizó IA asistida para acelerar la escritura del script de análisis univa
 
 ---
 
-*Registro generado por Antigravity IDE · S01-1.2.2 · Prueba Técnica Grupo SURA.*
+*Registro · S01-1.2.2 · Prueba Técnica Grupo SURA.*

@@ -117,7 +117,7 @@ Realizar un análisis exploratorio completo: distribuciones univariadas de la fr
 
 ---
 
-## Síntesis y condicionantes para el modelado
+## Síntesis preliminar (tras univariado)
 
 | Hallazgo | Implicación para S03 / S04 / S05 |
 |---|---|
@@ -128,6 +128,143 @@ Realizar un análisis exploratorio completo: distribuciones univariadas de la fr
 | PyMEs dominan (86.4%) | Recomendaciones deben ser factibles para empresas con recursos limitados |
 | Asimetría severidad = 10.42 | Transformación log obligatoria; winsorizar outliers extremos |
 | AT y EL tienen distribuciones distintas | Modelos de severidad separados por tipo de siniestro |
+
+---
+
+## 1.2.3 – Análisis Bivariado (resultados preliminares)
+
+> Generado a partir de `02-analisis_bivariado/analisis_bivariado.py` · Panel completo de 5 000 empresas (incluye ceros) · Pruebas Kruskal-Wallis y Spearman.
+
+---
+
+### A. Siniestralidad × Clase de riesgo
+
+**A1 – Boxplots de frecuencia, costo y severidad**
+![Siniestralidad por clase de riesgo](imgs/02_A1_siniestralidad_por_clase_riesgo.png)
+
+- Gradiente monotónico claro en las tres métricas: a mayor clase ARL, mayor frecuencia relativa, mayor costo acumulado y mayor severidad media.
+- **Spearman ρ(clase, frecuencia×100) = 0.727** (p < 0.001) — asociación fuerte y ordenada.
+- Spearman con costo acumulado: **ρ = 0.654**; con n° siniestros: **ρ = 0.599**.
+
+**A2 – Medianas por clase**
+![Gradiente de medianas](imgs/02_A2_gradiente_mediana_clase_riesgo.png)
+
+| Clase | n empresas | Freq.×100 (mediana) | Costo acum. (mediana) | Severidad (mediana) |
+|---|---|---|---|---|
+| 1 | 1 322 | 5.6 | $1.7M | 6.2 días |
+| 2 | 950 | 10.3 | $4.2M | 8.0 días |
+| 3 | 1 001 | 17.5 | $10.4M | 10.5 días |
+| 4 | 1 056 | 26.5 | $21.2M | 13.3 días |
+| 5 | 671 | 38.7 | $41.6M | 17.0 días |
+
+- La frecuencia mediana de la **clase 5 es 6.9× la de la clase 1**.
+
+**A3 – Participación del costo del portafolio**
+![Share de costo por clase](imgs/02_A3_share_costo_clase_riesgo.png)
+
+- Las clases **4 y 5 concentran ~73.3% del costo total** del portafolio (34.6% + 38.8%), pese a representar solo el 34.5% de las empresas.
+- **Implicación:** priorizar prevención y modelado en clases altas maximiza impacto económico.
+
+---
+
+### B. Siniestralidad × Sector económico
+
+**B1 – Frecuencia relativa por sector**
+![Frecuencia por sector](imgs/02_B1_frecuencia_por_sector.png)
+
+- **Kruskal-Wallis H = 2 210, p ≈ 0** → diferencias sectoriales muy significativas.
+- **Top 5 (mayor frecuencia mediana):** Construcción (36.0), Minería (33.3), Energía (30.2), Manufactura (27.1), Transporte (25.3).
+- **Bottom 5 (menor frecuencia):** TIC (5.9), Financiero (6.1), Inmobiliario (6.5), Servicios profesionales (7.1), Educación (9.8).
+- El spread top/bottom es ~6× — el sector es un predictor de primer orden, comparable en magnitud a la clase de riesgo.
+
+**B2 – Costo acumulado por sector**
+![Costo por sector](imgs/02_B2_costo_por_sector.png)
+
+- El ranking de costos sigue el de frecuencia en sectores industriales, con matices: algunos sectores de frecuencia media pueden tener costos elevados por severidad o tamaño medio.
+
+**B3 – Interacción sector × clase de riesgo**
+![Heatmap sector × clase](imgs/02_B3_heatmap_sector_clase_riesgo.png)
+
+- Dentro de cada sector el gradiente por clase se mantiene; los sectores de alto riesgo base (Construcción, Minería) alcanzan frecuencias extremas en clases 4–5.
+- **Implicación para S02/S03:** modelar interacción `sector × clase_riesgo` o estratificar; no asumir aditividad perfecta.
+
+---
+
+### C. Siniestralidad × Tamaño
+
+**C1 – Scatter tamaño vs siniestralidad**
+![Scatter tamaño](imgs/02_C1_scatter_tamano_siniestralidad.png)
+
+- **n_trabajadores ↔ n_siniestros: ρ = 0.601** — el conteo absoluto crece con la exposición (esperado).
+- **n_trabajadores ↔ frecuencia×100: ρ = −0.160** — correlación débil negativa: las microempresas muestran tasas relativas más altas (posible efecto de denominador pequeño / mayor volatilidad).
+
+**C2 – Boxplots por segmento**
+![Boxplot segmento](imgs/02_C2_boxplot_segmento_tamano.png)
+
+| Segmento | n | Freq.×100 (med) | n siniestros (med) | Costo (med) |
+|---|---|---|---|---|
+| Micro (≤10) | 598 | 25.0 | 2 | $2.1M |
+| Pequeña (11–50) | 2 961 | 15.4 | 4 | $5.9M |
+| Mediana (51–200) | 1 359 | 13.4 | 11 | $22.5M |
+| Grande (>200) | 82 | 12.4 | 38 | $76.2M |
+
+- El **costo y el conteo crecen con el tamaño**; la **tasa relativa es mayor en micro**. Para modelado de frecuencia relativa, el tamaño actúa como control/offset, no como driver lineal positivo.
+
+**C3 – Prima vs costo**
+![Prima vs costo](imgs/02_C3_scatter_prima_vs_costo.png)
+
+- **Spearman ρ(prima_anual, costo_total) = 0.801** — la prima refleja bien la carga de siniestralidad observada (proxy de exposición + riesgo tarifado).
+- Útil como feature o como baseline de pricing en S02/S03; vigilar colinealidad con `n_trabajadores` y `clase_riesgo`.
+
+---
+
+### D. Siniestralidad × Geografía
+
+**D1 – Por departamento**
+![Siniestralidad por departamento](imgs/02_D1_siniestralidad_por_departamento.png)
+
+- Kruskal-Wallis departamento~frecuencia: **H = 13.4, p = 0.037** (marginalmente significativo).
+- Rango de medianas entre departamentos: **solo 2.9 puntos** de frecuencia×100 (13.8–16.7) — efecto geográfico **débil en magnitud práctica**.
+- Atlántico lidera en frecuencia y costo medianos; Santander en el extremo inferior.
+
+**D2 – Por ciudad**
+![Siniestralidad por ciudad](imgs/02_D2_siniestralidad_por_ciudad.png)
+
+- Resultados idénticos al departamento: en este dataset sintético hay **mapeo 1:1 ciudad–departamento** (7 ciudades / 7 departamentos). No aporta señal adicional.
+
+**D3 – Mix de clase de riesgo por departamento**
+![Composición clase por depto](imgs/02_D3_composicion_clase_por_departamento.png)
+
+- La composición de clases de riesgo es similar entre departamentos → las pequeñas diferencias geográficas **no se explican por un mix de riesgo muy distinto**.
+- **Implicación:** geografía es candidata secundaria/control; priorizar clase y sector en el feature set.
+
+---
+
+### E. Matriz de correlación (Spearman)
+
+**E1 – Predictores numéricos vs siniestralidad**
+![Heatmap Spearman](imgs/02_E1_heatmap_spearman_predictores.png)
+
+| Par | ρ Spearman | Lectura |
+|---|---|---|
+| `clase_riesgo` ~ `frecuencia_x100` | 0.73 | Predictor dominante |
+| `prima_anual` ~ `costo_total_empresa` | 0.80 | Proxy fuerte de carga |
+| `n_trabajadores` ~ `n_siniestros` | 0.60 | Efecto de exposición |
+| `n_trabajadores` ~ `frecuencia_x100` | −0.16 | Débil / inverso |
+| `antiguedad_meses` ~ métricas | ≈ 0 | Baja relevancia bivariada |
+
+---
+
+## Síntesis bivariada y condicionantes para el modelado
+
+| Hallazgo | Implicación para S02 / S03 / S04 / S05 |
+|---|---|
+| `clase_riesgo` ρ≈0.73 con frecuencia; clases 4–5 = 73% del costo | Feature obligatorio; posible estratificación o pesos por clase |
+| Sector discrimina ~6× entre extremos (KW H≈2210) | Incluir `sector` (o embedding CIIU); explorar interacción con clase |
+| Tamaño ↑ conteo y costo; ↓ levemente la tasa relativa | Usar offset/exposición (`n_trabajadores`) en modelos de conteo; no confundir tasa con volumen |
+| `prima_anual` ρ=0.80 con costo | Buen proxy / baseline; chequear VIF vs tamaño y clase |
+| Geografía p≈0.04 pero rango ~3 pts | Feature de baja prioridad; evitar sobreajustar con dummies geográficas |
+| Panel completo en staging (`empresa_siniestralidad_completa`) | Usar este dataset (no el de solo siniestros) para modelado con ceros |
 
 ---
 

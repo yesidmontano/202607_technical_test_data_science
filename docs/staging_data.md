@@ -11,9 +11,16 @@
 
 | Dataset | Sección origen | Ruta | Filas | Columnas |
 |---|---|---|---|---|
-| [`empresas_staging.parquet`](#1-empresas_stagingparquet) | S01 – 1.2 EDA | `data/staging/S01/` | 5 000 | 13 |
-| [`siniestros_staging.parquet`](#2-siniestros_stagingparquet) | S01 – 1.2 EDA | `data/staging/S01/` | 39 894 | 14 |
-| [`siniestralidad_empresa.parquet`](#3-siniestralidad_empresaparquet) | S01 – 1.2 EDA | `data/staging/S01/` | 4 625 | 19 |
+| [`empresas_staging.parquet`](#1-empresas_stagingparquet) | S01 – 1.2 EDA (univariado) | `data/staging/S01/` | 5 000 | 13 |
+| [`siniestros_staging.parquet`](#2-siniestros_stagingparquet) | S01 – 1.2 EDA (univariado) | `data/staging/S01/` | 39 894 | 14 |
+| [`siniestralidad_empresa.parquet`](#3-siniestralidad_empresaparquet) | S01 – 1.2 EDA (univariado) | `data/staging/S01/` | 4 625 | 19 |
+| [`empresa_siniestralidad_completa.parquet`](#4-empresa_siniestralidad_completaparquet) | S01 – 1.2 EDA (bivariado) | `data/staging/S01/` | 5 000 | 28 |
+| [`bivariado_resumen_clase_riesgo.parquet`](#5-bivariado_resumen_clase_riesgoparquet) | S01 – 1.2 EDA (bivariado) | `data/staging/S01/` | 5 | 15 |
+| [`bivariado_resumen_sector.parquet`](#6-bivariado_resumen_sectorparquet) | S01 – 1.2 EDA (bivariado) | `data/staging/S01/` | 15 | 15 |
+| [`bivariado_resumen_segmento.parquet`](#7-bivariado_resumen_segmentoparquet) | S01 – 1.2 EDA (bivariado) | `data/staging/S01/` | 4 | 15 |
+| [`bivariado_resumen_departamento.parquet`](#8-bivariado_resumen_departamentoparquet) | S01 – 1.2 EDA (bivariado) | `data/staging/S01/` | 7 | 15 |
+| [`bivariado_resumen_ciudad.parquet`](#9-bivariado_resumen_ciudadparquet) | S01 – 1.2 EDA (bivariado) | `data/staging/S01/` | 7 | 15 |
+| [`bivariado_tests_asociacion.parquet`](#10-bivariado_tests_asociacionparquet) | S01 – 1.2 EDA (bivariado) | `data/staging/S01/` | 23 | 5 |
 
 ---
 
@@ -103,6 +110,109 @@
 
 > **Nota de uso:** Este es el dataset de análisis principal para S03 (modelado) y S04 (causalidad).
 > Las empresas sin siniestros (~375) no aparecen; tratar como `n_siniestros = 0` en modelos de clasificación.
+> Preferir [`empresa_siniestralidad_completa.parquet`](#4-empresa_siniestralidad_completaparquet) cuando se necesite el universo completo de 5 000 empresas.
+
+---
+
+## 4. `empresa_siniestralidad_completa.parquet`
+
+**Ruta:** `data/staging/S01/empresa_siniestralidad_completa.parquet`
+**Script origen:** `sections/S01-Metodologia_EDA_Analisis/1_2_EDA/code/02-analisis_bivariado/analisis_bivariado.py`
+**Granularidad:** Una fila por empresa afiliada (5 000 registros) — incluye empresas sin siniestros.
+**Base:** Left join de `empresas_staging` + métricas de `siniestralidad_empresa`, con ceros imputados.
+
+| Campo | Tipo | Descripción | ¿Nuevo? |
+|---|---|---|---|
+| *(todas las de `empresas_staging`)* | — | Atributos de la empresa | Heredadas |
+| `n_siniestros` | `entero` | Total de siniestros (0 si sin eventos) | Completada |
+| `total_dias_incapacidad` | `entero` | Suma de días de incapacidad (0 si sin eventos) | Completada |
+| `costo_total_empresa` | `numérico` | Costo acumulado COP (0 si sin eventos) | Completada |
+| `costo_asistencial_total` | `numérico` | Costo asistencial acumulado | Completada |
+| `costo_prestacion_total` | `numérico` | Prestaciones económicas acumuladas | Completada |
+| `costo_medio_siniestro` | `numérico` | Costo medio por siniestro (`NaN` si n_siniestros=0) | De siniestralidad |
+| `severidad_media` | `numérico` | Días medios de incapacidad (`NaN` si n_siniestros=0) | De siniestralidad |
+| `frecuencia_x100` | `numérico` | Siniestros por 100 trabajadores (0 si sin eventos) | Completada |
+| `log_frecuencia_x100` | `numérico` | `log(1 + frecuencia_x100)` | Recalculada |
+| `anio_primero` / `anio_ultimo` | `entero` | Rango temporal de siniestros (`NaN` si sin eventos) | De siniestralidad |
+| `log_costo_total_empresa` | `numérico` | `log(1 + costo_total_empresa)` | **Derivada** |
+| `log_n_siniestros` | `numérico` | `log(1 + n_siniestros)` | **Derivada** |
+| `tiene_siniestro` | `entero` | Flag binario: 1 si `n_siniestros > 0` | **Derivada** |
+| `segmento` | `category` | Micro / Pequeña / Mediana / Grande según `n_trabajadores` | **Derivada** |
+
+> **Uso recomendado:** panel maestro para modelado, hipótesis y baseline. Evita el sesgo de selección de `siniestralidad_empresa` (solo empresas con siniestros).
+
+---
+
+## 5. `bivariado_resumen_clase_riesgo.parquet`
+
+**Ruta:** `data/staging/S01/bivariado_resumen_clase_riesgo.parquet`
+**Script origen:** `02-analisis_bivariado/analisis_bivariado.py`
+**Granularidad:** Una fila por clase de riesgo ARL (1–5).
+
+Campos agregados (comunes a todos los resúmenes bivariados 5–9):
+
+| Campo | Descripción |
+|---|---|
+| `<dimensión>` | Variable de estratificación (`clase_riesgo`, `sector`, `segmento`, `departamento` o `ciudad`) |
+| `n_empresas` | Conteo de empresas en el grupo |
+| `pct_con_siniestro` | % de empresas con al menos un siniestro |
+| `n_siniestros_mediana` / `_media` | Conteo de siniestros |
+| `frecuencia_x100_mediana` / `_media` | Tasa relativa |
+| `costo_total_mediana` / `_media` / `_suma` | Costo acumulado |
+| `severidad_mediana` / `_media` | Días de incapacidad medios (sobre empresas con siniestros) |
+| `n_trabajadores_mediana` | Tamaño mediano |
+| `prima_anual_mediana` | Prima mediana |
+| `share_costo_pct` | Participación del grupo en el costo total del portafolio (%) |
+
+---
+
+## 6. `bivariado_resumen_sector.parquet`
+
+**Ruta:** `data/staging/S01/bivariado_resumen_sector.parquet`
+**Granularidad:** Una fila por sector económico (15 sectores).
+**Esquema:** idéntico al resumen de clase de riesgo (sección 5), con dimensión `sector`.
+
+---
+
+## 7. `bivariado_resumen_segmento.parquet`
+
+**Ruta:** `data/staging/S01/bivariado_resumen_segmento.parquet`
+**Granularidad:** Una fila por segmento de tamaño (Micro ≤10 / Pequeña 11–50 / Mediana 51–200 / Grande >200).
+**Esquema:** idéntico al resumen de clase de riesgo (sección 5), con dimensión `segmento`.
+
+---
+
+## 8. `bivariado_resumen_departamento.parquet`
+
+**Ruta:** `data/staging/S01/bivariado_resumen_departamento.parquet`
+**Granularidad:** Una fila por departamento (7 departamentos).
+**Esquema:** idéntico al resumen de clase de riesgo (sección 5), con dimensión `departamento`.
+
+---
+
+## 9. `bivariado_resumen_ciudad.parquet`
+
+**Ruta:** `data/staging/S01/bivariado_resumen_ciudad.parquet`
+**Granularidad:** Una fila por ciudad (7 ciudades; mapeo 1:1 con departamento en este dataset sintético).
+**Esquema:** idéntico al resumen de clase de riesgo (sección 5), con dimensión `ciudad`.
+
+---
+
+## 10. `bivariado_tests_asociacion.parquet`
+
+**Ruta:** `data/staging/S01/bivariado_tests_asociacion.parquet`
+**Script origen:** `02-analisis_bivariado/analisis_bivariado.py`
+**Granularidad:** Una fila por prueba estadística (23 pruebas).
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `dimension` | `texto` | Variable o par evaluado (ej. `clase_riesgo`, `n_trabajadores ~ n_siniestros`) |
+| `metric` | `texto` | Métrica de siniestralidad evaluada |
+| `test` | `texto` | `Kruskal-Wallis` o `Spearman` |
+| `statistic` | `numérico` | Estadístico H (KW) o ρ (Spearman) |
+| `pvalue` | `numérico` | Valor-p de la prueba |
+
+> **Nota:** Las pruebas son exploratorias (no corregidas por comparaciones múltiples). Útiles como screening previo a S01-1.3 (hipótesis formales).
 
 ---
 
@@ -110,14 +220,14 @@
 
 | Sección | Dataset requerido | Propósito |
 |---|---|---|
-| S01 – 1.3 Hipótesis | `siniestralidad_empresa`, `siniestros_staging` | Pruebas de diferencia de medias / proporciones |
+| S01 – 1.3 Hipótesis | `empresa_siniestralidad_completa`, `bivariado_tests_asociacion` | Pruebas formales de diferencia / asociación |
 | S01 – 1.4 Datos faltantes | `siniestros_staging`, `empresas_staging` | Diagnóstico de nulos y patrones |
-| S01 – 1.5 Baseline | `siniestralidad_empresa` | Definición del predictor baseline |
-| S02 – Modelación económica | `empresas_staging`, `siniestralidad_empresa` | Caracterización sectorial |
-| S03 – Reto de negocio | `siniestralidad_empresa` | Modelado frecuencia-severidad |
-| S04 – Inferencia causal | `siniestralidad_empresa` | Grupo tratado / control |
-| S05 – Recomendador | `empresas_staging` | Perfil de empresa para recomendación |
+| S01 – 1.5 Baseline | `empresa_siniestralidad_completa` | Definición del predictor baseline |
+| S02 – Modelación económica | `empresa_siniestralidad_completa`, `bivariado_resumen_sector` | Caracterización sectorial |
+| S03 – Reto de negocio | `empresa_siniestralidad_completa` | Modelado frecuencia-severidad |
+| S04 – Inferencia causal | `empresa_siniestralidad_completa` | Grupo tratado / control |
+| S05 – Recomendador | `empresas_staging`, `empresa_siniestralidad_completa` | Perfil de empresa para recomendación |
 
 ---
 
-*Generado por: `S01 – 1.2 EDA | analisis_univariado.py` — Prueba Técnica Grupo SURA.*
+*Actualizado por: `S01 – 1.2 EDA | analisis_univariado.py` + `analisis_bivariado.py` — Prueba Técnica Grupo SURA.*

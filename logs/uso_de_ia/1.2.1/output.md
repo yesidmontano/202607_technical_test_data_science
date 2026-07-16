@@ -1,8 +1,7 @@
 # Output – Paquete de Manual de Marca SURA para Visualizaciones EDA
 
 **Tarea:** 1.2.1 – Creación del paquete `sura_brand`  
-**Fecha:** 2026-07-19  
-**IA Utilizada:** Antigravity (Claude Sonnet 4.6 Thinking)
+**Modelo:** Claude Sonnet 4.6 (Thinking)
 
 ---
 
@@ -226,9 +225,8 @@ plt.show()
 
 ---
 
-## Herramientas de IA Utilizadas
+## Modelos de IA Utilizados
 
-| Herramienta | Uso |
-|-------------|-----|
-| Antigravity (Claude Sonnet 4.6 Thinking) | Investigación de marca, arquitectura del paquete, implementación de todos los módulos, documentación |
-| Búsqueda web | Consulta de colores Pantone/HEX oficiales de SURA y lineamientos del manual de marca |
+| Modelo | Uso |
+|--------|-----|
+| Claude Sonnet 4.6 (Thinking) | Investigación de marca, arquitectura del paquete, implementación de todos los módulos, documentación |

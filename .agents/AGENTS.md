@@ -209,7 +209,7 @@ logs/uso_de_ia/
 
 ### Formato de `output.md`
 Cada `output.md` debe incluir:
-1. **Herramienta utilizada** (modelo exacto, plataforma)
+1. **Modelo utilizado** (solo el modelo, p. ej. Grok 4.5, Claude Sonnet 4.5 — **sin** plataforma/IDE)
 2. **Por qué se usó** (justificación de la decisión)
 3. **Qué se tomó** (código, ideas, texto — con nivel de modificación)
 4. **Qué se descartó** o requirió corrección manual
