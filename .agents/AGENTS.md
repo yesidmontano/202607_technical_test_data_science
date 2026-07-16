@@ -44,9 +44,15 @@ con semilla fija, rutas relativas y entorno documentado.
 ├── docs/                          # Enunciado y documentación de referencia
 ├── logs/
 │   └── uso_de_ia/
-│       └── <id>/
-│           ├── prompt.md          # Prompt exacto enviado a la IA
-│           └── output.md          # Resumen de lo obtenido de la IA
+│       ├── S01/                   # Logs de Sección 1 (EDA / metodología)
+│       │   └── <id>/              # Ej: 1.2.1
+│       │       ├── prompt.md
+│       │       └── output.md
+│       ├── S02/                   # Logs de Sección 2 (modelación económica)
+│       │   └── <id>/              # Ej: 2.1.1
+│       │       ├── prompt.md
+│       │       └── output.md
+│       └── S0X/                   # …una carpeta por sección (S03–S07)
 ├── packages/
 │   └── sura_brand/                # Paquete de manual de marca (pip install -e)
 │       └── sura_brand/            # Código fuente del paquete
@@ -198,13 +204,22 @@ sb.create_kpi_figure({"Métrica": valor, ...})
 **Toda interacción con herramientas de IA debe quedar registrada.**
 
 ### Estructura de un registro
-Cada tarea asistida por IA crea dos archivos bajo `logs/uso_de_ia/<id>/`:
+Cada tarea asistida por IA crea dos archivos bajo `logs/uso_de_ia/S0X/<id>/`:
 
 ```
 logs/uso_de_ia/
-└── <sección>.<subsección>.<item>/    # Ej: 1.2.1, 3.2.1, 4.1.1
-    ├── prompt.md                      # Prompt enviado (verbatim)
-    └── output.md                      # Resumen: qué se usó, por qué, qué se tomó
+├── S01/                               # Sección 1
+│   └── <id>/                          # Ej: 1.2.1
+│       ├── prompt.md                  # Prompt enviado (verbatim)
+│       └── output.md                  # Resumen: qué se usó, por qué, qué se tomó
+├── S02/                               # Sección 2
+│   └── <id>/                          # Ej: 2.1.1
+│       ├── prompt.md
+│       └── output.md
+└── S0X/                               # …S03–S07 según la sección
+    └── <id>/                          # Ej: 3.2.1, 4.1.1
+        ├── prompt.md
+        └── output.md
 ```
 
 ### Formato de `output.md`
@@ -216,9 +231,10 @@ Cada `output.md` debe incluir:
 5. **Lecciones** o advertencias relevantes
 
 ### Identificación de registros
-El `<id>` sigue el esquema `<S>.<sub>.<item>` donde `<S>` es el número de sección principal:
-- `1.2.1` → Sección 1 (EDA), subsección 1.2 (EDA), ítem 1 (paquete sura_brand)
-- `3.2.1` → Sección 3 (Reto de negocio), subsección 3.2 (modelado frecuencia/severidad), ítem 1
+La ruta es `logs/uso_de_ia/S0X/<id>/` donde `S0X` agrupa por sección y `<id>` sigue el esquema `<S>.<sub>.<item>`:
+- `S01/1.2.1` → Sección 1 (EDA), subsección 1.2 (EDA), ítem 1 (paquete sura_brand)
+- `S02/2.1.1` → Sección 2 (Modelación económica), subsección 2.1, ítem 1
+- `S03/3.2.1` → Sección 3 (Reto de negocio), subsección 3.2 (modelado frecuencia/severidad), ítem 1
 
 ---
 
