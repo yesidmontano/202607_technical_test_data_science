@@ -236,7 +236,80 @@ Staging nuevo: `faltantes_mecanismos_tests`, `_logit`, `_logit_coefs`, `_veredic
 
 ---
 
+## 1.4.3 – Estrategia de imputación (aplicada)
+
+> Generado a partir de `03-estrategia_imputacion/estrategia_imputacion.py`.  
+> Anclado a veredictos 1.4.2. **No modifica** `empresas_staging` / `siniestros_staging` (1.2); genera `empresas_imputadas` y `siniestros_imputados`.
+
+![Catálogo de estrategias](imgs/03_imputacion_estrategia_resumen.png)
+
+### A. Estrategias aplicadas
+
+| Variable | Mecanismo (1.4.2) | Estrategia | N imputados | R² (log OLS) |
+|---|---|---|---:|---:|
+| `ciudad` | MCAR | categoría `desconocido` | 224 | — |
+| `departamento` | MCAR | categoría `desconocido` (bloque = ciudad) | 224 | — |
+| `parte_cuerpo` | MCAR | categoría `desconocido` | 1 601 | — |
+| `prima_anual` | MAR | OLS estocástica log ~ sector + tamaño + antigüedad | 579 | **0.890** |
+| `dias_incapacidad` | MAR | OLS estocástica log ~ tipo + gravedad + log(prestación) | 1 657 | **0.975** |
+| `costo_asistencial` | MAR + sospecha MNAR | OLS estocástica log ~ tipo + gravedad + log(prestación) + log(días_imp) | 2 562 | **0.411** |
+
+Detalles técnicos:
+- Predicción **estocástica** (ŷ + ε, ε ~ N(0, σ²_resid)) = paso MICE univariado cuando solo hay una variable numérica incompleta en el bloque de predictores.
+- Flags `miss_*` se conservan en los datasets imputados (crítico para `miss_costo_asist` → sensibilidad MNAR en 1.4.4).
+- Tras imputar: 0 nulos en las variables objetivo.
+
+---
+
+### B. MCAR categóricas
+
+![MCAR desconocido](imgs/03_imputacion_mcar_categoricas.png)
+
+- `ciudad`/`departamento`: 224 empresas quedan con nivel `desconocido` (mismo bloque que en 1.4.1).
+- `parte_cuerpo`: 1 601 siniestros con `desconocido`.
+- Justificación: MCAR no rechazado → un nivel explícito es interpretable y no introduce el sesgo de moda.
+
+---
+
+### C. MAR numéricas — diagnóstico antes/después
+
+![Prima observada vs imputada](imgs/03_imputacion_prima_antes_despues.png)
+
+![Severidad observada vs imputada](imgs/03_imputacion_severidad_antes_despues.png)
+
+![Costo imputado × gravedad](imgs/03_imputacion_costo_por_gravedad.png)
+
+| Variable | Media observado | Media imputados (solo R=1) | Lectura |
+|---|---:|---:|---|
+| `prima_anual` | 6.51 M | 4.43 M | Imputados algo menores (empresas más nuevas/pequeñas; coherente con MAR) |
+| `dias_incapacidad` | 16.2 | 16.4 | Alineado al observado |
+| `costo_asistencial` | 2.59 M | **7.58 M** | Imputados más altos: faltantes en gravedad alta — **esperado bajo MAR** |
+
+- R² alto en `prima` y `dias`: covariables MAR capturan casi toda la variación log; en `costo` R²=0.41 deja más incertidumbre residual (coherente con sospecha MNAR).
+- El boxplot de costos imputados por gravedad preserva el gradiente leve < grave < mortal.
+
+---
+
+### D. Datasets generados (staging)
+
+| Dataset | Filas × cols | Uso |
+|---|---|---|
+| `empresas_imputadas.parquet` | 5 000 × 20 | Panel empresas sin NaN + flags |
+| `siniestros_imputados.parquet` | 39 894 × 21 | Eventos sin NaN + flags + `costo_total` recalculado |
+| `faltantes_imputacion_estrategia.parquet` | 6 | Catálogo reproducible |
+| `faltantes_imputacion_diagnostico.parquet` | 10 | Stats antes/después para 1.4.4 |
+
+---
+
+### E. Implicaciones para 1.4.4
+
+1. Comparar modelado con **datos imputados** vs **listwise deletion** (descartar filas con R=1).
+2. Para `costo_asistencial`, sensibilidad: (a) imputación MAR, (b) descarte, (c) MAR + flag `miss_costo_asist` como predictor.
+3. No usar listwise deletion como default: perdería ~14% de siniestros y sesgaría la cola de severidad.
+
+
+---
+
 ### Pendiente
 
-- [ ] 1.4.3 – Estrategia de imputación (y aplicación).
 - [ ] 1.4.4 – Evaluación del efecto sobre el modelado vs descartar registros.

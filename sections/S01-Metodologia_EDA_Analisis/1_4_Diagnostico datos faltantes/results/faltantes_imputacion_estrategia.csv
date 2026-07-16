@@ -1,0 +1,7 @@
+dataset,variable,mecanismo,estrategia,detalle,n_imputados,pct_imputados,formula,r2_modelo,columna_salida
+empresas,ciudad,MCAR (no se rechaza),categoria_desconocido,fillna('desconocido'); bloque geo con departamento,224,4.48,,,ciudad_imp
+empresas,departamento,MCAR (no se rechaza),categoria_desconocido,fillna('desconocido'); idéntico a ciudad,224,4.48,,,departamento_imp
+empresas,prima_anual,MAR (depende de observados),regresion_condicionada_log_OLS_estocastica,"MICE univariado (única numérica incompleta del bloque): log1p(prima) ~ C(sector)+log1p(n_trabajadores)+antiguedad_meses; ŷ+ε, ε~N(0,σ²)",579,11.58,_y_log ~ C(sector) + log_n_trabajadores + antiguedad_meses,0.8902,prima_anual_imp
+siniestros,parte_cuerpo,MCAR (no se rechaza),categoria_desconocido,fillna('desconocido'),1601,4.0131,,,parte_cuerpo_imp
+siniestros,dias_incapacidad,MAR (depende de observados),regresion_condicionada_log_OLS_estocastica,log1p(dias)~C(tipo)+C(gravedad)+log1p(costo_prestacion); ŷ+ε,1657,4.1535,_y_log ~ C(tipo) + C(gravedad) + log_costo_prestacion,0.975,dias_incapacidad_imp
+siniestros,costo_asistencial,MAR con sospecha MNAR,regresion_condicionada_log_OLS_estocastica,log1p(costo)~C(tipo)+C(gravedad)+log1p(prestacion)+log1p(dias_imp); conservar miss_costo_asist para sensibilidad MNAR en 1.4.4,2562,6.422,_y_log ~ C(tipo) + C(gravedad) + log_costo_prestacion + log_dias_para_costo,0.4113,costo_asistencial_imp

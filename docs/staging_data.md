@@ -52,6 +52,10 @@
 | [`faltantes_mecanismos_logit.parquet`](#39-faltantes_mecanismos_logitparquet) | S01 – 1.4 Datos faltantes (mecanismos) | `data/staging/S01/` | 9 | 15 |
 | [`faltantes_mecanismos_logit_coefs.parquet`](#40-faltantes_mecanismos_logit_coefsparquet) | S01 – 1.4 Datos faltantes (mecanismos) | `data/staging/S01/` | 92 | 9 |
 | [`faltantes_mecanismos_veredicto.parquet`](#41-faltantes_mecanismos_veredictoparquet) | S01 – 1.4 Datos faltantes (mecanismos) | `data/staging/S01/` | 6 | 14 |
+| [`empresas_imputadas.parquet`](#42-empresas_imputadasparquet) | S01 – 1.4 Datos faltantes (imputación) | `data/staging/S01/` | 5 000 | 20 |
+| [`siniestros_imputados.parquet`](#43-siniestros_imputadosparquet) | S01 – 1.4 Datos faltantes (imputación) | `data/staging/S01/` | 39 894 | 21 |
+| [`faltantes_imputacion_estrategia.parquet`](#44-faltantes_imputacion_estrategiaparquet) | S01 – 1.4 Datos faltantes (imputación) | `data/staging/S01/` | 6 | 10 |
+| [`faltantes_imputacion_diagnostico.parquet`](#45-faltantes_imputacion_diagnosticoparquet) | S01 – 1.4 Datos faltantes (imputación) | `data/staging/S01/` | 10 | 12 |
 
 ---
 
@@ -860,18 +864,92 @@ Estratos calculados:
 
 ---
 
+## 42. `empresas_imputadas.parquet`
+
+**Ruta:** `data/staging/S01/empresas_imputadas.parquet`
+**Script origen:** `sections/S01-Metodologia_EDA_Analisis/1_4_Diagnostico datos faltantes/code/03-estrategia_imputacion/estrategia_imputacion.py`
+**Granularidad:** Una fila por empresa (5 000) — **sin nulos** en ciudad/departamento/prima.
+**Base:** `data/raw/empresas.csv` + imputación 1.4.3. **No reemplaza** `empresas_staging` (1.2, inmutable).
+
+| Campo | Tipo | Descripción | ¿Nuevo? |
+|---|---|---|---|
+| *(campos de `empresas_staging`)* | — | Atributos de empresa; `ciudad`/`departamento`/`prima_anual` ya imputados | Completados |
+| `miss_ciudad` / `miss_departamento` / `miss_geo` / `miss_prima` | `entero` | Flags 1 = valor original faltaba | **Nuevo** |
+| `ciudad_imp` / `departamento_imp` / `prima_anual_imp` | — | Copias explícitas post-imputación | **Nuevo** |
+
+Estrategias:
+- `ciudad` / `departamento` (MCAR): categoría `desconocido` (224 filas; bloque geo).
+- `prima_anual` (MAR): OLS estocástica `log1p(prima) ~ C(sector) + log1p(n_trabajadores) + antiguedad_meses` (579 filas; R²≈0.89).
+
+> **Uso:** preferir este dataset cuando se necesite panel de empresas completo sin NaN (S03 features de prima, segmentación geo con nivel desconocido). Conservar flags `miss_*` si se quiere modelar missingness.
+
+---
+
+## 43. `siniestros_imputados.parquet`
+
+**Ruta:** `data/staging/S01/siniestros_imputados.parquet`
+**Script origen:** `03-estrategia_imputacion/estrategia_imputacion.py`
+**Granularidad:** Una fila por siniestro (39 894) — **sin nulos** en parte_cuerpo/dias/costo_asistencial.
+**Base:** `data/raw/siniestros.csv` + imputación 1.4.3. **No reemplaza** `siniestros_staging` / `siniestros_tratados`.
+
+| Campo | Tipo | Descripción | ¿Nuevo? |
+|---|---|---|---|
+| *(campos tipo staging)* | — | Incluye `anio`, `mes`, `costo_total`, `log_*` recalculados post-imputación | Completados |
+| `miss_parte` / `miss_dias` / `miss_costo_asist` | `entero` | Flags de faltante original | **Nuevo** |
+| `parte_cuerpo_imp` / `dias_incapacidad_imp` / `costo_asistencial_imp` | — | Valores post-imputación | **Nuevo** |
+
+Estrategias:
+- `parte_cuerpo` (MCAR): `desconocido` (1 601).
+- `dias_incapacidad` (MAR): OLS estocástica `log1p(dias) ~ C(tipo)+C(gravedad)+log1p(prestacion)` (1 657; R²≈0.98).
+- `costo_asistencial` (MAR + sospecha MNAR): OLS estocástica `log1p(costo) ~ C(tipo)+C(gravedad)+log1p(prestacion)+log1p(dias_imp)` (2 562; R²≈0.41). Flag `miss_costo_asist` se conserva para sensibilidad 1.4.4.
+
+> **Nota:** la media de costos imputados es mayor que la de observados (faltantes concentrados en gravedad alta) — comportamiento esperado bajo MAR.
+
+---
+
+## 44. `faltantes_imputacion_estrategia.parquet`
+
+**Ruta:** `data/staging/S01/faltantes_imputacion_estrategia.parquet`
+**Script origen:** `03-estrategia_imputacion/estrategia_imputacion.py`
+**Granularidad:** Una fila por variable imputada (6).
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `dataset` / `variable` / `mecanismo` | `texto` | Origen y veredicto 1.4.2 |
+| `estrategia` / `detalle` / `formula` | `texto` | Método aplicado |
+| `n_imputados` / `pct_imputados` | `entero` / `numérico` | Volumen |
+| `r2_modelo` | `numérico` | R² OLS en escala log (`NaN` si categórica) |
+| `columna_salida` | `texto` | Nombre de la columna imputada |
+
+---
+
+## 45. `faltantes_imputacion_diagnostico.parquet`
+
+**Ruta:** `data/staging/S01/faltantes_imputacion_diagnostico.parquet`
+**Script origen:** `03-estrategia_imputacion/estrategia_imputacion.py`
+**Granularidad:** Una fila por variable × etapa (antes / imputado / post-completo).
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `dataset` / `variable` / `etapa` / `label` | `texto` | Identificación del corte |
+| `n` / `mean` / `median` / `std` / `p25` / `p75` / `min` / `max` | `numérico` | Estadísticos descriptivos |
+
+> **Uso en 1.4.4:** comparar impacto de imputar vs descartar filas incompletas sobre métricas de modelado.
+
+---
+
 ## Uso en secciones futuras
 
 | Sección | Dataset requerido | Propósito |
 |---|---|---|
 | S01 – 1.3 Hipótesis | `empresa_siniestralidad_completa`, `temporal_empresa_anio`, `temporal_persistencia_yoy`, `panel_empresa_lag_yoy`, `temporal_mensual`, `estacionalidad_mes` | Pruebas formales de diferencia / asociación / GOF |
-| S01 – 1.4 Datos faltantes | `empresas_staging`, `siniestros_staging`, `faltantes_resumen_*`, `faltantes_patrones`, `faltantes_por_estrato`, `faltantes_mecanismos_*` | Diagnóstico de nulos, mecanismo e imputación |
+| S01 – 1.4 Datos faltantes | `faltantes_*`, `empresas_imputadas`, `siniestros_imputados` | Diagnóstico, mecanismo, imputación y evaluación |
 | S01 – 1.5 Baseline | `empresa_siniestralidad_completa`, `temporal_empresa_anio`, `panel_empresa_lag_yoy` | Definición del predictor baseline y target anual |
 | S02 – Modelación económica | `empresa_siniestralidad_completa`, `bivariado_resumen_sector`, `temporal_anual`, `predictores_recomendacion`, `hip_confirmaciones_resumen` | Caracterización sectorial; confirmar descarte de mes/geo |
-| S03 – Reto de negocio | `empresa_siniestralidad_tratada`, `siniestros_tratados`, `temporal_empresa_anio`, `panel_empresa_lag_yoy`, `colinealidad_vif`, `predictores_recomendacion`, `hip_features_resumen`, `hip_p12_bondad_ajuste_costo` | Feature set + familia de severidad; CV temporal con lag |
+| S03 – Reto de negocio | `empresa_siniestralidad_tratada`, `siniestros_tratados` / `siniestros_imputados`, `temporal_empresa_anio`, `panel_empresa_lag_yoy`, `colinealidad_vif`, `predictores_recomendacion`, `hip_features_resumen`, `hip_p12_bondad_ajuste_costo` | Feature set + familia de severidad; CV temporal con lag |
 | S04 – Inferencia causal | `empresa_siniestralidad_completa` / `_tratada`, `hip_p10_retencion_top10` | Grupo tratado / control; estabilidad del target |
-| S05 – Recomendador | `empresas_staging`, `empresa_siniestralidad_completa`, `hip_p10_retencion_top10` | Perfil de empresa; priorizar recurrentes Top 10% |
+| S05 – Recomendador | `empresas_staging` / `empresas_imputadas`, `empresa_siniestralidad_completa`, `hip_p10_retencion_top10` | Perfil de empresa; priorizar recurrentes Top 10% |
 
 ---
 
-*Actualizado por: `S01 – 1.2 EDA` + `S01 – 1.3` (hipótesis) + `S01 – 1.4.1 cuantificacion_faltantes.py` + `S01 – 1.4.2 mecanismos_faltantes.py` — Prueba Técnica Grupo SURA.*
+*Actualizado por: `S01 – 1.2 EDA` + `S01 – 1.3` + `S01 – 1.4.1/1.4.2/1.4.3` — Prueba Técnica Grupo SURA.*
