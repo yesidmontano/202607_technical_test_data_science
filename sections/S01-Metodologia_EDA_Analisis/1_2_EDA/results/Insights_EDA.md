@@ -375,4 +375,110 @@ Realizar un análisis exploratorio completo: distribuciones univariadas de la fr
 
 ---
 
+## 1.2.5 – Detección y Tratamiento de Valores Atípicos (resultados preliminares)
+
+> Generado a partir de `04-analisis_outliers/analisis_outliers.py` · 39 894 siniestros · 5 000 empresas · Métodos: IQR 1.5×, MAD (z-mod ≥ 3.5), P1–P99 · Tratamiento: winsorización P1–P99 (**sin eliminar filas**).
+
+---
+
+### A. Detección
+
+**A1 – Boxplots a nivel de siniestro**
+![Boxplots siniestros](imgs/04_A1_boxplots_outliers_siniestros.png)
+
+- Costo y días de incapacidad muestran colas derechas muy pesadas (coherente con el univariado: asimetría de severidad ≈ 10.4).
+- IQR marca ~12–13% de siniestros como atípicos en costo/severidad: en distribuciones leptocúrticas esto **no implica error de dato**, sino límite del método.
+
+**A2 – Boxplots a nivel de empresa**
+![Boxplots empresas](imgs/04_A2_boxplots_outliers_empresas.png)
+
+| Variable (empresa) | % IQR | % MAD | % fuera P1–P99 |
+|---|---|---|---|
+| `n_siniestros` | 9.2% | 9.2% | 1.0% |
+| `costo_total_empresa` | 11.3% | 14.5% | 1.0% |
+| `frecuencia_x100` | 3.9% | 3.1% | 1.0% |
+| `n_trabajadores` | 5.9% | 5.9% | 1.8% |
+| `prima_anual` | 9.2% | 11.7% | 2.0% |
+
+- La frecuencia relativa tiene menos outliers IQR (~4%) que el costo acumulado (~11%): el efecto de exposición ya “normaliza” parte de la cola del conteo.
+
+**A3 – Comparación de métodos**
+![Tasa por método](imgs/04_A3_tasa_outliers_por_metodo.png)
+
+| Variable (siniestro) | % IQR | % MAD | % fuera P1–P99 | Máx observado | P99 |
+|---|---|---|---|---|---|
+| `costo_total` | 13.0% | 14.5% | 2.0% | $307M | $28.4M |
+| `dias_incapacidad` | 12.4% | 14.2% | 1.0% | 1 081 días | 155 días |
+| `costo_asistencial` | 12.5% | 13.3% | 2.0% | $198M | $20.9M |
+| `costo_prestacion_economica` | 12.5% | 14.1% | 2.0% | $286M | $38.0M |
+
+- **IQR y MAD son agresivos** (~12–15% en variables de siniestro): útiles para diagnóstico, no como regla de borrado.
+- **P1–P99 es el criterio operativo** (~1–2% de observaciones en los extremos): alineado con tratamiento por winsorización.
+
+---
+
+### B. Tratamiento (winsorización P1–P99)
+
+**Decisión:** no eliminar observaciones. En ARL, extremos de costo/severidad son **eventos reales de cola** (mortales / catastróficos). Se winsorizan features para estabilizar el modelado y se conservan originales para resultado técnico.
+
+**B1 – Costo total por siniestro**
+![Winsor costo](imgs/04_B1_winsor_costo_total.png)
+
+- Máximo: **$307M → $28.4M** (−90.8%); asimetría: **12.16 → 3.45** (−71.7%); clipados: **1.87%** de filas.
+- La media baja de $3.56M a $2.83M; la mediana permanece esencialmente estable (tratamiento de cola, no del centro).
+
+**B2 – Días de incapacidad**
+![Winsor días](imgs/04_B2_winsor_dias_incapacidad.png)
+
+- Máximo: **1 081 → 155 días** (−85.7%); asimetría: **10.42 → 3.52** (−66.2%); clipados: **0.95%**.
+
+**B3 – Costo acumulado por empresa**
+![Winsor costo empresa](imgs/04_B3_winsor_costo_empresa.png)
+
+- Máximo: **$1.58B → $272M** (−82.8%); asimetría: **7.83 → 3.36** (−57.1%); clipados: **1.0%**.
+
+---
+
+### C. Contexto y condicionantes
+
+**C1 – Costo × severidad con outliers P1–P99**
+![Scatter outliers](imgs/04_C1_scatter_costo_vs_dias_outliers.png)
+
+- **936 siniestros (2.3%)** están fuera de P1–P99 en costo o días; concentran la cola superior del scatter log–log.
+- Confirma que costo y severidad extremos co-ocurren, pero también hay outliers de costo bajo a pocos días (cola inferior del P1).
+
+**C2 – Tasa de outliers IQR por clase de riesgo**
+![Outliers por clase](imgs/04_C2_outliers_por_clase_riesgo.png)
+
+| Clase | % IQR costo | % IQR días |
+|---|---|---|
+| 1 | 4.1% | 6.4% |
+| 2 | 6.6% | 7.3% |
+| 3 | 9.0% | 10.3% |
+| 4 | 13.3% | 12.8% |
+| 5 | **17.4%** | **15.5%** |
+
+- La tasa de “outliers” IQR **crece con la clase de riesgo**: muchos extremos son estructurales del segmento de alto riesgo, no anomalías a depurar.
+- **Implicación:** winsorizar *globalmente* puede atenuar señal de clase 5; evaluar winsorización **estratificada por clase** o modelar cola con distribución de severidad (Gamma/Lognormal) en S03.
+
+**C3 – Impacto agregado del tratamiento**
+![Impacto](imgs/04_C3_impacto_winsorizacion.png)
+
+- Contracción del máximo ~83–91% y caída de asimetría ~57–72% en variables clave, clipando ≤2% de filas.
+- Staging listo: `siniestros_tratados` / `empresa_siniestralidad_tratada` (columnas `*_w`) + tablas de flags/resumen.
+
+---
+
+## Síntesis outliers y condicionantes para el modelado
+
+| Hallazgo | Implicación para S02 / S03 / S04 / S05 |
+|---|---|
+| IQR/MAD marcan ~12–15% en costo/severidad | No borrar por IQR; usar solo como diagnóstico de cola |
+| P1–P99 clipa ~1–2% y reduce skew ~60–70% | **Tratamiento elegido:** winsorización P1–P99 en features numéricas |
+| No eliminar filas | Conservar eventos para resultado técnico / análisis de cola |
+| Outliers IQR ↑ con clase de riesgo (4–17%) | Considerar winsorización estratificada o familia de cola pesada |
+| Datasets `*_tratados` + flags en staging | Usar `*_w` / `log_*_w` en training; originales para métricas de negocio de cola |
+
+---
+
 *Análisis realizado con `sura_brand` · Sección S01-1.2 EDA · Prueba Técnica Grupo SURA.*

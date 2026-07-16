@@ -25,6 +25,12 @@
 | [`estacionalidad_mes.parquet`](#12-estacionalidad_mesparquet) | S01 – 1.2 EDA (temporal) | `data/staging/S01/` | 12 | 15 |
 | [`temporal_empresa_anio.parquet`](#13-temporal_empresa_anioparquet) | S01 – 1.2 EDA (temporal) | `data/staging/S01/` | 35 000 | 14 |
 | [`temporal_persistencia_yoy.parquet`](#14-temporal_persistencia_yoyparquet) | S01 – 1.2 EDA (temporal) | `data/staging/S01/` | 6 | 7 |
+| [`outliers_deteccion_resumen.parquet`](#15-outliers_deteccion_resumenparquet) | S01 – 1.2 EDA (outliers) | `data/staging/S01/` | 9 | 25 |
+| [`siniestros_con_flags_outliers.parquet`](#16-siniestros_con_flags_outliersparquet) | S01 – 1.2 EDA (outliers) | `data/staging/S01/` | 39 894 | 23 |
+| [`empresa_con_flags_outliers.parquet`](#17-empresa_con_flags_outliersparquet) | S01 – 1.2 EDA (outliers) | `data/staging/S01/` | 5 000 | 26 |
+| [`siniestros_tratados.parquet`](#18-siniestros_tratadosparquet) | S01 – 1.2 EDA (outliers) | `data/staging/S01/` | 39 894 | 22 |
+| [`empresa_siniestralidad_tratada.parquet`](#19-empresa_siniestralidad_tratadaparquet) | S01 – 1.2 EDA (outliers) | `data/staging/S01/` | 5 000 | 37 |
+| [`outliers_tratamiento_impacto.parquet`](#20-outliers_tratamiento_impactoparquet) | S01 – 1.2 EDA (outliers) | `data/staging/S01/` | 9 | 17 |
 
 ---
 
@@ -308,6 +314,120 @@ Campos agregados (comunes a todos los resúmenes bivariados 5–9):
 
 ---
 
+## 15. `outliers_deteccion_resumen.parquet`
+
+**Ruta:** `data/staging/S01/outliers_deteccion_resumen.parquet`
+**Script origen:** `sections/S01-Metodologia_EDA_Analisis/1_2_EDA/code/04-analisis_outliers/analisis_outliers.py`
+**Granularidad:** Una fila por variable analizada (9 variables: 4 de siniestro + 5 de empresa).
+**Base:** Estadísticos de detección IQR (1.5×), MAD (z-modificado ≥ 3.5) y percentiles P1–P99.
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `nivel` | `texto` | `siniestro` o `empresa` |
+| `variable` / `etiqueta` | `texto` | Nombre técnico y etiqueta en español |
+| `n_valid` | `entero` | Observaciones no nulas |
+| `mean` / `median` / `std` / `min` / `max` | `numérico` | Estadísticos descriptivos |
+| `p1` / `p99` / `q1` / `q3` / `iqr` | `numérico` | Percentiles y rango intercuartílico |
+| `iqr_lo` / `iqr_hi` | `numérico` | Cercas IQR (Q1 − 1.5·IQR, Q3 + 1.5·IQR) |
+| `mad` / `mad_lo` / `mad_hi` | `numérico` | Desviación absoluta mediana y cercas MAD |
+| `n_iqr` / `pct_iqr` | `entero` / `numérico` | Conteo y % fuera de IQR |
+| `n_mad` / `pct_mad` | `entero` / `numérico` | Conteo y % con \|z-mod\| ≥ 3.5 |
+| `n_pct` / `pct_pct` | `entero` / `numérico` | Conteo y % fuera de [P1, P99] |
+
+> **Nota:** En variables de cola pesada, IQR/MAD marcan ~10–15% como atípicos; eso refleja leptocurtosis, no necesariamente error de dato. P1–P99 es el criterio operativo de tratamiento (~1–2% clipado).
+
+---
+
+## 16. `siniestros_con_flags_outliers.parquet`
+
+**Ruta:** `data/staging/S01/siniestros_con_flags_outliers.parquet`
+**Script origen:** `04-analisis_outliers/analisis_outliers.py`
+**Granularidad:** Una fila por siniestro (39 894).
+**Base:** `siniestros_staging` + flags binarios de outlier.
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `id_siniestro` / `id_empresa` / `tipo` / `gravedad` / `anio` | — | Identificadores y atributos |
+| `costo_total` / `dias_incapacidad` / `costo_asistencial` / `costo_prestacion_economica` | `numérico` | Valores originales |
+| `out_iqr_<var>` / `out_mad_<var>` / `out_pct_<var>` | `entero` | 1 si la observación es outlier por ese método |
+| `out_iqr_any_key` | `entero` | 1 si IQR-outlier en costo total **o** días |
+| `out_pct_any_key` | `entero` | 1 si fuera de P1–P99 en costo total **o** días |
+
+> **Uso:** filtrar / estratificar análisis de cola; **no** eliminar filas del portafolio (eventos reales).
+
+---
+
+## 17. `empresa_con_flags_outliers.parquet`
+
+**Ruta:** `data/staging/S01/empresa_con_flags_outliers.parquet`
+**Script origen:** `04-analisis_outliers/analisis_outliers.py`
+**Granularidad:** Una fila por empresa (5 000).
+**Base:** `empresa_siniestralidad_completa` + flags.
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `id_empresa` / `clase_riesgo` / `sector` / `segmento` | — | Atributos de segmento |
+| `n_siniestros` / `costo_total_empresa` / `frecuencia_x100` / `n_trabajadores` / `prima_anual` | `numérico` | Valores originales |
+| `out_iqr_<var>` / `out_mad_<var>` / `out_pct_<var>` | `entero` | Flags por método y variable |
+| `out_iqr_any_key` / `out_pct_any_key` | `entero` | Flags compuestos (conteo o costo acumulado) |
+
+---
+
+## 18. `siniestros_tratados.parquet`
+
+**Ruta:** `data/staging/S01/siniestros_tratados.parquet`
+**Script origen:** `04-analisis_outliers/analisis_outliers.py`
+**Granularidad:** Una fila por siniestro (mismas 39 894 filas; **ninguna eliminada**).
+**Base:** `siniestros_staging` + columnas winsorizadas P1–P99 (`*_w`) y sus logs.
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| *(columnas de `siniestros_staging`)* | — | Valores originales intactos |
+| `costo_total_w` / `dias_incapacidad_w` / `costo_asistencial_w` / `costo_prestacion_economica_w` | `numérico` | Winsorización P1–P99 |
+| `log_*_w` | `numérico` | `log(1 + valor_w)` para modelado |
+
+> **Decisión de tratamiento:** winsorizar para features de modelado; conservar originales para resultado técnico / cola catastrófica.
+> **Riesgo de leakage:** igual que `siniestros_staging` — no usar siniestros del año T como features del target T.
+
+---
+
+## 19. `empresa_siniestralidad_tratada.parquet`
+
+**Ruta:** `data/staging/S01/empresa_siniestralidad_tratada.parquet`
+**Script origen:** `04-analisis_outliers/analisis_outliers.py`
+**Granularidad:** Una fila por empresa (5 000; panel completo con ceros).
+**Base:** `empresa_siniestralidad_completa` + columnas `*_w` / `log_*_w`.
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| *(columnas de `empresa_siniestralidad_completa`)* | — | Originales intactos |
+| `n_siniestros_w` / `costo_total_empresa_w` / `frecuencia_x100_w` / `n_trabajadores_w` / `prima_anual_w` | `numérico` | Winsorización P1–P99 |
+| `log_n_siniestros_w` / `log_costo_total_empresa_w` / `log_n_trabajadores_w` / `log_prima_anual_w` | `numérico` | Logs de variables winsorizadas |
+
+> **Uso recomendado en S03:** preferir `*_w` / `log_*_w` como features numéricas sensibles a cola; mantener originales si el objetivo es estimar carga catastrófica.
+
+---
+
+## 20. `outliers_tratamiento_impacto.parquet`
+
+**Ruta:** `data/staging/S01/outliers_tratamiento_impacto.parquet`
+**Script origen:** `04-analisis_outliers/analisis_outliers.py`
+**Granularidad:** Una fila por variable (9).
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `nivel` / `variable` / `etiqueta` | `texto` | Identificación |
+| `n` | `entero` | Observaciones válidas |
+| `mean_antes` / `mean_despues` | `numérico` | Media pre/post winsorización |
+| `median_antes` / `median_despues` | `numérico` | Mediana (casi invariante) |
+| `std_antes` / `std_despues` | `numérico` | Desviación estándar |
+| `max_antes` / `max_despues` | `numérico` | Máximo (contracción de cola) |
+| `p99_antes` / `p99_despues` | `numérico` | Percentil 99 |
+| `skew_antes` / `skew_despues` | `numérico` | Asimetría |
+| `pct_clipados` | `numérico` | % de filas cuyo valor cambió al winsorizar |
+
+---
+
 ## Uso en secciones futuras
 
 | Sección | Dataset requerido | Propósito |
@@ -316,10 +436,10 @@ Campos agregados (comunes a todos los resúmenes bivariados 5–9):
 | S01 – 1.4 Datos faltantes | `siniestros_staging`, `empresas_staging` | Diagnóstico de nulos y patrones |
 | S01 – 1.5 Baseline | `empresa_siniestralidad_completa`, `temporal_empresa_anio` | Definición del predictor baseline y target anual |
 | S02 – Modelación económica | `empresa_siniestralidad_completa`, `bivariado_resumen_sector`, `temporal_anual` | Caracterización sectorial y tendencias |
-| S03 – Reto de negocio | `empresa_siniestralidad_completa`, `temporal_empresa_anio` | Modelado frecuencia-severidad con CV temporal |
-| S04 – Inferencia causal | `empresa_siniestralidad_completa` | Grupo tratado / control |
+| S03 – Reto de negocio | `empresa_siniestralidad_tratada`, `siniestros_tratados`, `temporal_empresa_anio` | Features winsorizadas + CV temporal; cola original para severidad catastrófica |
+| S04 – Inferencia causal | `empresa_siniestralidad_completa` / `_tratada` | Grupo tratado / control; evaluar sensibilidad a winsorización |
 | S05 – Recomendador | `empresas_staging`, `empresa_siniestralidad_completa` | Perfil de empresa para recomendación |
 
 ---
 
-*Actualizado por: `S01 – 1.2 EDA | analisis_univariado.py` + `analisis_bivariado.py` + `analisis_temporal.py` — Prueba Técnica Grupo SURA.*
+*Actualizado por: `S01 – 1.2 EDA | analisis_univariado.py` + `analisis_bivariado.py` + `analisis_temporal.py` + `analisis_outliers.py` — Prueba Técnica Grupo SURA.*
