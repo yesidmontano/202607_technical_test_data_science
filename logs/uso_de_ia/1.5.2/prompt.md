@@ -1,0 +1,3 @@
+Generame un resumen ejecutivo de la sección S01 en docs/summaries/, a partir de mis archivos de resultados de cada punto (1.1.sections/S01-Metodologia_EDA_Analisis/1_1_CRISP-DM/results/crisp-dm.md , 1.2. sections/S01-Metodologia_EDA_Analisis/1_2_EDA/results/Insights_EDA.md , 1.3.sections/S01-Metodologia_EDA_Analisis/1_3_Pruebas de hipotesis/results/Insights_pruebas_hipotesis.md , 1.4.sections/S01-Metodologia_EDA_Analisis/1_4_Diagnostico datos faltantes/results/Insights_datos_faltantes.md, 1.5. sections/S01-Metodologia_EDA_Analisis/1_5_Definición de baseline/results/Baseline.md)
+
+Nota: Diligencia logs/uso_de_ia/1.5.2/output.md como logs del proceso que realizaste.
