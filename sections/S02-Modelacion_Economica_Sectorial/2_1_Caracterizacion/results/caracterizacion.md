@@ -62,3 +62,15 @@ IPOC (Trimestral) + ICOCIV (Mensual deflactor) ──▶ Producción real en inf
 - Un alza sostenida en ELIC (área licenciada) predice expansión futura en CEED (área causada) con retardo de 6–18 meses.
 - Un incremento mensual en EC (concreto despachado) anticipa aceleración en el valor agregado constructor antes de que el PIB trimestral sea publicado.
 - El ICOCED sirve de base para cláusulas de reajuste de precios en licitaciones de largo aliento, con soporte jurídico del INI.
+
+
+## 2.1.2 Fuentes seleccionadas
+1. ELIC: Fuente 'https://www.dane.gov.co/index.php/estadisticas-por-tema/construccion/licencias-de-construccion'. Guardado en 'sections/S02-Modelacion_Economica_Sectorial/2_1_Caracterizacion/resources/ELIC-2025-2026.csv'
+2. CEED & IPOC: Desde mi punto de vistas estas dos fuentes son complementarias y forma una visión completa sobre la construcción y edificación en el pais, por esta razón  selecciono ambas. Fuentes: 'https://www.dane.gov.co/index.php/estadisticas-por-tema/construccion/censo-de-edificaciones/ceed-historicos', 'https://www.dane.gov.co/index.php/estadisticas-por-tema/construccion/indicador-de-produccion-de-obras-civiles-ipoc'. Guardados en 'sections/S02-Modelacion_Economica_Sectorial/2_1_Caracterizacion/resources/CEED-2020-2026.csv' y 'sections/S02-Modelacion_Economica_Sectorial/2_1_Caracterizacion/resources/IPOC-2018-2026.csv'
+3. EC (Estadistica de concreto premezclado): Lo considero más idóneo que el ICOCED, porque puede verse menos interferido por factores externos al sector de construcción. Fuente: 'https://www.dane.gov.co/index.php/estadisticas-por-tema/construccion/estadisticas-de-concreto-premezclado'. Guardado en 'sections/S02-Modelacion_Economica_Sectorial/2_1_Caracterizacion/resources/EC-2022-2026.csv'
+
+
+## 2.1.3. Análisis exploratorio preliminar de cada fuente
+
+
+    
