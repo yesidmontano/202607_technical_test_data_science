@@ -1,4 +1,9 @@
-### **Requerimiento**
+### **S02: Modelación económica y sectorial del sector construcción**
+ Objetivo: El sector construcción es uno de los de mayor accidentalidad y mayor sensibilidad al ciclo económico. La Dirección quiere anticipar la siniestralidad del sector a partir de su ciclo. El candidato debe combinar el panel sintético de macro_sectorial.csv con series públicas del DANE que él mismo debe identificar. Esta sección es el eje de la prueba y exige rigor econométrico, criterio de fuentes y un componente de soporte documental.
+
+---
+
+### **Requerimiento 2.1**
 Caracterizar el ciclo del sector construcción. Identificar y justificar al menos tres series públicas del DANE pertinentes para el ciclo del sector y construya con ellas un indicador líder. Discutir el rezago de publicación de cada fuente y su implicación para el análisis
 
 ---
@@ -154,4 +159,57 @@ Correlación Spearman en la ventana solapada (`panel_fuentes_trimestral`):
 3. **Rezagos de publicación:** EC (~38 d) llega antes que CEED/ELIC (~45 d) e IPOC (~48 d); el nowcast debe privilegiar EC cuando el trimestre CEED aún no está publicado.
 4. Staging listo en `data/staging/S02/` para 2.2 (relaciones) y 2.3 (nowcast).
 
-    
+---
+
+## 2.1.4 Síntesis consolidada de la caracterización sectorial
+
+### Hallazgos estructurales del ciclo
+
+El análisis conjunto de las cuatro fuentes DANE seleccionadas (ELIC, CEED, IPOC, EC) revela un ciclo constructor con tres características estructurales que condicionan todo el modelado posterior:
+
+1. **Segmentación dual del ciclo:** edificación (CEED/EC) e infraestructura pesada (IPOC) operan con dinámicas desacopladas. La correlación Spearman CEED–IPOC es **−0.72** en la ventana 2020–2026-I, lo que indica que no existe un factor cíclico unificado. Construir un indicador compuesto que mezcle ambas dimensiones sin ajuste por desfase produciría señales contradictorias.
+
+2. **ELIC como señal líder con latencia larga:** la intención formal de construcción (área licenciada) anticipa la ejecución real (área causada CEED) con **6 a 18 meses** de rezago. El repunte de ELIC 2026 (+33.2% anual en mayo) aún no se ha trasladado a CEED 2026-I ni a EC mayo-2026 (−0.9% YoY), comportamiento consistente con ese retardo documentado.
+
+3. **EC como puente de alta frecuencia:** el concreto premezclado (mensual, rezago ~38 días) es el sensor de reacción más rápida del ciclo físico. Su estacionalidad marcada (amplitud 26.8 pp, valle enero / pico octubre) y su correlación con CEED (ρ ≈ +0.79) lo posicionan como el candidato prioritario para anticipar el área causada trimestral antes de que CEED sea publicado.
+
+---
+
+### Rezago de publicación de cada fuente e implicaciones para el análisis
+
+La tabla siguiente sintetiza el estado de disponibilidad real de cada fuente en el momento en que se ejecuta el pipeline de modelado (referencia: fecha de proceso = primera semana del mes siguiente al trimestre de interés).
+
+| Fuente | Frecuencia | Rezago nominal | Último dato disponible (referencia: jul 2026) | Implicación crítica |
+|---|---|---|---|---|
+| **ELIC** | Mensual | ~45 días | Mayo 2026 (publicado ~15 jun) | Disponible antes de CEED; pero n=3 puntos anuales en el staging actual limita el uso estadístico directo |
+| **CEED** | Trimestral | ~45 días | 2026-I (publicado ~15 may) | Rezago efectivo de **4.5 meses** respecto al trimestre de análisis; es la variable objetivo natural del nowcast |
+| **IPOC** | Trimestral | 48–50 días | 2026-I (publicado ~19 may) | Timing similar a CEED; útil para el bloque infraestructura en 2.2 pero **no** como predictor en tiempo real de CEED |
+| **EC** | Mensual | ~38 días | Mayo 2026 (publicado ~8 jun) | **Llegada más temprana** entre todas las fuentes; 7 días antes que ELIC, ~37 días antes que CEED; ancla del nowcast (2.3) |
+
+**Implicaciones específicas para 2.2 – Modelamiento de relaciones:**
+
+- El rezago ELIC→CEED de 6–18 meses convierte a ELIC en un **predictor desfasado** (no contemporáneo) en los modelos de relación; los modelos VAR/ECM deben incluir lags de 2 a 6 trimestres de ELIC.
+- IPOC e infraestructura deben tratarse en un **bloque separado** (ecuación independiente o modelo de factor) para no contaminar la señal de edificación. La correlación negativa IPOC–CEED sugiere que ambos compiten por los mismos insumos (mano de obra, concreto) en fases opuestas del ciclo presupuestal.
+- El ICOCED (costos de insumos), aunque no se incluyó como fuente principal en 2.1.2, sigue siendo relevante como **variable de control de precios** en los modelos de relación; puede incorporarse desde `macro_sectorial.csv` que ya contiene series de costos deflactadas.
+
+**Implicaciones específicas para 2.3 – Modelo nowcast:**
+
+- La **jerarquía de llegada de datos** define la arquitectura del nowcast: EC (día ~38) → ELIC (día ~45) → CEED/IPOC (días ~45–50). En la práctica, al momento de producir el nowcast del trimestre T, se dispone de EC del mes T−1 y T (parcial), mientras que CEED para T aún no ha sido publicado. Este es el gap exacto que el modelo debe cubrir.
+- La **estacionalidad de EC** (amplitud 26.8 pp) debe modelarse explícitamente (STL, X-13, o dummies estacionales) antes de usarlo como regresor; de lo contrario, el nowcast heredará sesgos estacionales sistemáticos.
+- La **provisionalidad de 2 años en EC** (series se consolidan con nuevas empresas) implica que los últimos 8 trimestres de EC deben tratarse como revisables; el modelo nowcast debe entrenarse sobre la serie revisada y validarse sobre el período provisional para cuantificar el **revision risk**.
+- La **ventana corta de ELIC** (n=3 en staging) requiere una decisión explícita en 2.3: (a) usar ELIC solo como validación cualitativa de la dirección del ciclo, o (b) ampliar el staging descargando la serie histórica completa desde la API DANE (disponible desde 2014 en formato mensual). Se recomienda la opción (b) si se requiere estabilidad en los coeficientes del modelo puente.
+
+---
+
+### Contratos de datos hacia S02 (2.2 y 2.3)
+
+Los datasets de staging producidos en 2.1.3 y disponibles en `data/staging/S02/` son la fuente de verdad para las subsecciones siguientes:
+
+| Dataset | Contenido | Uso en 2.2 | Uso en 2.3 |
+|---|---|---|---|
+| `panel_fuentes_trimestral` | CEED + IPOC + EC (media trim.) alineados en tiempo | Variables dependientes e independientes del VAR/ECM | Variable objetivo (CEED) y predictores desfasados |
+| `ec_mensual_clean` | EC mensual con fecha y metadatos de rezago | Control de estacionalidad | Bridge variable principal del nowcast |
+| `elic_anual_ref` | ELIC anual (3 puntos mayo) | Señal ancla cualitativa | Validación de dirección del ciclo |
+| `ipoc_trimestral_clean` | IPOC con tipologías desagregadas | Bloque infraestructura separado | Predictor auxiliar de obras civiles |
+
+> **Nota de reproducibilidad:** Todos los datasets fueron generados con semilla `RANDOM_SEED = 42` y rutas relativas desde la raíz del proyecto. Ver script `sections/S02-Modelacion_Economica_Sectorial/2_1_Caracterizacion/code/03-EDA_fuentes/eda_fuentes.py`.

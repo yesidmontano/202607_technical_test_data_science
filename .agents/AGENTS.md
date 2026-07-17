@@ -276,7 +276,7 @@ import sura_brand as sb
 
 ---
 
-## Condicionantes del Modelado (EDA + Pruebas de Hipótesis + Datos Faltantes → S02-S05)
+## Condicionantes del Modelado (EDA + Pruebas de Hipótesis + Datos Faltantes + Caracterización S02 → S02-S05)
 
 > **Referencia autoritativa 1 (EDA):** `sections/S01-Metodologia_EDA_Analisis/1_2_EDA/results/Insights_EDA.md`
 > Sección **"Síntesis Consolidada – Lo que Condiciona el Modelado"** (19 condicionantes).
@@ -287,7 +287,10 @@ import sura_brand as sb
 > **Referencia autoritativa 3 (Datos Faltantes):** `sections/S01-Metodologia_EDA_Analisis/1_4_Diagnostico datos faltantes/results/Insights_datos_faltantes.md`
 > Sección **"Síntesis Consolidada de Hallazgos – S01-1.4"** (mecanismos MCAR/MAR/MNAR, estrategia de imputación y veredicto listwise vs imputación).
 >
-> Leer los **tres** documentos antes de iniciar cualquier tarea de modelado en S02, S03, S04 o S05.
+> **Referencia autoritativa 4 (Caracterización sectorial S02-2.1):** `sections/S02-Modelacion_Economica_Sectorial/2_1_Caracterizacion/results/caracterizacion.md`
+> Sección **"2.1.* Síntesis consolidada de la caracterización sectorial"** — ciclo constructor (ELIC/CEED/IPOC/EC), rezagos de publicación por fuente, jerarquía de llegada de datos y contratos de staging hacia 2.2 (VAR/ECM) y 2.3 (nowcast). Leer **antes** de iniciar cualquier tarea en S02-2.2 o S02-2.3.
+>
+> Leer los **cuatro** documentos antes de iniciar cualquier tarea de modelado en S02, S03, S04 o S05.
 
 ### Feature Set Obligatorio (contrato EDA → S03)
 

@@ -1,4 +1,9 @@
-### **Requerimiento**
+### **S01: Formulación, análisis exploratorio y fundamentos estadísticos**
+Objetivo: El negocio quiere anticipar qué empresas tendrán alta siniestralidad el próximo año para focalizar la prevención.
+
+---
+
+### **Requerimiento 1.4**
 Diagnosticar los datos faltantes de empresas.csv y siniestros.csv: cuantifícarlos, plantear una hipótesis sobre su mecanismo entre MCAR, MAR o MNAR, proponer y aplicar una estrategia de imputación, y evaluar su efecto sobre el modelado frente a la alternativa de descartar registros.
 
 ---

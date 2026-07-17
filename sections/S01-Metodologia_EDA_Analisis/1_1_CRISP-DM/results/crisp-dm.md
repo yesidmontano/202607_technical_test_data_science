@@ -1,4 +1,9 @@
-### **Requerimiento**
+### **S01: Formulación, análisis exploratorio y fundamentos estadísticos**
+Objetivo: El negocio quiere anticipar qué empresas tendrán alta siniestralidad el próximo año para focalizar la prevención.
+
+---
+
+### **Requerimiento 1.1**
 Enmarcar el problema con la metodología CRISP-DM: Explicar qué haría en las fases de comprensión de negocio y comprensión de los datos para este caso. Formular el problema analítico con unidad de análisis, variable objetivo y su definión operativa, esquema de validación y métricas de éxito frente a una línea base, e identifique los riesgos de fuga de información presentes en estos datos.
 
 ### **CRISP-DM**

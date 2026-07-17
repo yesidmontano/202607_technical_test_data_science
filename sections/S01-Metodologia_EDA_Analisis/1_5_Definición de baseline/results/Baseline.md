@@ -1,6 +1,9 @@
-# 1.5 Definición de baseline
+### **S01: Formulación, análisis exploratorio y fundamentos estadísticos**
+Objetivo: El negocio quiere anticipar qué empresas tendrán alta siniestralidad el próximo año para focalizar la prevención.
 
-### Requerimiento
+---
+
+### **Requerimiento 1.5**
 Definir y justificar una línea base y establecer qué debería superar un modelo más complejo para justificar su costo.
 
 ---
