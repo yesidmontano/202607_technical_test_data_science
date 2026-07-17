@@ -1,0 +1,1 @@
+Realiza el análisis profundo 2.2.2 según el prompt del usuario: confirmación estacionariedad (PP), CCF rezagos/adelantos, cointegración n=18 con Reinsel-Ahn, sensibilidad VAR, diagnósticos extendidos, síntesis y decisión definitiva. Reutiliza staging S02; código en 02-estacionariedad; plots 02_*; relaciones.md §2.2.2; log S02/2.2.2.

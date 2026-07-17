@@ -76,6 +76,13 @@
 | [`var_fevd.parquet`](#63-var_fevdparquet) | S02 – 2.2.1 Modelamiento | `data/staging/S02/` | 26 | 6 |
 | [`var_diagnosticos.parquet`](#64-var_diagnosticosparquet) | S02 – 2.2.1 Modelamiento | `data/staging/S02/` | 5 | 17 |
 | [`var_modelo_resumen.parquet`](#65-var_modelo_resumenparquet) | S02 – 2.2.1 Modelamiento | `data/staging/S02/` | 1 | 18 |
+| [`estacionariedad_robustez.parquet`](#66-estacionariedad_robustezparquet) | S02 – 2.2.2 Robustez | `data/staging/S02/` | 15 | 20 |
+| [`ccf_rezagos.parquet`](#67-ccf_rezagosparquet) | S02 – 2.2.2 Robustez | `data/staging/S02/` | 39 | 7 |
+| [`ccf_rezagos_resumen.parquet`](#68-ccf_rezagos_resumenparquet) | S02 – 2.2.2 Robustez | `data/staging/S02/` | 3 | 9 |
+| [`coint_robustez.parquet`](#69-coint_robustezparquet) | S02 – 2.2.2 Robustez | `data/staging/S02/` | 5 | 7 |
+| [`var_sensibilidad_irf.parquet`](#70-var_sensibilidad_irfparquet) | S02 – 2.2.2 Robustez | `data/staging/S02/` | 15 | 5 |
+| [`var_diagnosticos_ext.parquet`](#71-var_diagnosticos_extparquet) | S02 – 2.2.2 Robustez | `data/staging/S02/` | 5 | 23 |
+| [`especificacion_definitiva.parquet`](#72-especificacion_definitivaparquet) | S02 – 2.2.2 Robustez | `data/staging/S02/` | 1 | 26 |
 
 ---
 
@@ -1326,6 +1333,73 @@ Escenarios: `a_listwise`, `b_imputado`, `c_imputado_flag`.
 
 ---
 
+## 66. `estacionariedad_robustez.parquet`
+
+**Ruta:** `data/staging/S02/estacionariedad_robustez.parquet`
+**Script origen:** `code/02-estacionariedad/estacionariedad_robustez.py`
+**Granularidad:** Una fila por (serie, ventana); incluye PP en series ambiguas.
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `serie` / `ventana` | `texto` | Identificación (`full_n28`, `ceed_n18`, `edif_n12`) |
+| `orden_integracion` / `decision` | — | I(d) y regla ADF+KPSS(+PP) |
+| `adf_*` / `kpss_*` / `pp_*` | `numérico` | Estadísticos y p-valores |
+
+---
+
+## 67. `ccf_rezagos.parquet`
+
+**Ruta:** `data/staging/S02/ccf_rezagos.parquet`
+**Script origen:** `02-estacionariedad/estacionariedad_robustez.py`
+**Granularidad:** CCF k=−6…+6 para CEED/EC/IPOC → AT (en diferencias).
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `pareja` | `texto` | `CEED→AT` / `EC→AT` / `IPOC→AT` |
+| `lag_k` / `rho` / `n_pairs` / `meaning` | — | Rezago, correlación y rol (lead/lag) |
+
+---
+
+## 68. `ccf_rezagos_resumen.parquet`
+
+**Ruta:** `data/staging/S02/ccf_rezagos_resumen.parquet`
+**Script origen:** `02-estacionariedad/estacionariedad_robustez.py`
+**Granularidad:** Una fila por pareja con k* y ρ clave (incl. k=0,2,4,6).
+
+---
+
+## 69. `coint_robustez.parquet`
+
+**Ruta:** `data/staging/S02/coint_robustez.parquet`
+**Script origen:** `02-estacionariedad/estacionariedad_robustez.py`
+**Granularidad:** EG + Johansen (trace/max-eig, crudo y Reinsel–Ahn) para (AT, CEED) n=18.
+
+---
+
+## 70. `var_sensibilidad_irf.parquet`
+
+**Ruta:** `data/staging/S02/var_sensibilidad_irf.parquet`
+**Script origen:** `02-estacionariedad/estacionariedad_robustez.py`
+**Granularidad:** IRF CEED→AT h=0…4 en tres specs (T12+EC, T18, T18+empleo).
+
+---
+
+## 71. `var_diagnosticos_ext.parquet`
+
+**Ruta:** `data/staging/S02/var_diagnosticos_ext.parquet`
+**Script origen:** `02-estacionariedad/estacionariedad_robustez.py`
+**Granularidad:** Portmanteau Q4/Q8 por ecuación, CUSUM ref., dummies 2022-I.
+
+---
+
+## 72. `especificacion_definitiva.parquet`
+
+**Ruta:** `data/staging/S02/especificacion_definitiva.parquet`
+**Script origen:** `02-estacionariedad/estacionariedad_robustez.py`
+**Granularidad:** Una fila con veredictos 2.2.2 (estacionariedad, CCF, coint, IRF, Portmanteau, `spec_final`).
+
+---
+
 ## Uso en secciones futuras
 
 | Sección | Dataset requerido | Propósito |
@@ -1333,12 +1407,12 @@ Escenarios: `a_listwise`, `b_imputado`, `c_imputado_flag`.
 | S01 – 1.3 Hipótesis | `empresa_siniestralidad_completa`, `temporal_empresa_anio`, `temporal_persistencia_yoy`, `panel_empresa_lag_yoy`, `temporal_mensual`, `estacionalidad_mes` | Pruebas formales de diferencia / asociación / GOF |
 | S01 – 1.4 Datos faltantes | `faltantes_*`, `empresas_imputadas`, `siniestros_imputados` | Diagnóstico, mecanismo, imputación y evaluación |
 | S01 – 1.5 Baseline | `temporal_empresa_anio`, `baseline_predicciones`, `baseline_metricas`, `baseline_confusion` | Definición y cuantificación del predictor baseline |
-| S02 – 2.2 Modelamiento | `panel_ciclo_at_trimestral`, `at_construccion_trimestral`, `var_*`, `estacionariedad_tests` | Relación dinámica ciclo↔AT |
-| S02 – 2.3 Nowcast | `panel_fuentes_trimestral`, `ec_staging`, `panel_ciclo_at_trimestral` | Bridge EC→CEED; controles macro |
+| S02 – 2.2 Modelamiento | `panel_ciclo_at_trimestral`, `var_*`, `estacionariedad_*`, `ccf_*`, `coint_robustez`, `especificacion_definitiva` | Relación dinámica ciclo↔AT; spec definitiva |
+| S02 – 2.3 Nowcast | `panel_fuentes_trimestral`, `ec_staging`, `panel_ciclo_at_trimestral`, `ccf_rezagos_resumen` | Bridge EC→CEED; rezago estructural k=6 |
 | S03 – Reto de negocio | `empresa_siniestralidad_tratada`, `siniestros_tratados` / `siniestros_imputados`, `temporal_empresa_anio`, `panel_empresa_lag_yoy`, `colinealidad_vif`, `predictores_recomendacion`, `hip_features_resumen`, `hip_p12_bondad_ajuste_costo`, `faltantes_impacto_resumen`, `baseline_metricas` | Feature set + familia de severidad; CV temporal; superar baseline |
 | S04 – Inferencia causal | `empresa_siniestralidad_completa` / `_tratada`, `hip_p10_retencion_top10` | Grupo tratado / control; estabilidad del target |
 | S05 – Recomendador | `empresas_staging` / `empresas_imputadas`, `empresa_siniestralidad_completa`, `hip_p10_retencion_top10` | Perfil de empresa; priorizar recurrentes Top 10% |
 
 ---
 
-*Actualizado por: `S01 – 1.2–1.5` + `S02 – 2.1.3` + `S02 – 2.2.1` — Prueba Técnica Grupo SURA.*
+*Actualizado por: `S01 – 1.2–1.5` + `S02 – 2.1.3` + `S02 – 2.2.1` + `S02 – 2.2.2` — Prueba Técnica Grupo SURA.*
