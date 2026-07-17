@@ -68,6 +68,14 @@
 | [`ec_staging.parquet`](#55-ec_stagingparquet) | S02 – 2.1.3 EDA fuentes | `data/staging/S02/` | 53 | 11 |
 | [`fuentes_eda_resumen.parquet`](#56-fuentes_eda_resumenparquet) | S02 – 2.1.3 EDA fuentes | `data/staging/S02/` | 4 | 10 |
 | [`panel_fuentes_trimestral.parquet`](#57-panel_fuentes_trimestralparquet) | S02 – 2.1.3 EDA fuentes | `data/staging/S02/` | 23 | 11 |
+| [`at_construccion_trimestral.parquet`](#58-at_construccion_trimestralparquet) | S02 – 2.2.1 Modelamiento | `data/staging/S02/` | 28 | 7 |
+| [`panel_ciclo_at_trimestral.parquet`](#59-panel_ciclo_at_trimestralparquet) | S02 – 2.2.1 Modelamiento | `data/staging/S02/` | 28 | 22 |
+| [`estacionariedad_tests.parquet`](#60-estacionariedad_testsparquet) | S02 – 2.2.1 Modelamiento | `data/staging/S02/` | 10 | 23 |
+| [`var_lag_selection.parquet`](#61-var_lag_selectionparquet) | S02 – 2.2.1 Modelamiento | `data/staging/S02/` | 3 | 7 |
+| [`var_irf.parquet`](#62-var_irfparquet) | S02 – 2.2.1 Modelamiento | `data/staging/S02/` | 117 | 6 |
+| [`var_fevd.parquet`](#63-var_fevdparquet) | S02 – 2.2.1 Modelamiento | `data/staging/S02/` | 26 | 6 |
+| [`var_diagnosticos.parquet`](#64-var_diagnosticosparquet) | S02 – 2.2.1 Modelamiento | `data/staging/S02/` | 5 | 17 |
+| [`var_modelo_resumen.parquet`](#65-var_modelo_resumenparquet) | S02 – 2.2.1 Modelamiento | `data/staging/S02/` | 1 | 18 |
 
 ---
 
@@ -1191,6 +1199,133 @@ Escenarios: `a_listwise`, `b_imputado`, `c_imputado_flag`.
 
 ---
 
+## 58. `at_construccion_trimestral.parquet`
+
+**Ruta:** `data/staging/S02/at_construccion_trimestral.parquet`
+**Script origen:** `sections/S02-Modelacion_Economica_Sectorial/2_2_Modelamiento de relaciones/code/01-modelamiento/modelamiento_relaciones.py`
+**Granularidad:** Una fila por trimestre (28: 2018-I → 2024-IV).
+**Base:** Empresas `sector==Construccion` (`empresas.csv` ∩ `temporal_empresa_anio`); conteos AT trimestrales desde `siniestros_imputados` (`tipo==AT`). Totales anuales validados exactamente contra `temporal_empresa_anio.n_at`.
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `anio` / `q` / `periodo` / `fecha` | — | Clave temporal trimestral |
+| `n_at` | `entero` | Número de accidentes de trabajo del sector |
+| `n_trabajadores_sector` | `entero` | Exposición (suma de trabajadores; constante 20 644 en estos datos) |
+| `freq_at_x100` | `numérico` | Frecuencia = `n_at / n_trabajadores_sector × 100` |
+
+> **Nota:** `temporal_empresa_anio` es anual; la desagregación trimestral requiere `fecha_ocurrencia` de siniestros. No se interpola.
+
+---
+
+## 59. `panel_ciclo_at_trimestral.parquet`
+
+**Ruta:** `data/staging/S02/panel_ciclo_at_trimestral.parquet`
+**Script origen:** `01-modelamiento/modelamiento_relaciones.py`
+**Granularidad:** 28 trimestres (2018-I → 2024-IV); CEED/IPOC desde 2020-III; EC desde 2022-I; macro Construcción 2018–2024.
+**Base:** join de `at_construccion_trimestral` + `panel_fuentes_trimestral` + `macro_sectorial` (filtro Construcción).
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `freq_at_x100` / `n_at` / `n_trabajadores_sector` | — | Serie objetivo |
+| `proceso_nueva_m2` / `area_censada_m2` | `entero` | CEED (flujo / stock); proxy de actividad edificación |
+| `ec_m3_promedio_trim` / `ipoc_total` | `numérico` | EC e IPOC |
+| `pib_sectorial_var` / `empleo_sectorial` / `ipp_sectorial` / `tasa_informalidad` | `numérico` | Controles macro sintéticos |
+| `log_*` | `numérico` | Transformaciones log usadas en el VAR |
+
+> **Ventanas de modelado:** edificación (AT+CEED+EC+macro) = 2022-I→2024-IV (**n=12**); IPOC (AT+IPOC+macro) = 2020-III→2024-IV (**n=18**).
+
+---
+
+## 60. `estacionariedad_tests.parquet`
+
+**Ruta:** `data/staging/S02/estacionariedad_tests.parquet`
+**Script origen:** `01-modelamiento/modelamiento_relaciones.py`
+**Granularidad:** Una fila por serie evaluada (10).
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `serie` | `texto` | Nombre de la serie |
+| `orden_integracion` / `n_diferencias` | `entero` | I(d) y diferencias aplicadas |
+| `decision_regla` | `texto` | Concordancia ADF+KPSS (α=0.05) |
+| `level_*` / `d1_*` | `numérico` | Estadísticos y p-valores ADF/KPSS en nivel y Δ |
+
+---
+
+## 61. `var_lag_selection.parquet`
+
+**Ruta:** `data/staging/S02/var_lag_selection.parquet`
+**Script origen:** `01-modelamiento/modelamiento_relaciones.py`
+**Granularidad:** Una fila por (bloque, p).
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `bloque` | `texto` | `edificacion_diff` / `ipoc_diff` |
+| `p` | `entero` | Orden de rezagos |
+| `aic` / `bic` / `hqic` | `numérico` | Criterios de información |
+| `nobs` / `ok` | — | Tamaño efectivo y flag de estimación |
+
+---
+
+## 62. `var_irf.parquet`
+
+**Ruta:** `data/staging/S02/var_irf.parquet`
+**Script origen:** `01-modelamiento/modelamiento_relaciones.py`
+**Granularidad:** Una fila por (bloque, horizonte, respuesta, shock).
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `bloque` | `texto` | `edificacion` / `ipoc` |
+| `modelo` | `texto` | Spec usada para la IRF |
+| `horizonte` | `entero` | 0…8 trimestres |
+| `respuesta` / `shock` | `texto` | Variables endógenas |
+| `irf_orth` | `numérico` | IRF ortogonalizada (1 d.e.) |
+
+---
+
+## 63. `var_fevd.parquet`
+
+**Ruta:** `data/staging/S02/var_fevd.parquet`
+**Script origen:** `01-modelamiento/modelamiento_relaciones.py`
+**Granularidad:** FEVD en horizontes 4 y 8.
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `bloque` / `modelo` / `horizonte` | — | Identificación |
+| `respuesta` / `shock` | `texto` | Descomposición |
+| `fevd_share` | `numérico` | Participación en la varianza (0–1) |
+
+---
+
+## 64. `var_diagnosticos.parquet`
+
+**Ruta:** `data/staging/S02/var_diagnosticos.parquet`
+**Script origen:** `01-modelamiento/modelamiento_relaciones.py`
+**Granularidad:** Una fila por especificación comparada (5).
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `modelo` | `texto` | VAR_diff / OLS / ADL / VAR_niveles / IPOC |
+| `aic` / `bic` / `nobs` / `k_params` | — | Ajuste |
+| `portmanteau_*` / `arch_*` / `jb_*` | — | Tests de residuos (p-valor mín. y pass α=0.05) |
+
+---
+
+## 65. `var_modelo_resumen.parquet`
+
+**Ruta:** `data/staging/S02/var_modelo_resumen.parquet`
+**Script origen:** `01-modelamiento/modelamiento_relaciones.py`
+**Granularidad:** Una fila con la decisión de especificación y métricas clave.
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `spec_elegida` / `spec_reason` / `p_star` | — | Decisión principal bloque edificación |
+| `eg_pvalue_edif` / `johansen_r` | — | Tests de cointegración |
+| `ventana_*` / `n_*` | — | Muestras edificación e IPOC |
+| `rho_*` | `numérico` | Spearman contemporáneos |
+| `ols_ceed_coef` / `adl_r2` | — | Alternativas simples |
+
+---
+
 ## Uso en secciones futuras
 
 | Sección | Dataset requerido | Propósito |
@@ -1198,11 +1333,12 @@ Escenarios: `a_listwise`, `b_imputado`, `c_imputado_flag`.
 | S01 – 1.3 Hipótesis | `empresa_siniestralidad_completa`, `temporal_empresa_anio`, `temporal_persistencia_yoy`, `panel_empresa_lag_yoy`, `temporal_mensual`, `estacionalidad_mes` | Pruebas formales de diferencia / asociación / GOF |
 | S01 – 1.4 Datos faltantes | `faltantes_*`, `empresas_imputadas`, `siniestros_imputados` | Diagnóstico, mecanismo, imputación y evaluación |
 | S01 – 1.5 Baseline | `temporal_empresa_anio`, `baseline_predicciones`, `baseline_metricas`, `baseline_confusion` | Definición y cuantificación del predictor baseline |
-| S02 – Modelación económica | `elic_staging`, `ceed_staging`, `ipoc_staging`, `ec_staging`, `panel_fuentes_trimestral`, `fuentes_eda_resumen` (+ S01: `empresa_siniestralidad_completa`, `bivariado_resumen_sector`, `temporal_anual`) | Ciclo construcción DANE; indicador líder; nowcast |
+| S02 – 2.2 Modelamiento | `panel_ciclo_at_trimestral`, `at_construccion_trimestral`, `var_*`, `estacionariedad_tests` | Relación dinámica ciclo↔AT |
+| S02 – 2.3 Nowcast | `panel_fuentes_trimestral`, `ec_staging`, `panel_ciclo_at_trimestral` | Bridge EC→CEED; controles macro |
 | S03 – Reto de negocio | `empresa_siniestralidad_tratada`, `siniestros_tratados` / `siniestros_imputados`, `temporal_empresa_anio`, `panel_empresa_lag_yoy`, `colinealidad_vif`, `predictores_recomendacion`, `hip_features_resumen`, `hip_p12_bondad_ajuste_costo`, `faltantes_impacto_resumen`, `baseline_metricas` | Feature set + familia de severidad; CV temporal; superar baseline |
 | S04 – Inferencia causal | `empresa_siniestralidad_completa` / `_tratada`, `hip_p10_retencion_top10` | Grupo tratado / control; estabilidad del target |
 | S05 – Recomendador | `empresas_staging` / `empresas_imputadas`, `empresa_siniestralidad_completa`, `hip_p10_retencion_top10` | Perfil de empresa; priorizar recurrentes Top 10% |
 
 ---
 
-*Actualizado por: `S01 – 1.2 EDA` + `S01 – 1.3` + `S01 – 1.4` + `S01 – 1.5.1` + `S02 – 2.1.3` — Prueba Técnica Grupo SURA.*
+*Actualizado por: `S01 – 1.2–1.5` + `S02 – 2.1.3` + `S02 – 2.2.1` — Prueba Técnica Grupo SURA.*
