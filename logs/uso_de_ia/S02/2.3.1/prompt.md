@@ -1,0 +1,1 @@
+Haz una investigación del estado del arte en relación a modelos nowcast para la industria de aseguradoras, modelos enfocados a predecir la accidentalidad en el sector de construcción, tomando en cuenta indicadores del ciclo economico. Lista los modelos que se usaron, sus resultados y los pros y contras de cada uno.
