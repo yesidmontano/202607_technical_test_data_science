@@ -62,6 +62,12 @@
 | [`baseline_predicciones.parquet`](#49-baseline_prediccionesparquet) | S01 – 1.5 Baseline (cuantificación) | `data/staging/S01/` | 5 000 | 12 |
 | [`baseline_metricas.parquet`](#50-baseline_metricasparquet) | S01 – 1.5 Baseline (cuantificación) | `data/staging/S01/` | 6 | 17 |
 | [`baseline_confusion.parquet`](#51-baseline_confusionparquet) | S01 – 1.5 Baseline (cuantificación) | `data/staging/S01/` | 4 | 5 |
+| [`elic_staging.parquet`](#52-elic_stagingparquet) | S02 – 2.1.3 EDA fuentes | `data/staging/S02/` | 3 | 11 |
+| [`ceed_staging.parquet`](#53-ceed_stagingparquet) | S02 – 2.1.3 EDA fuentes | `data/staging/S02/` | 23 | 20 |
+| [`ipoc_staging.parquet`](#54-ipoc_stagingparquet) | S02 – 2.1.3 EDA fuentes | `data/staging/S02/` | 33 | 14 |
+| [`ec_staging.parquet`](#55-ec_stagingparquet) | S02 – 2.1.3 EDA fuentes | `data/staging/S02/` | 53 | 11 |
+| [`fuentes_eda_resumen.parquet`](#56-fuentes_eda_resumenparquet) | S02 – 2.1.3 EDA fuentes | `data/staging/S02/` | 4 | 10 |
+| [`panel_fuentes_trimestral.parquet`](#57-panel_fuentes_trimestralparquet) | S02 – 2.1.3 EDA fuentes | `data/staging/S02/` | 23 | 11 |
 
 ---
 
@@ -1064,6 +1070,127 @@ Escenarios: `a_listwise`, `b_imputado`, `c_imputado_flag`.
 
 ---
 
+## 52. `elic_staging.parquet`
+
+**Ruta:** `data/staging/S02/elic_staging.parquet`
+**Script origen:** `sections/S02-Modelacion_Economica_Sectorial/2_1_Caracterizacion/code/03-EDA_fuentes/eda_fuentes.py`
+**Granularidad:** Una fila por año de referencia mayo (3: 2024–2026).
+**Base:** `resources/ELIC-2025-2026.csv` (DANE ELIC) con tipografía numérica limpia.
+
+| Campo | Tipo | Descripción | ¿Nuevo? |
+|---|---|---|---|
+| `anio` | `entero` | Año de la referencia mayo | Raw |
+| `m2_mayo` | `entero` | m² licenciados en mayo | Raw → parse |
+| `m2_ene_mayo` | `entero` | m² acumulados enero–mayo | Raw → parse |
+| `m2_doce_meses` | `entero` | m² en ventana de doce meses a mayo | Raw → parse |
+| `var_anual_pct` | `numérico` | Variación % anual | Raw |
+| `var_anio_corrido_pct` | `numérico` | Variación % año corrido | Raw |
+| `var_doce_meses_pct` | `numérico` | Variación % doce meses | Raw |
+| `var_mensual_pct` | `numérico` | Variación % mensual | Raw |
+| `fuente` / `frecuencia` / `rezago_aprox_dias` | — | Metadatos de operación (~45 días) | Derivado |
+
+> **Limitación:** snapshot anual de referencia mayo (n=3). No es una serie mensual completa; útil como señal líder de corto historial, no para estacionalidad.
+
+---
+
+## 53. `ceed_staging.parquet`
+
+**Ruta:** `data/staging/S02/ceed_staging.parquet`
+**Script origen:** `03-EDA_fuentes/eda_fuentes.py`
+**Granularidad:** Una fila por trimestre (23: 2020-III → 2026-I).
+**Base:** `resources/CEED-2020-2026.csv`.
+
+| Campo | Tipo | Descripción | ¿Nuevo? |
+|---|---|---|---|
+| `anio` / `trimestre` / `q` | — | Año, rótulo romano y número de trimestre | Raw + derivado |
+| `periodo` | `texto` | Etiqueta `YYYY-Tn` | Derivado |
+| `fecha` | `fecha` | Proxy al mes final del trimestre | Derivado |
+| `area_censada_m2` | `entero` | Stock total de área censada | Raw → parse |
+| `area_culminada_m2` | `entero` | Área culminada en el trimestre | Raw → parse |
+| `proceso_*_m2` | `entero` | Nueva / continúa / reinicia / total en proceso | Raw → parse |
+| `paralizada_*_m2` | `entero` | Nueva / continúa / total paralizada | Raw → parse |
+| `share_proceso` / `share_paralizada` / `share_culminada` | `numérico` | Participaciones sobre área censada | Derivado |
+| `fuente` / `frecuencia` / `rezago_aprox_dias` | — | Metadatos (~45 días) | Derivado |
+
+> **Uso:** indicador coincidente de edificación; `proceso_nueva_m2` y `area_censada_m2` son candidatos a componente del indicador líder / nowcast.
+
+---
+
+## 54. `ipoc_staging.parquet`
+
+**Ruta:** `data/staging/S02/ipoc_staging.parquet`
+**Script origen:** `03-EDA_fuentes/eda_fuentes.py`
+**Granularidad:** Una fila por trimestre (33: 2018-I → 2026-I).
+**Base:** `resources/IPOC-2018-2026.csv` con tipologías CPC renombradas a nombres cortos.
+
+| Campo | Tipo | Descripción | ¿Nuevo? |
+|---|---|---|---|
+| `anio` / `trimestre` / `q` / `periodo` / `fecha` | — | Identificación temporal | Raw + derivado |
+| `ipoc_total` | `numérico` | Índice agregado de producción de obras civiles | Raw |
+| `Carreteras/puentes` | `numérico` | Tipología 530201 | Raw → rename |
+| `Obras hidráulicas` | `numérico` | Tipología 530202 | Raw → rename |
+| `Tuberías/cables` | `numérico` | Tipología 530203 | Raw → rename |
+| `Minas/plantas` | `numérico` | Tipología 530204 | Raw → rename |
+| `Otras obras civil` | `numérico` | Tipología 530205 | Raw → rename |
+| `fuente` / `frecuencia` / `rezago_aprox_dias` | — | Metadatos (~48 días) | Derivado |
+
+> **Nota:** `Minas/plantas` es la tipología más volátil (pico ~300 en 2025); puede distorsionar el agregado si se usa sin robustez.
+
+---
+
+## 55. `ec_staging.parquet`
+
+**Ruta:** `data/staging/S02/ec_staging.parquet`
+**Script origen:** `03-EDA_fuentes/eda_fuentes.py`
+**Granularidad:** Una fila por mes (53: 2022-01 → 2026-05).
+**Base:** `resources/EC-2022-2026.csv`.
+
+| Campo | Tipo | Descripción | ¿Nuevo? |
+|---|---|---|---|
+| `anio` / `mes` / `mes_label` / `anio_mes` / `fecha` | — | Identificación temporal | Raw + derivado |
+| `m3_premezclado` | `entero` | Miles de m³ despachados (valor absoluto en m³) | Raw → parse |
+| `m3_ma3` | `numérico` | Media móvil 3 meses | Derivado |
+| `var_yoy_pct` | `numérico` | Variación % interanual (lag 12) | Derivado |
+| `fuente` / `frecuencia` / `rezago_aprox_dias` | — | Metadatos (~38 días) | Derivado |
+
+> **Uso:** sensor coincidente de alta frecuencia; mejor rezago de publicación entre las fuentes seleccionadas. Ideal para nowcast y anticipar CEED.
+
+---
+
+## 56. `fuentes_eda_resumen.parquet`
+
+**Ruta:** `data/staging/S02/fuentes_eda_resumen.parquet`
+**Script origen:** `03-EDA_fuentes/eda_fuentes.py`
+**Granularidad:** Una fila por fuente (4: ELIC, CEED, IPOC, EC).
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `fuente` | `texto` | Sigla de la operación |
+| `n_obs` / `frecuencia` / `inicio` / `fin` | — | Cobertura temporal |
+| `indicador_clave` / `valor_ultimo` / `var_ultimo_pct` | — | Snapshot del último periodo |
+| `rezago_aprox_dias` / `rol_ciclo` | — | Metadatos de ciclo (líder / coincidente) |
+
+---
+
+## 57. `panel_fuentes_trimestral.parquet`
+
+**Ruta:** `data/staging/S02/panel_fuentes_trimestral.parquet`
+**Script origen:** `03-EDA_fuentes/eda_fuentes.py`
+**Granularidad:** Una fila por trimestre en la ventana CEED (23: 2020-III → 2026-I).
+**Base:** join CEED ∩ IPOC + promedio trimestral de EC.
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `anio` / `q` / `periodo` / `fecha` | — | Clave temporal |
+| `area_censada_m2` / `proceso_nueva_m2` | `entero` | Señales CEED |
+| `ipoc_total` | `numérico` | Señal IPOC |
+| `ec_m3_promedio_trim` | `numérico` | Media de m³ EC en el trimestre (NaN antes de 2022) |
+| `z_ceed` / `z_ipoc` / `z_ec` | `numérico` | Z-scores exploratorios (solo visualización / EDA) |
+
+> **Uso preferente en 2.2 / 2.3:** panel alineado para correlaciones, rezagos cruzados e indicador compuesto. Spearman CEED↔EC ≈ 0.79; IPOC↔CEED ≈ −0.72 en la ventana observada (divergencia 2024–2025).
+
+---
+
 ## Uso en secciones futuras
 
 | Sección | Dataset requerido | Propósito |
@@ -1071,11 +1198,11 @@ Escenarios: `a_listwise`, `b_imputado`, `c_imputado_flag`.
 | S01 – 1.3 Hipótesis | `empresa_siniestralidad_completa`, `temporal_empresa_anio`, `temporal_persistencia_yoy`, `panel_empresa_lag_yoy`, `temporal_mensual`, `estacionalidad_mes` | Pruebas formales de diferencia / asociación / GOF |
 | S01 – 1.4 Datos faltantes | `faltantes_*`, `empresas_imputadas`, `siniestros_imputados` | Diagnóstico, mecanismo, imputación y evaluación |
 | S01 – 1.5 Baseline | `temporal_empresa_anio`, `baseline_predicciones`, `baseline_metricas`, `baseline_confusion` | Definición y cuantificación del predictor baseline |
-| S02 – Modelación económica | `empresa_siniestralidad_completa`, `bivariado_resumen_sector`, `temporal_anual`, `predictores_recomendacion`, `hip_confirmaciones_resumen` | Caracterización sectorial; confirmar descarte de mes/geo |
+| S02 – Modelación económica | `elic_staging`, `ceed_staging`, `ipoc_staging`, `ec_staging`, `panel_fuentes_trimestral`, `fuentes_eda_resumen` (+ S01: `empresa_siniestralidad_completa`, `bivariado_resumen_sector`, `temporal_anual`) | Ciclo construcción DANE; indicador líder; nowcast |
 | S03 – Reto de negocio | `empresa_siniestralidad_tratada`, `siniestros_tratados` / `siniestros_imputados`, `temporal_empresa_anio`, `panel_empresa_lag_yoy`, `colinealidad_vif`, `predictores_recomendacion`, `hip_features_resumen`, `hip_p12_bondad_ajuste_costo`, `faltantes_impacto_resumen`, `baseline_metricas` | Feature set + familia de severidad; CV temporal; superar baseline |
 | S04 – Inferencia causal | `empresa_siniestralidad_completa` / `_tratada`, `hip_p10_retencion_top10` | Grupo tratado / control; estabilidad del target |
 | S05 – Recomendador | `empresas_staging` / `empresas_imputadas`, `empresa_siniestralidad_completa`, `hip_p10_retencion_top10` | Perfil de empresa; priorizar recurrentes Top 10% |
 
 ---
 
-*Actualizado por: `S01 – 1.2 EDA` + `S01 – 1.3` + `S01 – 1.4` + `S01 – 1.5.1` — Prueba Técnica Grupo SURA.*
+*Actualizado por: `S01 – 1.2 EDA` + `S01 – 1.3` + `S01 – 1.4` + `S01 – 1.5.1` + `S02 – 2.1.3` — Prueba Técnica Grupo SURA.*

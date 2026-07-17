@@ -72,5 +72,86 @@ IPOC (Trimestral) + ICOCIV (Mensual deflactor) ──▶ Producción real en inf
 
 ## 2.1.3. Análisis exploratorio preliminar de cada fuente
 
+> **Script:** `sections/S02-Modelacion_Economica_Sectorial/2_1_Caracterizacion/code/03-EDA_fuentes/eda_fuentes.py`
+> **Staging:** `data/staging/S02/` (documentado en `docs/staging_data.md` #52–57)
+> **Figuras:** `results/imgs/03_*.png`
+
+Se limpiaron y exploraron las cuatro fuentes de 2.1.2. Los números con separador de miles se parsearon a enteros/flotantes; se añadieron claves temporales (`periodo`, `fecha`) y metadatos de rezago.
+
+| Fuente | Obs. | Frecuencia | Ventana | Indicador clave (último) | Rezago ~ |
+|---|---|---|---|---|---|
+| **ELIC** | 3 | Anual (ref. mayo) | 2024–2026 | 1.92 M m² en mayo-2026 (+33.2% anual) | 45 d |
+| **CEED** | 23 | Trimestral | 2020-III → 2026-I | 40.9 M m² área censada (2026-I) | 45 d |
+| **IPOC** | 33 | Trimestral | 2018-I → 2026-I | Índice 118.2 (2026-I); media hist. 105.0 | 48 d |
+| **EC** | 53 | Mensual | 2022-01 → 2026-05 | 653 617 m³ (may-2026; YoY −0.9%) | 38 d |
+
+---
+
+### ELIC – Licencias (señal líder, historial corto)
+
+![ELIC área y variaciones](imgs/03_elic_area_y_variaciones.png)
+
+- **Recuperación 2026:** el área de mayo pasa de 1.44 M m² (2025) a **1.92 M m²** (+33.2% anual). El acumulado ene–mayo crece de forma sostenida (7.2 → 8.5 → **11.0 M m²**).
+- **2024 fue el piso del ciclo de licencias** (−30% anual; −24.9% en doce meses).
+- **Limitación crítica:** n=3 (snapshot de referencia mayo). No permite estimar estacionalidad ni rezagos mensuales ELIC→CEED; para el indicador líder habrá que complementar con series históricas más largas o usar ELIC solo como ancla cualitativa / validación externa.
+
+---
+
+### CEED – Censo de edificaciones (coincidente edificación)
+
+![CEED series](imgs/03_ceed_series_areas.png)
+
+![CEED composición](imgs/03_ceed_composicion.png)
+
+- El **área censada** expandió desde ~40 M m² (2020-III) hasta un **máximo ~47 M m² hacia 2023-IV / 2024-I**, y luego contrajo hasta **40.9 M m² en 2026-I**.
+- El stock **en proceso** (~64–65% del censado) acompaña el ciclo; el área **paralizada** es estable en torno a **24–27%** del stock (último 24.2%) — no es el motor de la contracción reciente.
+- `proceso_nueva_m2` (flujo de iniciaciones) es el candidato natural a componente coincidente del indicador compuesto.
+
+---
+
+### IPOC – Obras civiles (coincidente infraestructura)
+
+![IPOC total y tipologías](imgs/03_ipoc_total_y_tipologias.png)
+
+- Serie más larga (33 trimestres). Caída marcada en 2020; **repunte fuerte 2024–2025** (máx. 136.7) con corrección a 118.2 en 2026-I.
+- Heterogeneidad tipológica alta: **Minas/plantas** domina la volatilidad reciente (pico ~300 en 2025); Tuberías/cables permanece rezagado (último 72.5 vs media 82.1).
+- **Implicación:** el IPOC total no se mueve al unísono con CEED en 2024–2025 (infraestructura vs edificación en fases distintas del ciclo).
+
+---
+
+### EC – Concreto premezclado (coincidente de alta frecuencia)
+
+![EC serie mensual](imgs/03_ec_serie_mensual.png)
+
+![EC estacionalidad](imgs/03_ec_estacionalidad.png)
+
+- Media ~664 k m³/mes. Tendencia suave a la baja desde el pico 2023; YoY con tramos negativos prolongados (mín. −15.8%).
+- **Estacionalidad relevante:** amplitud del índice **26.8 pp** (valle enero, pico octubre) — a diferencia del portafolio ARL (S01), aquí el mes **sí** importa para nowcast.
+- Mejor rezago de publicación (~38 días) → candidato prioritario a bridge de alta frecuencia hacia CEED trimestral.
+
+---
+
+### Co-movimiento preliminar (panel trimestral)
+
+![Panel ciclo z-scores](imgs/03_panel_ciclo_resumen.png)
+
+Correlación Spearman en la ventana solapada (`panel_fuentes_trimestral`):
+
+|  | CEED área censada | IPOC total | EC m³ (prom. trim.) |
+|---|---|---|---|
+| **CEED** | 1.00 | **−0.72** | **+0.79** |
+| **IPOC** | −0.72 | 1.00 | −0.57 |
+| **EC** | +0.79 | −0.57 | 1.00 |
+
+- **CEED y EC co-mueven** (ρ≈0.79): el concreto anticipa / acompaña la edificación — base sólida para un indicador líder/coincidente de alta frecuencia.
+- **IPOC diverge** de CEED/EC en 2024–2025 (ρ≈−0.72): no mezclar IPOC en el mismo factor sin ajustar por desfase o tipología; mejor tratarlo como **bloque obras civiles** separado.
+- **ELIC 2026 (+33% anual)** sugiere intención de recuperación en edificación que aún no se refleja plenamente en CEED/EC del 2026-I / may-2026 — coherente con el rezago 6–18 meses ELIC→CEED documentado en 2.1.1.
+
+### Implicaciones para el indicador líder (siguiente paso)
+
+1. **Núcleo propuesto:** ELIC (intención, con la salvedad de n corto) + EC (bridge mensual) → anticipar CEED (`proceso_nueva` / área causada).
+2. **IPOC en paralelo** para el ciclo de infraestructura, no como sustituto de edificación.
+3. **Rezagos de publicación:** EC (~38 d) llega antes que CEED/ELIC (~45 d) e IPOC (~48 d); el nowcast debe privilegiar EC cuando el trimestre CEED aún no está publicado.
+4. Staging listo en `data/staging/S02/` para 2.2 (relaciones) y 2.3 (nowcast).
 
     
