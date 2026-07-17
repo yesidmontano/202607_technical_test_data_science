@@ -276,3 +276,94 @@ Con n=18 **desaparece** el falso r̂=2 de Johansen en T=12. EG y Johansen correg
 | VAR(p=6) con lead estructural | CCF k=6 | Impossible con T≤18 (df) | Posponer hasta ampliar historia |
 
 **Especificación definitiva para 2.3 / reporting:** VAR(1) en diferencias del bloque edificación; IPOC en bloque separado (VAR en diferencias); no forzar cointegración; reportar CCF k=6 como evidencia de canal de mediano plazo no embebido en p=1.
+
+
+---
+
+## 2.2.3 Justificación de la especificación y diagnósticos finales
+
+### 1. Justificación de la especificación frente a alternativas
+
+La elección del **VAR(1) en primeras diferencias** como modelo canónico de la sección no es ad hoc: surge del encadenamiento de evidencias producidas en 2.2.1 y 2.2.2, que cierran la discusión sobre cada alternativa razonable.
+
+#### 1.1 Por qué no VECM
+
+El VECM es la extensión natural cuando las series cointegran. Para justificarlo se requieren al menos dos condiciones: (a) series I(1) con relación de largo plazo estable, y (b) muestra suficiente para que los tests de Johansen/Engle-Granger tengan potencia razonable.
+
+- **Condición (a):** Engle-Granger reporta p=0.986 en n=18 y p=0.995 en n=12 — en ambas ventanas el residuo de la regresión de largo plazo es no estacionario. Johansen corregido con el factor Reinsel-Ahn (0.778) da r̂=0 en n=18, haciendo desaparecer el falso r̂=2 que aparecía con T=12 y sesgo de muestra pequeña (§2.2.1 sección 3, §2.2.2 sección 3).
+- **Condición (b):** la literatura (Haug 1996; Toda 1995) señala que para un sistema bivariado con velocidad de ajuste moderada se necesitan 50–80 trimestres (12–20 años) para alcanzar potencia ≥0.80. Con T≤18 el "no rechazo de r=0" es informativo pero no concluyente; **no se puede afirmar ausencia definitiva de largo plazo**, pero tampoco existe base estadística para imponer un vector de cointegración.
+
+**Conclusión frente a VECM:** incorporar un término de corrección de error sin soporte empírico introduciría restricciones no identificadas; el modelo sería más restringido sin justificación, y los parámetros del término de corrección serían estimados con alta varianza. Se descarta formalmente.
+
+#### 1.2 Por qué no VAR en niveles
+
+Las series I(1) en niveles producen regresiones espurias: los estadísticos t pierden su distribución asintótica normal y las IRF divergen o no convergen. La evidencia de orden de integración I(1) fue confirmada en 2.2.1 (ADF+KPSS en las seis series) y robustificada en 2.2.2 con Phillips-Perron (corrección Newey-West), donde `log_freq_at` registra ADF p=0.154, KPSS p=0.100 y PP p=0.180 en n=28. Las primeras diferencias de las mismas series son estacionarias por los tres tests simultáneamente (p<0.001, p=0.100, p<0.003). El AIC marginal más bajo del VAR en niveles (−16.3 vs −15.4) es un artefacto espurio: el criterio AIC no penaliza la no-estacionariedad y no puede usarse como argumento a su favor.
+
+#### 1.3 Por qué no ADL / OLS uniecuacional
+
+El ADL(1) tiene el AIC más bajo de la competencia (−27.6) y el OLS estático también supera al VAR en AIC (−19.3). En modelos de regresión única estos son legítimos para predicción, pero **la pregunta de 2.2 no es de pronóstico puntual sino de dinámica de sistema**: se quiere la respuesta impulso-respuesta ortogonal y la descomposición de varianza del error de pronóstico — herramientas inherentemente multi-ecuacionales.
+
+Adicionalmente, en 2.2.2 §2 se testó formalmente si el lead de CEED en k=+1 aportaría a un ADL ampliado: el resultado fue ΔAIC=+1.73 y p_lead=0.68, por lo que ni siquiera en su terreno natural (pronóstico in-sample) la extensión uniecuacional captura el canal de mediano plazo documentado en la CCF. La ecuación de AT en el OLS estático produce β_CEED=−0.28 con p=0.38 — no significativo — señal de que la dinámica temporal no se resuelve sin rezagos explícitos de sistema.
+
+**Rol residual:** ADL y OLS quedan como **complementos descriptivos** para comunicar magnitudes en lenguaje de coeficiente simple, pero no como modelos principales de inferencia dinámica.
+
+#### 1.4 Por qué no VAR de orden superior (p≥4–6)
+
+La CCF de §2.2.2 muestra un pico en k=6 trimestres (ρ≈+0.58, CEED→AT), coherente con el rezago estructural 6–18 meses documentado en §2.1.4 (ventana ELIC→CEED→inicio de obra→accidentalidad). Un VAR(6) embedería ese canal en los parámetros propios, sin necesidad de la CCF como evidencia externa.
+
+El problema es de grados de libertad: con T_diff=11 (ventana edificación, n=12) o T_diff=17 (ventana ampliada, n=18) y k=2–3 endógenas, estimar p=6 requeriría 6×k² ≈ 24–54 parámetros en matrices A — imposible con los datos actuales. La selección de rezagos AIC/BIC/HQ converge unánimemente en p=1 para todos los bloques testados. **El canal de mediano plazo existe, pero no es estimable en esta muestra; se reporta como evidencia descriptiva (CCF) y se traslada a 2.3 como señal de rezago para el nowcast.**
+
+---
+
+### 2. Síntesis de diagnósticos finales
+
+Los diagnósticos del modelo elegido —VAR(1) en diferencias— se consolidaron en dos rondas: la primera en 2.2.1 sobre la ventana T=12 (bloque edificación completo con EC), y la segunda en 2.2.2 sobre las ventanas T=18 (sin EC) y combinaciones con variables de control.
+
+#### 2.1 Autocorrelación serial (Portmanteau)
+
+| Ventana | Q=4 (p) | Q=8 (p) | Lectura |
+|---|---|---|---|
+| T=12 (con EC) — 2.2.1 | 0.041 ⚠ | — | Marginal en el borde α=0.05 |
+| T=12 reconstrucción — 2.2.2 | 0.148 ✓ | 0.234 ✓ | Diferencia de implementación; el 0.041 original no se replica de forma robusta |
+| T=12 + dummy 2022-I | 0.148 ✓ | 0.234 ✓ | Dummy no cambia el estadístico; la AC residual no tiene origen estructural |
+| **T=18 sin EC (preferente)** | **0.737 ✓** | **0.554 ✓** | Portmanteau pasa holgado; la AC era artefacto de muestra corta |
+| T=18 + empleo endógeno | 0.323 ✓ | 0.189 ✓ | Robusto a la ampliación de endógenas |
+| T=18 + dummy 2022-I | 0.641 ✓ | 0.434 ✓ | Dummy innecesaria en la ventana ampliada |
+
+**Diagnóstico consolidado:** el p≈0.04 observado en 2.2.1 fue un síntoma de **muestra insuficiente (T=12)**, no de mala especificación. Al ampliar a T=18 el estadístico sube a p≈0.74, descartando autocorrelación residual sistemática. La ecuación de `d_log_freq_at` concentra la autocorrelación residual en las dos ventanas —consistente con la alta inercia propia de la variable AT (FEVD propia ≈79–80%)— pero sin alcanzar nivel de rechazo en la ventana preferente.
+
+#### 2.2 Heterocedasticidad condicional (ARCH-LM)
+
+El test ARCH-LM pasa en todas las especificaciones (p≥0.31 en la ventana de referencia de 2.2.1). Con T corto la potencia del ARCH-LM es baja, pero la ausencia de heterocedasticidad condicional detectada es coherente con la naturaleza de los datos: series trimestrales de sector real, no financieras, con baja volatilidad por clusters. No se requiere corrección de errores estándar heterocedásticos ni extensión GARCH.
+
+#### 2.3 Normalidad (Jarque-Bera)
+
+JB pasa en todas las especificaciones (p≈0.63 en el VAR edificación de referencia). Los residuos no presentan asimetría ni curtosis excesiva detectables con el tamaño muestral disponible. La inferencia por bootstrap o la corrección de Reinsel-Ahn son precauciones adicionales (aplicadas en los tests de cointegración), no requisitos por incumplimiento de normalidad.
+
+#### 2.4 Estabilidad estructural (CUSUM)
+
+Aplicado sobre la ecuación de AT en la ventana n=16 (residuos del VAR): estadístico=0.61, p=0.85. El proceso generador no presenta quiebre estructural detectable en el período 2020-III a 2024-IV, lo que valida la estimación conjunta sin partición de muestra. La política de pandemia (2020-I/II) y la contracción de edificación de 2022–2023 no producen inestabilidad de parámetros.
+
+#### 2.5 Cuadro resumen de diagnósticos del modelo elegido
+
+| Diagnóstico | Ventana T=12 | Ventana T=18 (preferente) | Veredicto final |
+|---|---|---|---|
+| Portmanteau Q=4 | p≈0.04–0.15 (marginal) | **p=0.74 ✓** | Sin AC en ventana preferente |
+| Portmanteau Q=8 | p=0.23 ✓ | **p=0.55 ✓** | Sin AC |
+| ARCH-LM | p=0.31 ✓ | ✓ | Sin heterocedasticidad |
+| Jarque-Bera | p=0.63 ✓ | ✓ | Residuos normales |
+| CUSUM (n=16) | stat=0.61, p=0.85 ✓ | — | Sin quiebre estructural |
+
+**Conclusión diagnóstica:** el VAR(1) en diferencias —ventana preferente T=18, bloque AT+CEED— es el único modelo de sistema dinámico que supera simultáneamente todos los criterios de validez residual. La ventana T=12+EC es técnicamente estimable y útil para la señal de bridge de concreto (hacia 2.3), pero **la inferencia IRF/FEVD debe apoyarse en T=18** dado el comportamiento del Portmanteau en muestra corta.
+
+#### 2.6 Limitaciones reconocidas y camino de mejora
+
+| Limitación | Origen | Mitigación disponible |
+|---|---|---|
+| p=1 subestima canal CCF k=6 | T insuficiente para p≥4 | Usar CCF como evidencia descriptiva; bridges en 2.3 |
+| Potencia baja de EG/Johansen | T≤18 vs óptimo 50–80 | Ampliar historial ELIC cuando DANE libere series 2015–2019 |
+| Bloque EC (n=12) marginal en Portmanteau | Muestra muy corta | Emplear EC solo como exógena en nowcast; no forzar endogeneidad con T=12 |
+| FEVD propia AT ≈79–81% | P=1 + muestra corta | Interpretación: alta inercia, no ausencia de determinantes externos |
+
+Estas limitaciones están acotadas y documentadas; no invalidan la especificación sino que fijan la frontera de lo que el sistema de datos actual permite afirmar con rigor estadístico.
+
