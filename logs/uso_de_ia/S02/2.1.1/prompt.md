@@ -1,0 +1,1 @@
+Lista 5 fuentes activas del DANE pertinentes para el ciclo del sector de construcción, incluye el rezago y la frecuencia de publicación de sus datos. Estas fuentes deben proveer indicadores.
