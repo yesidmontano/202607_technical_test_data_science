@@ -83,6 +83,21 @@
 | [`var_sensibilidad_irf.parquet`](#70-var_sensibilidad_irfparquet) | S02 – 2.2.2 Robustez | `data/staging/S02/` | 15 | 5 |
 | [`var_diagnosticos_ext.parquet`](#71-var_diagnosticos_extparquet) | S02 – 2.2.2 Robustez | `data/staging/S02/` | 5 | 23 |
 | [`especificacion_definitiva.parquet`](#72-especificacion_definitivaparquet) | S02 – 2.2.2 Robustez | `data/staging/S02/` | 1 | 26 |
+| [`nowcast_panel_ragged.parquet`](#73-nowcast_panel_raggedparquet) | S02 – 2.3.2 Nowcast | `data/staging/S02/` | 33 | 40 |
+| [`nowcast_rf_metricas.parquet`](#74-nowcast_rf_metricasparquet) | S02 – 2.3.2 Nowcast | `data/staging/S02/` | 3 | 7 |
+| [`nowcast_rf_predicciones.parquet`](#75-nowcast_rf_prediccionesparquet) | S02 – 2.3.2 Nowcast | `data/staging/S02/` | 18 | 9 |
+| [`nowcast_rf_importancia.parquet`](#76-nowcast_rf_importanciaparquet) | S02 – 2.3.2 Nowcast | `data/staging/S02/` | 11 | 2 |
+| [`nowcast_bsts_metricas.parquet`](#77-nowcast_bsts_metricasparquet) | S02 – 2.3.2 Nowcast | `data/staging/S02/` | 3 | 7 |
+| [`nowcast_bsts_predicciones.parquet`](#78-nowcast_bsts_prediccionesparquet) | S02 – 2.3.2 Nowcast | `data/staging/S02/` | 18 | 9 |
+| [`nowcast_bsts_pip.parquet`](#79-nowcast_bsts_pipparquet) | S02 – 2.3.2 Nowcast | `data/staging/S02/` | 11 | 3 |
+| [`nowcast_dfm_metricas.parquet`](#80-nowcast_dfm_metricasparquet) | S02 – 2.3.2 Nowcast | `data/staging/S02/` | 3 | 7 |
+| [`nowcast_dfm_predicciones.parquet`](#81-nowcast_dfm_prediccionesparquet) | S02 – 2.3.2 Nowcast | `data/staging/S02/` | 18 | 10 |
+| [`nowcast_dfm_loadings.parquet`](#82-nowcast_dfm_loadingsparquet) | S02 – 2.3.2 Nowcast | `data/staging/S02/` | 7 | 2 |
+| [`nowcast_dfm_factor.parquet`](#83-nowcast_dfm_factorparquet) | S02 – 2.3.2 Nowcast | `data/staging/S02/` | 17 | 7 |
+| [`nowcast_comparativo_metricas.parquet`](#84-nowcast_comparativo_metricasparquet) | S02 – 2.3.2 Nowcast | `data/staging/S02/` | 9 | 7 |
+| [`nowcast_comparativo_predicciones.parquet`](#85-nowcast_comparativo_prediccionesparquet) | S02 – 2.3.2 Nowcast | `data/staging/S02/` | 54 | 10 |
+| [`nowcast_forward_2025T1.parquet`](#86-nowcast_forward_2025t1parquet) | S02 – 2.3.2 Nowcast | `data/staging/S02/` | 3 | 10 |
+| [`nowcast_resumen_final.parquet`](#87-nowcast_resumen_finalparquet) | S02 – 2.3.2 Nowcast | `data/staging/S02/` | 3 | 10 |
 
 ---
 
@@ -1400,6 +1415,68 @@ Escenarios: `a_listwise`, `b_imputado`, `c_imputado_flag`.
 
 ---
 
+## 73. `nowcast_panel_ragged.parquet`
+
+**Ruta:** `data/staging/S02/nowcast_panel_ragged.parquet`
+**Script origen:** `2_3_Nowcast/code/02-produccion/nowcast_common.py` (vía RF/BSTS/DFM)
+**Granularidad:** 33 trimestres (unión AT ∪ fuentes DANE); **17 modelables** con target AT (2020-III→2024-IV aprox.).
+**Diseño ragged-edge (vintage ≈ día 40 de T):**
+
+| Señal | Disponibilidad en T | Campo |
+|---|---|---|
+| AT parcial | Mes 1 del trimestre | `freq_at_parcial_x100` |
+| EC | Mes 1 (pub ~38 d) | `log_ec_parcial` |
+| CEED / IPOC / macro | Lag-1 (T aún no publicado) | `log_ceed_lag1`, `log_ipoc_lag1`, `pib_lag1`, … |
+| Memoria ciclo | MA3 lag-1 + lag-4 (~12 m; proxy CCF k=6) | `log_ceed_ma3_lag1`, `log_ceed_lag4` |
+
+**Splits:** train ≤2023-T2 (n=11); val 2023-T3–T4 (n=2); test 2024 (n=4); forward 2025-T1.
+
+| Campo clave | Descripción |
+|---|---|
+| `freq_at_x100` | Target (frecuencia AT completa del trimestre) |
+| `split` / `modelable` | Partición y flag de filas entrenables |
+| `pub_lag_*_dias` | Metadatos de rezago de publicación |
+
+---
+
+## 74–76. Random Forest (`nowcast_rf_*`)
+
+**Scripts:** `01_random_forest.py`
+- `nowcast_rf_metricas.parquet` — MAE/RMSE/MAPE/R² por split
+- `nowcast_rf_predicciones.parquet` — punto + IC80 (cuantiles de árboles) + forward
+- `nowcast_rf_importancia.parquet` — MDI por feature
+
+---
+
+## 77–79. BSTS (`nowcast_bsts_*`)
+
+**Scripts:** `02_bsts.py`
+- `nowcast_bsts_metricas.parquet` — métricas por split
+- `nowcast_bsts_predicciones.parquet` — punto + IC80
+- `nowcast_bsts_pip.parquet` — PIP spike-and-slab y flag `selected`
+
+---
+
+## 80–83. DFM (`nowcast_dfm_*`)
+
+**Scripts:** `03_dfm.py`
+- `nowcast_dfm_metricas.parquet` — métricas por split
+- `nowcast_dfm_predicciones.parquet` — punto + IC80 (bootstrap del puente)
+- `nowcast_dfm_loadings.parquet` — cargas / correlación indicador↔factor
+- `nowcast_dfm_factor.parquet` — factor suavizado por trimestre
+
+---
+
+## 84–87. Comparativo y nowcast forward
+
+**Script:** `04_comparativo.py`
+- `nowcast_comparativo_metricas.parquet` — unión RF+BSTS+DFM
+- `nowcast_comparativo_predicciones.parquet` — predicciones apiladas
+- `nowcast_forward_2025T1.parquet` — nowcast del trimestre sin AT observado
+- `nowcast_resumen_final.parquet` — ranking test + punto/IC forward
+
+---
+
 ## Uso en secciones futuras
 
 | Sección | Dataset requerido | Propósito |
@@ -1408,11 +1485,11 @@ Escenarios: `a_listwise`, `b_imputado`, `c_imputado_flag`.
 | S01 – 1.4 Datos faltantes | `faltantes_*`, `empresas_imputadas`, `siniestros_imputados` | Diagnóstico, mecanismo, imputación y evaluación |
 | S01 – 1.5 Baseline | `temporal_empresa_anio`, `baseline_predicciones`, `baseline_metricas`, `baseline_confusion` | Definición y cuantificación del predictor baseline |
 | S02 – 2.2 Modelamiento | `panel_ciclo_at_trimestral`, `var_*`, `estacionariedad_*`, `ccf_*`, `coint_robustez`, `especificacion_definitiva` | Relación dinámica ciclo↔AT; spec definitiva |
-| S02 – 2.3 Nowcast | `panel_fuentes_trimestral`, `ec_staging`, `panel_ciclo_at_trimestral`, `ccf_rezagos_resumen` | Bridge EC→CEED; rezago estructural k=6 |
+| S02 – 2.3 Nowcast | `nowcast_panel_ragged`, `nowcast_*_metricas`, `nowcast_forward_2025T1`, `nowcast_resumen_final` | Producción nowcast; comparación RF/BSTS/DFM |
 | S03 – Reto de negocio | `empresa_siniestralidad_tratada`, `siniestros_tratados` / `siniestros_imputados`, `temporal_empresa_anio`, `panel_empresa_lag_yoy`, `colinealidad_vif`, `predictores_recomendacion`, `hip_features_resumen`, `hip_p12_bondad_ajuste_costo`, `faltantes_impacto_resumen`, `baseline_metricas` | Feature set + familia de severidad; CV temporal; superar baseline |
 | S04 – Inferencia causal | `empresa_siniestralidad_completa` / `_tratada`, `hip_p10_retencion_top10` | Grupo tratado / control; estabilidad del target |
 | S05 – Recomendador | `empresas_staging` / `empresas_imputadas`, `empresa_siniestralidad_completa`, `hip_p10_retencion_top10` | Perfil de empresa; priorizar recurrentes Top 10% |
 
 ---
 
-*Actualizado por: `S01 – 1.2–1.5` + `S02 – 2.1.3` + `S02 – 2.2.1` + `S02 – 2.2.2` — Prueba Técnica Grupo SURA.*
+*Actualizado por: `S01 – 1.2–1.5` + `S02 – 2.1.3` + `S02 – 2.2.1` + `S02 – 2.2.2` + `S02 – 2.3.2` — Prueba Técnica Grupo SURA.*

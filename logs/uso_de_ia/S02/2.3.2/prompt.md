@@ -1,0 +1,8 @@
+Producir un nowcast de la frecuencia de accidentes de trabajo del trimestre en curso combinando la siniestralidad parcial observada con los indicadores líderes, considerando de forma explícita los distintos rezagos de publicación de las fuentes (ver (ver sections/S02-Modelacion_Economica_Sectorial/2_2_Modelamiento de relaciones/results/relaciones.md). Deja los diferentes scripts separados por modelo en sections/S02-Modelacion_Economica_Sectorial/2_3_Nowcast/code/02-produccion, incluye entrenamiento, validacion y prueba, con las métricas correspondientes, revisa sections/S02-Modelacion_Economica_Sectorial/2_3_Nowcast/resources/estado_del_arte.md si requieres alguna guía. Nota importante: Entrena los siguientes 3 modelos concluidos en el apartado 2.3.1 (ver sections/S02-Modelacion_Economica_Sectorial/2_3_Nowcast/results/nowcast.md):
+- Modelos de Machine Learning: Random Forest (1)
+- Modelos Econometricos y de Series temporales: BSTS (2) y DFM (3).
+
+Transversal: 
+1. Guardar datasets de staging en data/staging/S02/  para que estos sean reutilizados por futuros procesos que los requieran. Guarda la descripción detallada de cada dataset en docs/staging_data.md
+2.Los plots deben incluirse en su respectviva carpeta de results, para este proceso correspondiente es 'sections/S02-Modelacion_Economica_Sectorial/2_3_Nowcast/results/imgs'
+3. Diligencia logs/uso_de_ia/S02/2.3.2/output.md como logs del proceso que realizaste.
