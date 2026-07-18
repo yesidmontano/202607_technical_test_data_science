@@ -293,7 +293,10 @@ import sura_brand as sb
 > **Referencia autoritativa 5 (Modelamiento de relaciones S02-2.2):** `sections/S02-Modelacion_Economica_Sectorial/2_2_Modelamiento de relaciones/results/relaciones.md`
 > Secciones **2.2.1** (VAR edificación/IPOC, IRF/FEVD), **2.2.2** (robustez estacionariedad ADF+KPSS+PP, CCF rezagos, cointegración EG+Johansen corr. Reinsel-Ahn) y **2.2.3** (justificación de especificación frente a VECM/niveles/ADL/VAR(p≥4) y síntesis de diagnósticos finales Portmanteau/ARCH/JB/CUSUM). Especificación definitiva: **VAR(1) en diferencias** (ventana preferente T=18 sin EC); no VECM; CCF k=6 como evidencia de canal de mediano plazo para 2.3. Leer **antes** de iniciar cualquier tarea en S02-2.3.
 >
-> Leer los **cinco** documentos antes de iniciar cualquier tarea de modelado en S02, S03, S04 o S05.
+> **Referencia autoritativa 6 (Nowcast S02-2.3):** `sections/S02-Modelacion_Economica_Sectorial/2_3_Nowcast/results/nowcast.md`
+> Secciones **2.3.1** (estado del arte: ciclo pro-cíclico, DFM/BSTS/RF), **2.3.2** (diseño ragged-edge día-40, métricas train/val/test, forward 2025-T1) y **2.3.3** (modelo seleccionado DFM MAPE=6.6%, IC 80% [1.062–1.285], umbrales de alerta, implicaciones de reservas y activación preventiva). Modelo operativo: **DFM 1 factor + puente OLS** anclado en AT parcial mes 1; BSTS solo como cota de estrés; **no usar RF** en producción (val frágil). Leer **antes** de iniciar cualquier tarea en S03 (proyección de portafolio) o S06 (arquitectura de producción del nowcast).
+>
+> Leer los **seis** documentos antes de iniciar cualquier tarea de modelado en S02, S03, S04 o S05.
 
 ### Feature Set Obligatorio (contrato EDA → S03)
 
