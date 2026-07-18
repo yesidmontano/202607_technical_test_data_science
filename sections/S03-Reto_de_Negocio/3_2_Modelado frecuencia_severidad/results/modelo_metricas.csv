@@ -1,0 +1,5 @@
+componente,split,freq_mae,freq_rmse,freq_bias,freq_spearman,freq_r2,freq_mean_obs,freq_mean_pred,freq_n,alpha_nb,aic_mle,sev_mae,sev_rmse,sev_bias,sev_spearman,sev_r2,sev_mean_obs,sev_mean_pred,sev_n,r2_log,sigma,n_train,costo_mae,costo_rmse,costo_bias,costo_spearman,costo_r2,costo_mean_obs,costo_mean_pred,costo_n,portfolio_pred,portfolio_obs,portfolio_ratio
+frecuencia_NB,holdout_2024,0.8131,1.2393,0.0285,0.5997,0.6559,1.1372,1.1657,5000.0,0.114,59052.4,,,,,,,,,,,,,,,,,,,,,,
+severidad_AT,holdout_2024,,,,,,,,,,,1501504.3756,2712834.658,58519.1129,0.5662,0.5877,2788937.954,2847457.0669,4593.0,0.5414,0.7553,23043.0,,,,,,,,,,,
+severidad_EL,holdout_2024,,,,,,,,,,,1395939.3205,2631427.0648,103986.7954,0.5302,0.6683,2895212.0602,2999198.8556,704.0,0.5724,0.7046,3737.0,,,,,,,,,,,
+costo_pure_premium,holdout_2024,,,,,,,,,,,,,,,,,,,,,,3542176.7039,11178365.3809,-53955.8266,0.57,0.2186,3563810.912,3509855.0854,5000.0,17549275426.793613,17819054560.0,0.984860075920527

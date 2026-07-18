@@ -105,6 +105,15 @@
 | [`supuestos_prima_vs_costo_empresa.parquet`](#92-supuestos_prima_vs_costo_empresaparquet) | S03 – 3.1.2 Validación supuestos | `data/staging/S03/` | 4 421 | 16 |
 | [`supuestos_prima_vs_costo_segmento.parquet`](#93-supuestos_prima_vs_costo_segmentoparquet) | S03 – 3.1.2 Validación supuestos | `data/staging/S03/` | 148 | 15 |
 | [`supuestos_veredicto.parquet`](#94-supuestos_veredictoparquet) | S03 – 3.1.2 Validación supuestos | `data/staging/S03/` | 3 | 8 |
+| [`modelo_panel_empresa_anio.parquet`](#95-modelo_panel_empresa_anioparquet) | S03 – 3.2.1 Modelado freq/sev | `data/staging/S03/` | 30 000 | 15 |
+| [`modelo_freq_coefs.parquet`](#96-modelo_freq_coefsparquet) | S03 – 3.2.1 Modelado freq/sev | `data/staging/S03/` | 23 | 8 |
+| [`modelo_sev_coefs.parquet`](#97-modelo_sev_coefsparquet) | S03 – 3.2.1 Modelado freq/sev | `data/staging/S03/` | 20 | 9 |
+| [`modelo_sev_mix_tipo.parquet`](#98-modelo_sev_mix_tipoparquet) | S03 – 3.2.1 Modelado freq/sev | `data/staging/S03/` | 5 | 3 |
+| [`modelo_sev_mix_gravedad.parquet`](#99-modelo_sev_mix_gravedadparquet) | S03 – 3.2.1 Modelado freq/sev | `data/staging/S03/` | 30 | 5 |
+| [`modelo_pred_empresa.parquet`](#100-modelo_pred_empresaparquet) | S03 – 3.2.1 Modelado freq/sev | `data/staging/S03/` | 10 000 | 16 |
+| [`modelo_pred_clase.parquet`](#101-modelo_pred_claseparquet) | S03 – 3.2.1 Modelado freq/sev | `data/staging/S03/` | 10 | 16 |
+| [`modelo_metricas.parquet`](#102-modelo_metricasparquet) | S03 – 3.2.1 Modelado freq/sev | `data/staging/S03/` | 4 | 34 |
+| [`modelo_resumen.parquet`](#103-modelo_resumenparquet) | S03 – 3.2.1 Modelado freq/sev | `data/staging/S03/` | 1 | 18 |
 
 ---
 
@@ -1493,9 +1502,9 @@ Escenarios: `a_listwise`, `b_imputado`, `c_imputado_flag`.
 | S01 – 1.5 Baseline | `temporal_empresa_anio`, `baseline_predicciones`, `baseline_metricas`, `baseline_confusion` | Definición y cuantificación del predictor baseline |
 | S02 – 2.2 Modelamiento | `panel_ciclo_at_trimestral`, `var_*`, `estacionariedad_*`, `ccf_*`, `coint_robustez`, `especificacion_definitiva` | Relación dinámica ciclo↔AT; spec definitiva |
 | S02 – 2.3 Nowcast | `nowcast_panel_ragged`, `nowcast_*_metricas`, `nowcast_forward_2025T1`, `nowcast_resumen_final` | Producción nowcast; comparación RF/BSTS/DFM |
-| S03 – Reto de negocio | `empresa_siniestralidad_tratada`, `siniestros_tratados` / `siniestros_imputados`, `temporal_empresa_anio`, `panel_empresa_lag_yoy`, `colinealidad_vif`, `predictores_recomendacion`, `hip_features_resumen`, `hip_p12_bondad_ajuste_costo`, `faltantes_impacto_resumen`, `baseline_metricas`, `supuestos_*` (S03) | Feature set + familia de severidad; CV temporal; superar baseline; supuestos de modelado |
+| S03 – Reto de negocio | `supuestos_*`, `modelo_pred_empresa`, `modelo_pred_clase`, `modelo_resumen`, `temporal_empresa_anio`, `siniestros_tratados`, `baseline_metricas` | Costo esperado; proyección portafolio; recomendación tarifaria |
 | S04 – Inferencia causal | `empresa_siniestralidad_completa` / `_tratada`, `hip_p10_retencion_top10` | Grupo tratado / control; estabilidad del target |
-| S05 – Recomendador | `empresas_staging` / `empresas_imputadas`, `empresa_siniestralidad_completa`, `hip_p10_retencion_top10`, `supuestos_prima_vs_costo_segmento` | Perfil de empresa; priorizar recurrentes Top 10% y segmentos con LR>1 |
+| S05 – Recomendador | `modelo_pred_empresa`, `supuestos_prima_vs_costo_segmento`, `hip_p10_retencion_top10` | Priorizar empresas/segmentos con LR pred>1 y Top 10% |
 
 ---
 
@@ -1634,4 +1643,97 @@ Escenarios: `a_listwise`, `b_imputado`, `c_imputado_flag`.
 
 ---
 
-*Actualizado por: `S01 – 1.2–1.5` + `S02 – 2.1.3` + `S02 – 2.2.1` + `S02 – 2.2.2` + `S02 – 2.3.2` + `S03 – 3.1.2` — Prueba Técnica Grupo SURA.*
+## 95. `modelo_panel_empresa_anio.parquet`
+
+**Ruta:** `data/staging/S03/modelo_panel_empresa_anio.parquet`
+**Script origen:** `sections/S03-Reto_de_Negocio/3_2_Modelado frecuencia_severidad/code/01-modelo/01-modelo.py`
+**Granularidad:** Una fila por empresa × año (2019–2024; 30 000 registros).
+**Base:** `temporal_empresa_anio` + atributos/prima/segmento + lag de siniestros.
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `id_empresa` / `anio` | — | Clave del panel |
+| `n_siniestros` / `costo_total` / `severidad_media` | `numérico` | Outcomes anuales |
+| `n_trabajadores` / `n_trab_exp` / `log_exposure` | `numérico` | Exposición (clip ≥1) y offset |
+| `clase_riesgo` / `sector` / `segmento` / `prima_anual` | — | Predictores / pricing |
+| `lag_n_siniestros` / `log_lag_n` | `numérico` | Persistencia (shift 1 año) |
+| `split` | `texto` | `train` · `holdout` · `other` |
+
+---
+
+## 96. `modelo_freq_coefs.parquet`
+
+**Ruta:** `data/staging/S03/modelo_freq_coefs.parquet`
+**Script origen:** `01-modelo/01-modelo.py`
+**Granularidad:** Una fila por parámetro del GLM NB (23).
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `parametro` / `coef` / `ee_hc1` / `z` / `p_valor` | — | Estimación HC1 |
+| `irr` | `numérico` | `exp(coef)` — incidence rate ratio |
+| `modelo` | `texto` | `frecuencia_NB` |
+| `alpha_nb` | `numérico` | Parámetro de sobredispersión MLE |
+
+> **Especificación:** `n_siniestros ~ C(clase_riesgo)+C(segmento)+C(sector)+log_lag_n` con offset `log(n_trabajadores)`.
+
+---
+
+## 97. `modelo_sev_coefs.parquet`
+
+**Ruta:** `data/staging/S03/modelo_sev_coefs.parquet`
+**Script origen:** `01-modelo/01-modelo.py`
+**Granularidad:** Coeficientes OLS lognormal por tipo AT/EL (20 filas).
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `parametro` / `coef` / `ee` / `t` / `p_valor` | — | Estimación OLS |
+| `modelo` | `texto` | `severidad_lognormal_AT` o `_EL` |
+| `sigma2` / `r2` / `n_train` | `numérico` | Escala residual, R² en log, n |
+
+> **Especificación:** `log(costo_total_w) ~ C(clase_riesgo)+C(segmento)+C(gravedad)` separado por `tipo`.
+
+---
+
+## 98–99. Mix de severidad (`modelo_sev_mix_*`)
+
+**`modelo_sev_mix_tipo.parquet`** (5 × 3): `p_at` / `p_el` por `clase_riesgo` (train 2019–2023).  
+**`modelo_sev_mix_gravedad.parquet`** (30 × 5): `p` de gravedad (`leve`/`grave`/`mortal`) por `clase_riesgo` × `tipo`.
+
+> Usados para marginalizar E[costo\|siniestro] a nivel empresa (gravedad y tipo no observados en pricing).
+
+---
+
+## 100. `modelo_pred_empresa.parquet`
+
+**Ruta:** `data/staging/S03/modelo_pred_empresa.parquet`
+**Script origen:** `01-modelo/01-modelo.py`
+**Granularidad:** 5 000 empresas × 2 horizontes (`holdout_2024`, `proximo_anio`) = 10 000 filas.
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `id_empresa` / `anio` / `horizonte` | — | Identidad y horizonte |
+| `clase_riesgo` / `sector` / `segmento` / `prima_anual` | — | Perfil |
+| `n_siniestros` / `costo_total` | `numérico` | Observado (NaN en proyección) |
+| `freq_pred` / `sev_pred` / `costo_pred` | `numérico` | E[N], E[Sev], E[Costo]=E[N]×E[Sev] |
+| `loss_ratio_pred` / `loss_ratio_obs` | `numérico` | Costo/prima |
+| `insuficiente_pred` | `entero` | 1 si LR pred > 1 |
+
+---
+
+## 101. `modelo_pred_clase.parquet`
+
+**Ruta:** `data/staging/S03/modelo_pred_clase.parquet`
+**Granularidad:** Una fila por clase × horizonte (10).
+
+Campos agregados: `n_empresas`, `freq_pred_*`, `sev_pred_media`, `costo_pred_suma`/`_media`, `prima_suma`, `loss_ratio_pred`, `share_costo_pred_pct`, `pct_insuficiente`, y en holdout `costo_obs_suma` / `ratio_pred_obs`.
+
+---
+
+## 102–103. Métricas y resumen
+
+**`modelo_metricas.parquet`** (4 × 34): MAE/RMSE/bias/Spearman/R² por componente (`frecuencia_NB`, `severidad_AT`, `severidad_EL`, `costo_pure_premium`) en holdout 2024.  
+**`modelo_resumen.parquet`** (1 × 18): especificación, α NB, métricas clave, portafolio próximo año, % empresas con LR pred>1.
+
+---
+
+*Actualizado por: `S01 – 1.2–1.5` + `S02 – 2.1–2.3` + `S03 – 3.1.2` + `S03 – 3.2.1` — Prueba Técnica Grupo SURA.*

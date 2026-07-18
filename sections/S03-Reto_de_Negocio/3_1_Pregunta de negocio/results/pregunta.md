@@ -109,4 +109,4 @@ Formular de forma explícita la pregunta de negocio que va a responder y las dec
 3. **Señal de negocio:** costo esperado por empresa/segmento vs. prima — el modelo aporta valor donde LR histórico > 1 aunque la prima globalmente rankee bien (S3).
 4. **Próximo paso sugerido:** especificar el modelo de costo esperado (NB frecuencia + severidad condicionada) y un tablero de brecha prima–costo por segmento.
 
-> *Hallazgos preliminares generados por `01-supuestos.py` — pendientes de revisión del analista.*
+> *Hallazgos preliminares generados por `01-supuestos.py`*
