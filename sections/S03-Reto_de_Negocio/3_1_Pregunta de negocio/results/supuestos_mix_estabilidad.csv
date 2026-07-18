@@ -1,0 +1,10 @@
+dimension,metrica,anio_referencia,js_yoy_media,js_yoy_max,js_vs_ref_media,n_anios,estabilidad
+clase_riesgo,n_empresas,2024,0.0,0.0,0.0,7,estable
+clase_riesgo,n_siniestros,2024,0.0256,0.0364,0.0248,7,estable
+clase_riesgo,costo_total,2024,0.0665,0.0885,0.0467,7,estable
+sector,n_empresas,2024,0.0,0.0,0.0,7,estable
+sector,n_siniestros,2024,0.0464,0.0582,0.0383,7,estable
+sector,costo_total,2024,0.1042,0.1145,0.1002,7,moderadamente_estable
+segmento,n_empresas,2024,0.0,0.0,0.0,7,estable
+segmento,n_siniestros,2024,0.0162,0.022,0.0136,7,estable
+segmento,costo_total,2024,0.0554,0.0859,0.058,7,estable

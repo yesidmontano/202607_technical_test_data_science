@@ -98,6 +98,13 @@
 | [`nowcast_comparativo_predicciones.parquet`](#85-nowcast_comparativo_prediccionesparquet) | S02 – 2.3.2 Nowcast | `data/staging/S02/` | 54 | 10 |
 | [`nowcast_forward_2025T1.parquet`](#86-nowcast_forward_2025t1parquet) | S02 – 2.3.2 Nowcast | `data/staging/S02/` | 3 | 10 |
 | [`nowcast_resumen_final.parquet`](#87-nowcast_resumen_finalparquet) | S02 – 2.3.2 Nowcast | `data/staging/S02/` | 3 | 10 |
+| [`supuestos_freq_sev_empresa.parquet`](#88-supuestos_freq_sev_empresaparquet) | S03 – 3.1.2 Validación supuestos | `data/staging/S03/` | 4 625 | 14 |
+| [`supuestos_freq_sev_correlacion.parquet`](#89-supuestos_freq_sev_correlacionparquet) | S03 – 3.1.2 Validación supuestos | `data/staging/S03/` | 20 | 10 |
+| [`supuestos_mix_anual.parquet`](#90-supuestos_mix_anualparquet) | S03 – 3.1.2 Validación supuestos | `data/staging/S03/` | 504 | 6 |
+| [`supuestos_mix_estabilidad.parquet`](#91-supuestos_mix_estabilidadparquet) | S03 – 3.1.2 Validación supuestos | `data/staging/S03/` | 9 | 8 |
+| [`supuestos_prima_vs_costo_empresa.parquet`](#92-supuestos_prima_vs_costo_empresaparquet) | S03 – 3.1.2 Validación supuestos | `data/staging/S03/` | 4 421 | 16 |
+| [`supuestos_prima_vs_costo_segmento.parquet`](#93-supuestos_prima_vs_costo_segmentoparquet) | S03 – 3.1.2 Validación supuestos | `data/staging/S03/` | 148 | 15 |
+| [`supuestos_veredicto.parquet`](#94-supuestos_veredictoparquet) | S03 – 3.1.2 Validación supuestos | `data/staging/S03/` | 3 | 8 |
 
 ---
 
@@ -1486,10 +1493,145 @@ Escenarios: `a_listwise`, `b_imputado`, `c_imputado_flag`.
 | S01 – 1.5 Baseline | `temporal_empresa_anio`, `baseline_predicciones`, `baseline_metricas`, `baseline_confusion` | Definición y cuantificación del predictor baseline |
 | S02 – 2.2 Modelamiento | `panel_ciclo_at_trimestral`, `var_*`, `estacionariedad_*`, `ccf_*`, `coint_robustez`, `especificacion_definitiva` | Relación dinámica ciclo↔AT; spec definitiva |
 | S02 – 2.3 Nowcast | `nowcast_panel_ragged`, `nowcast_*_metricas`, `nowcast_forward_2025T1`, `nowcast_resumen_final` | Producción nowcast; comparación RF/BSTS/DFM |
-| S03 – Reto de negocio | `empresa_siniestralidad_tratada`, `siniestros_tratados` / `siniestros_imputados`, `temporal_empresa_anio`, `panel_empresa_lag_yoy`, `colinealidad_vif`, `predictores_recomendacion`, `hip_features_resumen`, `hip_p12_bondad_ajuste_costo`, `faltantes_impacto_resumen`, `baseline_metricas` | Feature set + familia de severidad; CV temporal; superar baseline |
+| S03 – Reto de negocio | `empresa_siniestralidad_tratada`, `siniestros_tratados` / `siniestros_imputados`, `temporal_empresa_anio`, `panel_empresa_lag_yoy`, `colinealidad_vif`, `predictores_recomendacion`, `hip_features_resumen`, `hip_p12_bondad_ajuste_costo`, `faltantes_impacto_resumen`, `baseline_metricas`, `supuestos_*` (S03) | Feature set + familia de severidad; CV temporal; superar baseline; supuestos de modelado |
 | S04 – Inferencia causal | `empresa_siniestralidad_completa` / `_tratada`, `hip_p10_retencion_top10` | Grupo tratado / control; estabilidad del target |
-| S05 – Recomendador | `empresas_staging` / `empresas_imputadas`, `empresa_siniestralidad_completa`, `hip_p10_retencion_top10` | Perfil de empresa; priorizar recurrentes Top 10% |
+| S05 – Recomendador | `empresas_staging` / `empresas_imputadas`, `empresa_siniestralidad_completa`, `hip_p10_retencion_top10`, `supuestos_prima_vs_costo_segmento` | Perfil de empresa; priorizar recurrentes Top 10% y segmentos con LR>1 |
 
 ---
 
-*Actualizado por: `S01 – 1.2–1.5` + `S02 – 2.1.3` + `S02 – 2.2.1` + `S02 – 2.2.2` + `S02 – 2.3.2` — Prueba Técnica Grupo SURA.*
+## 88. `supuestos_freq_sev_empresa.parquet`
+
+**Ruta:** `data/staging/S03/supuestos_freq_sev_empresa.parquet`
+**Script origen:** `sections/S03-Reto_de_Negocio/3_1_Pregunta de negocio/code/01-supuestos/01-supuestos.py`
+**Granularidad:** Una fila por empresa con al menos un siniestro (4 625 registros).
+**Base:** Filtro de `empresa_siniestralidad_completa` (`n_siniestros > 0`) + transformaciones log.
+
+| Campo | Tipo | Descripción | ¿Nuevo? |
+|---|---|---|---|
+| `id_empresa` | `texto` | Identificador de empresa | Heredado |
+| `clase_riesgo` / `sector` / `segmento` | — | Estratificación ARL / CIIU / tamaño | Heredado |
+| `n_trabajadores` / `n_siniestros` / `frecuencia_x100` | `numérico` | Exposición y frecuencia | Heredado |
+| `severidad_media` | `numérico` | Días medios de incapacidad por siniestro | Heredado |
+| `costo_medio_siniestro` / `costo_total_empresa` / `prima_anual` | `numérico` | Costo y prima (COP) | Heredado |
+| `log_frecuencia_x100` / `log_severidad_media` / `log_costo_medio` | `numérico` | `log(1 + ·)` para diagnóstico | **Derivada** |
+
+> **Uso:** input para diagnósticos de dependencia frecuencia–severidad y para condicionar modelos de severidad en S03.
+
+---
+
+## 89. `supuestos_freq_sev_correlacion.parquet`
+
+**Ruta:** `data/staging/S03/supuestos_freq_sev_correlacion.parquet`
+**Script origen:** `01-supuestos/01-supuestos.py`
+**Granularidad:** Una fila por par (nivel × estrato × variables x/y) — 20 correlaciones.
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `nivel` | `texto` | `empresa_acumulado` o `panel_anual` |
+| `estrato` | `texto` | `global`, `clase_*` o `segmento_*` |
+| `x` / `y` | `texto` | Variables correlacionadas (frecuencia vs severidad/costo) |
+| `n` | `entero` | Tamaño muestral del par |
+| `spearman_rho` / `spearman_p` | `numérico` | Correlación de rangos y p-valor |
+| `pearson_r` / `pearson_p` | `numérico` | Correlación lineal y p-valor |
+| `dependencia` | `texto` | `independencia_practica` / `dependencia_debil_moderada` / `dependencia_material` |
+
+> **Umbrales:** \|ρ\| < 0.20 independencia práctica; 0.20–0.40 débil–moderada; ≥ 0.40 material.
+
+---
+
+## 90. `supuestos_mix_anual.parquet`
+
+**Ruta:** `data/staging/S03/supuestos_mix_anual.parquet`
+**Script origen:** `01-supuestos/01-supuestos.py`
+**Granularidad:** Una fila por (año × dimensión × categoría × métrica) — 504 registros (2018–2024).
+**Base:** `temporal_empresa_anio` + `segmento`/`prima_anual` de `empresa_siniestralidad_completa`.
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `anio` | `entero` | Año del panel (2018–2024) |
+| `dimension` | `texto` | `clase_riesgo` · `sector` · `segmento` |
+| `categoria` | `texto` | Valor de la dimensión |
+| `metrica` | `texto` | `n_empresas` · `n_siniestros` · `costo_total` |
+| `share` | `numérico` | Participación dentro del año (suma a 1 por grupo) |
+| `valor_absoluto` | `numérico` | Conteo o suma absoluta |
+
+> **Nota:** el share de `n_empresas` es idéntico entre años (panel balanceado con atributos fijos). La estabilidad de negocio se evalúa sobre `n_siniestros` y `costo_total`.
+
+---
+
+## 91. `supuestos_mix_estabilidad.parquet`
+
+**Ruta:** `data/staging/S03/supuestos_mix_estabilidad.parquet`
+**Script origen:** `01-supuestos/01-supuestos.py`
+**Granularidad:** Una fila por (dimensión × métrica) — 9 registros.
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `dimension` / `metrica` | `texto` | Par evaluado |
+| `anio_referencia` | `entero` | Año ancla (último disponible, 2024) |
+| `js_yoy_media` / `js_yoy_max` | `numérico` | Jensen–Shannon YoY (base 2) |
+| `js_vs_ref_media` | `numérico` | JS media de cada año vs. año de referencia |
+| `n_anios` | `entero` | Años en la serie |
+| `estabilidad` | `texto` | `estable` (<0.10) · `moderadamente_estable` (<0.20) · `inestable` |
+
+---
+
+## 92. `supuestos_prima_vs_costo_empresa.parquet`
+
+**Ruta:** `data/staging/S03/supuestos_prima_vs_costo_empresa.parquet`
+**Script origen:** `01-supuestos/01-supuestos.py`
+**Granularidad:** Una fila por empresa con `prima_anual > 0` (4 421 registros).
+**Base:** atributos de `empresa_siniestralidad_completa` + agregados anuales de `temporal_empresa_anio`.
+
+| Campo | Tipo | Descripción | ¿Nuevo? |
+|---|---|---|---|
+| `id_empresa` / `clase_riesgo` / `sector` / `segmento` | — | Identidad y estratos | Heredado |
+| `prima_anual` / `n_trabajadores` / `n_siniestros` / `costo_total_empresa` | `numérico` | Prima y acumulados | Heredado |
+| `costo_anual_medio` / `costo_anual_mediana` | `numérico` | Costo por año (media/mediana 2018–2024) | **Derivada** |
+| `n_anios_obs` / `n_siniestros_anual_medio` | `entero`/`numérico` | Cobertura del panel | **Derivada** |
+| `loss_ratio` | `numérico` | `costo_anual_medio / prima_anual` | **Derivada** |
+| `insuficiente` | `entero` | 1 si `loss_ratio > 1` | **Derivada** |
+| `log_prima` / `log_costo_anual` | `numérico` | Logs para diagnóstico | **Derivada** |
+
+---
+
+## 93. `supuestos_prima_vs_costo_segmento.parquet`
+
+**Ruta:** `data/staging/S03/supuestos_prima_vs_costo_segmento.parquet`
+**Script origen:** `01-supuestos/01-supuestos.py`
+**Granularidad:** Una fila por segmento `clase_riesgo × sector × segmento` (148 celdas no vacías).
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `clase_riesgo` / `sector` / `segmento` | — | Clave del segmento |
+| `n_empresas` | `entero` | Empresas en la celda |
+| `prima_media` / `prima_mediana` | `numérico` | Prima anual |
+| `costo_anual_medio` / `costo_anual_mediana` | `numérico` | Costo esperado histórico |
+| `loss_ratio_media` / `loss_ratio_mediana` | `numérico` | LR agregado |
+| `pct_insuficiente` | `numérico` | % de empresas con LR > 1 |
+| `n_trabajadores_mediana` | `numérico` | Tamaño mediano |
+| `brecha_media` | `numérico` | `costo_anual_medio − prima_media` (COP) |
+| `flag_insuficiente` | `entero` | 1 si LR media > 1 |
+| `share_costo_portafolio_pct` | `numérico` | Participación del segmento en el costo del portafolio (%) |
+
+> **Uso directo en S03/S05:** priorizar ajuste de tarifa/suscripción donde `flag_insuficiente = 1`.
+
+---
+
+## 94. `supuestos_veredicto.parquet`
+
+**Ruta:** `data/staging/S03/supuestos_veredicto.parquet`
+**Script origen:** `01-supuestos/01-supuestos.py`
+**Granularidad:** Una fila por supuesto (S1, S2, S3).
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `supuesto` / `nombre` | `texto` | Identificador y descripción |
+| `metrica_clave` / `valor_metrica` / `umbral` | — | Evidencia cuantitativa |
+| `veredicto` | `texto` | `SOSTENIDO` · `PARCIALMENTE_SOSTENIDO` · `RECHAZADO` |
+| `accion_modelado` | `texto` | Implicación para el modelado en S03 |
+| `detalle` | `texto` | Cifras de soporte |
+
+---
+
+*Actualizado por: `S01 – 1.2–1.5` + `S02 – 2.1.3` + `S02 – 2.2.1` + `S02 – 2.2.2` + `S02 – 2.3.2` + `S03 – 3.1.2` — Prueba Técnica Grupo SURA.*

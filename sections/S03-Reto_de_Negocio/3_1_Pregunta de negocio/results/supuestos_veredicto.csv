@@ -1,0 +1,4 @@
+supuesto,nombre,metrica_clave,valor_metrica,umbral,veredicto,accion_modelado,detalle
+S1,Independencia frecuencia–severidad,"max_|Spearman_rho|(freq, sev/costo_medio)",0.4158,0.4,RECHAZADO,Dependencia material: modelar severidad/costo medio condicionado a frecuencia o a factores comunes (clase × tamaño); no asumir independencia.,"ρ(freq,sev)=0.351; ρ(freq,costo)=0.4158"
+S2,Estabilidad del portafolio (mix),"JS_YoY_media(siniestros+costo, 3 dims)",0.0524,0.1,SOSTENIDO,"El mix de siniestros/costo por clase, sector y tamaño es estable (JS YoY media=0.052 < 0.1). Usar el mix histórico reciente como proxy del próximo año.",JS n_empresas≈0 (panel fijo); anclar en shares de siniestros/costo. anio_ref=2024
+S3,Prima refleja el riesgo,"Spearman(prima, costo_anual) y % LR>1",0.8012,0.4,SOSTENIDO,La prima rankea bien el costo histórico; insuficiencia concentrada en pocos segmentos — priorizar ajuste tarifario ahí.,LR_mediana=0.394; pct_emp_LR>1=16.9%; segs_insuf=25/148

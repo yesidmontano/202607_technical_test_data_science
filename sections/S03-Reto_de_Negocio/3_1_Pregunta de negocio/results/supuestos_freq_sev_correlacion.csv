@@ -1,0 +1,21 @@
+nivel,estrato,x,y,n,spearman_rho,spearman_p,pearson_r,pearson_p,dependencia
+empresa_acumulado,global,n_siniestros,severidad_media,4583,0.3332,3.058039765378338e-119,0.0415,0.004920304900350619,dependencia_debil_moderada
+empresa_acumulado,global,frecuencia_x100,severidad_media,4583,0.351,5.991286165994158e-133,0.1361,2.092729559703143e-20,dependencia_debil_moderada
+empresa_acumulado,global,n_siniestros,costo_medio_siniestro,4598,0.4546,2.090808761536027e-233,0.1094,9.919508051021323e-14,dependencia_material
+empresa_acumulado,global,frecuencia_x100,costo_medio_siniestro,4598,0.4158,9.326013642101637e-192,0.1635,6.673495033342949e-29,dependencia_material
+panel_anual,global,n_siniestros,severidad_media,17371,0.2292,6.63954259287051e-206,0.0079,0.3007166428192404,dependencia_debil_moderada
+panel_anual,global,frecuencia_x100,severidad_media,17371,0.1568,5.650294501465766e-96,0.0401,1.209746506330876e-07,independencia_practica
+empresa_acumulado,clase_1,frecuencia_x100,severidad_media,1033,0.0924,0.002941976138096423,0.0405,0.19308042782591456,independencia_practica
+empresa_acumulado,clase_1,frecuencia_x100,costo_medio_siniestro,1046,0.071,0.021738591260666067,-0.0261,0.3994074681438919,independencia_practica
+empresa_acumulado,clase_2,frecuencia_x100,severidad_media,862,0.1598,2.3969816253180137e-06,0.0281,0.409213470436377,independencia_practica
+empresa_acumulado,clase_2,frecuencia_x100,costo_medio_siniestro,867,0.1334,8.18958725664725e-05,-0.0037,0.9132703480855915,independencia_practica
+empresa_acumulado,clase_3,frecuencia_x100,severidad_media,972,0.0775,0.015704966481728967,0.0566,0.07775840583302918,independencia_practica
+empresa_acumulado,clase_3,frecuencia_x100,costo_medio_siniestro,971,0.0599,0.06185908768674267,0.0426,0.18477547547948484,independencia_practica
+empresa_acumulado,clase_4,frecuencia_x100,severidad_media,1047,0.0573,0.06399196344598226,-0.0208,0.5023861758141968,independencia_practica
+empresa_acumulado,clase_4,frecuencia_x100,costo_medio_siniestro,1045,0.008,0.7960759962036732,-0.0177,0.5686291850726142,independencia_practica
+empresa_acumulado,clase_5,frecuencia_x100,severidad_media,669,0.1123,0.003621930492528568,0.066,0.08814025697693523,independencia_practica
+empresa_acumulado,clase_5,frecuencia_x100,costo_medio_siniestro,669,0.0792,0.04063553307439864,0.0232,0.5497905347396841,independencia_practica
+empresa_acumulado,segmento_Micro (≤10),frecuencia_x100,severidad_media,464,0.2803,8.005047046439294e-10,0.1189,0.010342922852366387,dependencia_debil_moderada
+empresa_acumulado,segmento_Pequeña (11-50),frecuencia_x100,severidad_media,2691,0.3788,1.467220078831469e-92,0.1206,3.4352612994575813e-10,dependencia_debil_moderada
+empresa_acumulado,segmento_Mediana (51-200),frecuencia_x100,severidad_media,1346,0.4317,3.1290803364371715e-62,0.2073,1.5596228421254843e-14,dependencia_material
+empresa_acumulado,segmento_Grande (>200),frecuencia_x100,severidad_media,82,0.5567,5.586400899217819e-08,0.4404,3.463600000785163e-05,dependencia_material
