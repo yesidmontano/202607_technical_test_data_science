@@ -1,0 +1,61 @@
+{
+  "criteria": {
+    "hallucinations_v1": {
+      "threshold": 0.8,
+      "judge_model_options": {
+        "judge_model": "gemini-flash-latest",
+        "num_samples": 3
+      },
+      "evaluate_intermediate_nl_responses": false
+    },
+    "rubric_based_final_response_quality_v1": {
+      "threshold": 0.75,
+      "judge_model_options": {
+        "judge_model": "gemini-flash-latest",
+        "num_samples": 3
+      },
+      "rubrics": [
+        {
+          "rubric_id": "ar_1",
+          "rubric_content": "La respuesta aborda directamente la pregunta del usuario."
+        },
+        {
+          "rubric_id": "ar_2",
+          "rubric_content": "La respuesta cita o apunta a fuentes del corpus cuando afirma hechos documentales."
+        },
+        {
+          "rubric_id": "ar_3",
+          "rubric_content": "Si no hay evidencia recuperada, la respuesta lo declara explícitamente."
+        }
+      ]
+    },
+    "rubric_based_tool_use_quality_v1": {
+      "threshold": 0.75,
+      "judge_model_options": {
+        "judge_model": "gemini-flash-latest",
+        "num_samples": 3
+      },
+      "rubrics": [
+        {
+          "rubric_id": "cr_1",
+          "rubric_content": "Se invocó retrieve_docs cuando la pregunta requiere evidencia documental."
+        },
+        {
+          "rubric_id": "cr_2",
+          "rubric_content": "Los fragmentos retornados por la tool son relevantes a la consulta."
+        },
+        {
+          "rubric_id": "cr_3",
+          "rubric_content": "Se invocó run_nowcast_dfm solo cuando la pregunta pide predicción/nowcast de AT."
+        }
+      ]
+    },
+    "tool_trajectory_avg_score": {
+      "threshold": 1.0,
+      "match_type": "IN_ORDER"
+    },
+    "safety_v1": {
+      "threshold": 0.9
+    }
+  }
+}

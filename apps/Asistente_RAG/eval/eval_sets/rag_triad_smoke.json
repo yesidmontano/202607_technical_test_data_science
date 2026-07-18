@@ -1,0 +1,51 @@
+{
+  "eval_set_id": "rag_triad_smoke",
+  "name": "RAG Triad smoke cases — sector construcción",
+  "eval_cases": [
+    {
+      "eval_id": "doc_ceed_retrieve",
+      "conversation": [
+        {
+          "user_content": {
+            "parts": [{ "text": "¿Qué reporta el boletín CEED del primer trimestre de 2026 sobre el sector construcción?" }]
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              { "name": "retrieve_docs" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "eval_id": "nowcast_dfm_call",
+      "conversation": [
+        {
+          "user_content": {
+            "parts": [{ "text": "¿Cuál es el nowcast DFM de frecuencia de accidentes de trabajo para 2025-T1?" }]
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              { "name": "run_nowcast_dfm" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "eval_id": "abstain_without_evidence",
+      "conversation": [
+        {
+          "user_content": {
+            "parts": [{ "text": "¿Cuál es el número exacto de dinosaurios en Bogotá en 1990 según el corpus?" }]
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              { "name": "retrieve_docs" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

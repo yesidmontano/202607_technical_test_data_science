@@ -1,1 +1,8 @@
 .venv/
+.env
+**/.env
+apps/Asistente_RAG/data/chroma/
+apps/Asistente_RAG/data/uploads/
+**/__pycache__/
+*.pyc
+.DS_Store

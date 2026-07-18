@@ -342,15 +342,7 @@ Dependencias a añadir en implementación (no en este ítem): `google-adk`, `chr
 
 ---
 
-## 9. Checklist de revisión (2.4.1)
 
-- [ ] ¿La app vive en `apps/Asistente_RAG` con separación UI / agents / tools / services / eval?
-- [ ] ¿Chroma PersistentClient es la única memoria vectorial y de persistencia del índice?
-- [ ] ¿Embeddings = `gemini-embedding-2` en ingestión y query?
-- [ ] ¿Chat entrega citas con link al PDF original?
-- [ ] ¿DFM de §2.3 queda como tool ADK reutilizando staging S02?
-- [ ] ¿RAG Triad cubierto con `hallucinations_v1` + rúbricas ADK + `tool_trajectory_avg_score` a nivel traces y E2E?
+### 2.4.2 Construcción
 
----
-
-
+Asistente RAG disponible en 'apps/Asistente_RAG'

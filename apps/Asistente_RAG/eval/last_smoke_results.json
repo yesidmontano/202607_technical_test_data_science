@@ -1,0 +1,23 @@
+[
+  {
+    "id": "retrieve_ceed",
+    "tools": [
+      "retrieve_docs"
+    ],
+    "ok_tools": true,
+    "has_answer": true,
+    "n_citations": 5,
+    "answer_preview": "Fragmentos recuperados del corpus (respuesta extractiva; el LLM generativo no estuvo disponible en este turno):\n\n\n**[1]** `bol-CEED-Itrim2026.pdf` p.1: Bogotá, 14 de mayo 2026      COM-070-PDT-001-f-0"
+  },
+  {
+    "id": "nowcast_dfm",
+    "tools": [
+      "run_nowcast_dfm",
+      "retrieve_docs"
+    ],
+    "ok_tools": true,
+    "has_answer": true,
+    "n_citations": 5,
+    "answer_preview": "Según el modelo operativo DFM (§2.3), el nowcast para **2025-T1** es **1.1577** (IC80% [1.0615, 1.2852]) accidentes por 100 trabajadores (freq_at × 100).\n\nModelo operativo DFM (1 factor + puente OLS) "
+  }
+]
