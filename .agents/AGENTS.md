@@ -296,7 +296,10 @@ import sura_brand as sb
 > **Referencia autoritativa 6 (Nowcast S02-2.3):** `sections/S02-Modelacion_Economica_Sectorial/2_3_Nowcast/results/nowcast.md`
 > Secciones **2.3.1** (estado del arte: ciclo pro-cíclico, DFM/BSTS/RF), **2.3.2** (diseño ragged-edge día-40, métricas train/val/test, forward 2025-T1) y **2.3.3** (modelo seleccionado DFM MAPE=6.6%, IC 80% [1.062–1.285], umbrales de alerta, implicaciones de reservas y activación preventiva). Modelo operativo: **DFM 1 factor + puente OLS** anclado en AT parcial mes 1; BSTS solo como cota de estrés; **no usar RF** en producción (val frágil). Leer **antes** de iniciar cualquier tarea en S03 (proyección de portafolio) o S06 (arquitectura de producción del nowcast).
 >
-> Leer los **seis** documentos antes de iniciar cualquier tarea de modelado en S02, S03, S04 o S05.
+> **Referencia autoritativa 7 (Asistente RAG S02-2.4):** `sections/S02-Modelacion_Economica_Sectorial/2_4_Asistente RAG/results/asistente_rag.md`
+> Secciones **2.4.1** (arquitectura: Streamlit + ADK + ChromaDB + Gemini Embedding 2; flujos de ingestión, chat con citas y tool nowcast DFM; evaluación RAG Triad) y **2.4.2** (construcción en `apps/Asistente_RAG`, seed CEED/ELIC, smoke traces, fallback extractivo ante cuota LLM, seguridad de `.env`). El asistente es soporte documental al flujo de modelación sectorial (no pieza aislada); reutiliza el DFM de §2.3 como tool. Leer **antes** de extender el asistente, el corpus o la evaluación, o de iniciar tareas en S06 que toquen el producto RAG.
+>
+> Leer los **siete** documentos antes de iniciar cualquier tarea de modelado en S02, S03, S04 o S05.
 
 ### Feature Set Obligatorio (contrato EDA → S03)
 
