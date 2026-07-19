@@ -305,7 +305,10 @@ import sura_brand as sb
 > **Referencia autoritativa 9 (Proyección de portafolio S03-3.3):** `sections/S03-Reto_de_Negocio/3_3_Proyeccion de portafolio/results/proyeccion_portafolio.md`
 > Sección **3.3.1** (siniestralidad vs primas; combined ratio = LR + ER; escenario base CR≈80% vs adverso CR≈102% con shock YoY histórico +36%; incertidumbre bootstrap+proceso; P(CR>1)≈8%; sensibilidad ER ±5 pp). Staging: `data/staging/S03/proyeccion_*.parquet`. Leer **antes** de iniciar cualquier tarea en S03-3.4 (documentación/recomendación) o S05/S07 que comunique resultado técnico o combined ratio.
 >
-> Leer los **nueve** documentos antes de iniciar cualquier tarea de modelado en S02, S03, S04 o S05.
+> **Referencia autoritativa 10 (Documentación y recomendación S03-3.4):** `sections/S03-Reto_de_Negocio/3_4_Documentación y recomendacion/results/documentacion_reto_negocio.md`
+> Resumen ejecutivo del reto de negocio: pregunta respondida, arquitectura del modelo, proyección base/adverso, recomendaciones de suscripción/tarifa/monitoreo, y límites/riesgos explícitos. Leer **antes** de S05 (recomendador), S06 (producto) o S07 (comunicación ejecutiva) que reutilicen el mensaje de negocio de S03.
+>
+> Leer los **diez** documentos antes de iniciar cualquier tarea de modelado en S02, S03, S04 o S05.
 
 ### Feature Set Obligatorio (contrato EDA → S03)
 
