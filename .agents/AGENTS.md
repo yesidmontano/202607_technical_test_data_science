@@ -276,7 +276,7 @@ import sura_brand as sb
 
 ---
 
-## Condicionantes del Modelado (EDA + Pruebas de Hipótesis + Datos Faltantes + Caracterización S02 + Modelamiento de relaciones S02 + Reto de negocio S03 → S02-S05)
+## Condicionantes del Modelado (EDA + Pruebas de Hipótesis + Datos Faltantes + Caracterización S02 + Modelamiento de relaciones S02 + Reto de negocio S03 + Inferencia causal S04 → S02-S05)
 
 > **Referencia autoritativa 1 (EDA):** `sections/S01-Metodologia_EDA_Analisis/1_2_EDA/results/Insights_EDA.md`
 > Sección **"Síntesis Consolidada – Lo que Condiciona el Modelado"** (19 condicionantes).
@@ -308,7 +308,13 @@ import sura_brand as sb
 > **Referencia autoritativa 10 (Documentación y recomendación S03-3.4):** `sections/S03-Reto_de_Negocio/3_4_Documentación y recomendacion/results/documentacion_reto_negocio.md`
 > Resumen ejecutivo del reto de negocio: pregunta respondida, arquitectura del modelo, proyección base/adverso, recomendaciones de suscripción/tarifa/monitoreo, y límites/riesgos explícitos. Leer **antes** de S05 (recomendador), S06 (producto) o S07 (comunicación ejecutiva) que reutilicen el mensaje de negocio de S03.
 >
-> Leer los **diez** documentos antes de iniciar cualquier tarea de modelado en S02, S03, S04 o S05.
+> **Referencia autoritativa 11 (Estrategia de identificación causal S04-4.1):** `sections/S04-Impacto_Inferencia_Causal/4_1_Estrategia de identificacion causal/results/estrategia_identificacion_causal.md`
+> Sección **4.1.1** — DiD escalonado Callaway–Sant’Anna (cohortes 2019–2022); outcome `frecuencia_x100`; controles nunca tratadas / not-yet-treated; DAG, supuestos (tendencias paralelas, no anticipación, SUTVA, overlap) y amenazas (Ashenfelter, COVID, heterogeneidad, TWFE, U). Leer **antes** de iniciar cualquier tarea en S04-4.2 (estimación) o S04-4.3 (valor económico).
+>
+> **Referencia autoritativa 12 (Estimación del efecto causal S04-4.2):** `sections/S04-Impacto_Inferencia_Causal/4_2_Implementacion y estamacion de efecto/results/estimacion_efecto.md`
+> Sección **4.2.1** — implementación CS doubly robust (`csdid`); ATT simple frecuencia **≈ −0.428** (SE bootstrap; ~−11.7% vs baseline pre); event-study con pre-trends OK; robustez excluir 2020 / not-yet-treated / `costo_por_trab`. Staging: `data/staging/S04/causal_*.parquet` (#112–119). Leer **antes** de iniciar cualquier tarea en S04-4.3 (monetización) o S07 que comunique impacto del programa.
+>
+> Leer los **doce** documentos antes de iniciar cualquier tarea de modelado en S02, S03, S04 o S05.
 
 ### Feature Set Obligatorio (contrato EDA → S03)
 

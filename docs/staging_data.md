@@ -122,6 +122,14 @@
 | [`proyeccion_historico_anual.parquet`](#109-proyeccion_historico_anualparquet) | S03 – 3.3.1 Proyección portafolio | `data/staging/S03/` | 7 | 7 |
 | [`proyeccion_bootstrap_draws.parquet`](#110-proyeccion_bootstrap_drawsparquet) | S03 – 3.3.1 Proyección portafolio | `data/staging/S03/` | 5 000 | 6 |
 | [`proyeccion_resumen.parquet`](#111-proyeccion_resumenparquet) | S03 – 3.3.1 Proyección portafolio | `data/staging/S03/` | 1 | 24 |
+| [`causal_panel.parquet`](#112-causal_panelparquet) | S04 – 4.2.1 Estimación causal | `data/staging/S04/` | 35 000 | 20 |
+| [`causal_att_gt.parquet`](#113-causal_att_gtparquet) | S04 – 4.2.1 Estimación causal | `data/staging/S04/` | 24 | 11 |
+| [`causal_att_simple.parquet`](#114-causal_att_simpleparquet) | S04 – 4.2.1 Estimación causal | `data/staging/S04/` | 4 | 13 |
+| [`causal_att_dynamic.parquet`](#115-causal_att_dynamicparquet) | S04 – 4.2.1 Estimación causal | `data/staging/S04/` | 9 | 10 |
+| [`causal_att_group.parquet`](#116-causal_att_groupparquet) | S04 – 4.2.1 Estimación causal | `data/staging/S04/` | 4 | 10 |
+| [`causal_pretrends.parquet`](#117-causal_pretrendsparquet) | S04 – 4.2.1 Estimación causal | `data/staging/S04/` | 1 | 5 |
+| [`causal_robustez.parquet`](#118-causal_robustezparquet) | S04 – 4.2.1 Estimación causal | `data/staging/S04/` | 4 | 14 |
+| [`causal_resumen.parquet`](#119-causal_resumenparquet) | S04 – 4.2.1 Estimación causal | `data/staging/S04/` | 1 | 24 |
 
 ---
 
@@ -1511,7 +1519,7 @@ Escenarios: `a_listwise`, `b_imputado`, `c_imputado_flag`.
 | S02 – 2.2 Modelamiento | `panel_ciclo_at_trimestral`, `var_*`, `estacionariedad_*`, `ccf_*`, `coint_robustez`, `especificacion_definitiva` | Relación dinámica ciclo↔AT; spec definitiva |
 | S02 – 2.3 Nowcast | `nowcast_panel_ragged`, `nowcast_*_metricas`, `nowcast_forward_2025T1`, `nowcast_resumen_final` | Producción nowcast; comparación RF/BSTS/DFM |
 | S03 – Reto de negocio | `modelo_pred_*`, `proyeccion_*`, `supuestos_*` | Costo esperado; proyección CR base/adverso; recomendación |
-| S04 – Inferencia causal | `empresa_siniestralidad_completa` / `_tratada`, `hip_p10_retencion_top10` | Grupo tratado / control; estabilidad del target |
+| S04 – Inferencia causal | `causal_panel`, `causal_att_*`, `causal_resumen`, `causal_robustez` | DiD CS; ATT programa; robustez; input a 4.3 valor económico |
 | S05 – Recomendador | `proyeccion_empresa`, `modelo_pred_empresa`, `supuestos_prima_vs_costo_segmento` | Priorizar LR/CR altos y Top costo esperado |
 
 ---
@@ -1812,4 +1820,109 @@ Agregados de primas, siniestralidad, LR, CR, resultado técnico y share de costo
 
 ---
 
-*Actualizado por: `S01 – 1.2–1.5` + `S02 – 2.1–2.3` + `S03 – 3.1.2` + `S03 – 3.2.1` + `S03 – 3.3.1` — Prueba Técnica Grupo SURA.*
+## 112. `causal_panel.parquet`
+
+**Ruta:** `data/staging/S04/causal_panel.parquet`
+**Script origen:** `sections/S04-Impacto_Inferencia_Causal/4_2_Implementacion y estamacion de efecto/code/01-estimacion/01-estimacion.py`
+**Granularidad:** Empresa × año (35 000 = 5 000 × 7; 2018–2024).
+**Base:** `temporal_empresa_anio` + `programas_prevencion` + `segmento`/`prima_anual` de `empresa_siniestralidad_completa`.
+
+| Campo | Tipo | Descripción | ¿Nuevo? |
+|---|---|---|---|
+| `id_empresa` / `firm_id` | texto / entero | Identificador (numérico requerido por `csdid`) | Heredado / **Derivada** |
+| `anio` | entero | Año calendario del panel | Heredado |
+| `g` | entero | Cohorte de adopción (`fecha_inicio.year`); **0 = nunca tratada** | **Derivada** |
+| `treated_ever` / `post` | binario | Alguna vez tratada; post-adopción (`anio ≥ g`) | **Derivada** |
+| `rel_year` | numérico | `anio − g` (NaN si nunca tratada) | **Derivada** |
+| `programa` / `horas_intervencion` / `cobertura_trabajadores` / `fecha_inicio` | — | Atributos del programa (NaN/0 en controles) | Heredado |
+| `n_siniestros` / `n_trabajadores` / `frecuencia_x100` / `costo_total` | numérico | Outcomes e exposición | Heredado |
+| `costo_por_trab` | numérico | `costo_total / max(n_trabajadores, 1)` — outcome secundario | **Derivada** |
+| `clase_riesgo` / `sector` / `segmento` / `prima_anual` | — | Covariables de perfil | Heredado |
+
+> **Uso:** input único para la estimación Callaway–Sant’Anna (4.2) y para monetización en 4.3.
+
+---
+
+## 113. `causal_att_gt.parquet`
+
+**Ruta:** `data/staging/S04/causal_att_gt.parquet`
+**Granularidad:** Una fila por celda grupo–tiempo (g, t) — 24 filas (4 cohortes × 6 años post-2018 relevantes en CS).
+
+| Campo | Descripción |
+|---|---|
+| `cohort` / `year` | Cohorte de adopción g y año calendario t |
+| `att` / `se` | ATT(g,t) y EE bootstrap (influence function + multiplier bootstrap) |
+| `post` | 1 si t ≥ g |
+| `ci_low` / `ci_high` | IC 95% puntual (`±1.96·SE`) |
+| `z` / `significant_95` | Razón ATT/SE y flag \|z\|≥1.96 |
+| `spec` / `yname` | Especificación y outcome (`frecuencia_x100` en principal) |
+
+---
+
+## 114. `causal_att_simple.parquet`
+
+**Ruta:** `data/staging/S04/causal_att_simple.parquet`
+**Granularidad:** Una fila por especificación (4): principal, excluir 2020, not-yet-treated, costo/trabajador.
+
+ATT simple agregado CS + EE bootstrap + tamaños muestrales (`n_obs`, `n_firms`, `n_treated`).
+
+---
+
+## 115. `causal_att_dynamic.parquet`
+
+**Ruta:** `data/staging/S04/causal_att_dynamic.parquet`
+**Granularidad:** Una fila por horizonte relativo e ∈ {−3,…,5} — event-study CS.
+
+| Campo | Descripción |
+|---|---|
+| `egt` | Años relativos al inicio del programa |
+| `att` / `se` / IC / `z` | Efecto dinámico y precisión |
+
+> **Pre-trends:** e < 0; en la especificación principal ningún pre-periodo es significativo al 95%.
+
+---
+
+## 116. `causal_att_group.parquet`
+
+**Ruta:** `data/staging/S04/causal_att_group.parquet`
+**Granularidad:** Una fila por cohorte g ∈ {2019, 2020, 2021, 2022}.
+
+ATT promedio post-tratamiento dentro de cada cohorte de adopción.
+
+---
+
+## 117. `causal_pretrends.parquet`
+
+**Ruta:** `data/staging/S04/causal_pretrends.parquet`
+**Granularidad:** Una fila resumen de la prueba de tendencias paralelas (event-study).
+
+| Campo | Descripción |
+|---|---|
+| `n_pre_periods` | Número de horizontes e < 0 |
+| `max_abs_pre_att` | Máximo \|ATT\| pre-tratamiento |
+| `n_pre_significant_95` | Cuántos pre-periodos rechazan H0: ATT=0 |
+| `pre_trends_ok` | 1 si ningún pre-periodo es significativo |
+
+---
+
+## 118. `causal_robustez.parquet`
+
+**Ruta:** `data/staging/S04/causal_robustez.parquet`
+**Granularidad:** Igual que `causal_att_simple` + columna `att_vs_main` (diferencia vs ATT principal cuando y=`frecuencia_x100`).
+
+Especificaciones de robustez documentadas en 4.2.1.
+
+---
+
+## 119. `causal_resumen.parquet`
+
+**Ruta:** `data/staging/S04/causal_resumen.parquet`
+**Granularidad:** Una fila con KPIs ejecutivos del efecto causal.
+
+Incluye ATT simple/group, IC95, baseline de frecuencia pre-tratamiento de tratadas, ATT en % del baseline, flags de pre-trends y ATT de robusteces (excluir 2020, not-yet-treated, costo/trabajador).
+
+> **Contrato hacia 4.3:** usar `att_simple` sobre `frecuencia_x100` y `baseline_freq_pre_treated` para traducir a siniestros evitados / valor económico.
+
+---
+
+*Actualizado por: `S01 – 1.2–1.5` + `S02 – 2.1–2.3` + `S03 – 3.1–3.3` + `S04 – 4.2.1` — Prueba Técnica Grupo SURA.*
