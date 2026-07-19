@@ -276,7 +276,7 @@ import sura_brand as sb
 
 ---
 
-## Condicionantes del Modelado (EDA + Pruebas de Hipótesis + Datos Faltantes + Caracterización S02 + Modelamiento de relaciones S02 → S02-S05)
+## Condicionantes del Modelado (EDA + Pruebas de Hipótesis + Datos Faltantes + Caracterización S02 + Modelamiento de relaciones S02 + Reto de negocio S03 → S02-S05)
 
 > **Referencia autoritativa 1 (EDA):** `sections/S01-Metodologia_EDA_Analisis/1_2_EDA/results/Insights_EDA.md`
 > Sección **"Síntesis Consolidada – Lo que Condiciona el Modelado"** (19 condicionantes).
@@ -299,7 +299,13 @@ import sura_brand as sb
 > **Referencia autoritativa 7 (Asistente RAG S02-2.4):** `sections/S02-Modelacion_Economica_Sectorial/2_4_Asistente RAG/results/asistente_rag.md`
 > Secciones **2.4.1** (arquitectura: Streamlit + ADK + ChromaDB + Gemini Embedding 2; flujos de ingestión, chat con citas y tool nowcast DFM; evaluación RAG Triad) y **2.4.2** (construcción en `apps/Asistente_RAG`, seed CEED/ELIC, smoke traces, fallback extractivo ante cuota LLM, seguridad de `.env`). El asistente es soporte documental al flujo de modelación sectorial (no pieza aislada); reutiliza el DFM de §2.3 como tool. Leer **antes** de extender el asistente, el corpus o la evaluación, o de iniciar tareas en S06 que toquen el producto RAG.
 >
-> Leer los **siete** documentos antes de iniciar cualquier tarea de modelado en S02, S03, S04 o S05.
+> **Referencia autoritativa 8 (Modelado frecuencia–severidad S03-3.2):** `sections/S03-Reto_de_Negocio/3_2_Modelado frecuencia_severidad/results/model_frecuencia_serveridad.md`
+> Secciones **3.2.1** (arquitectura NB + Lognormal AT/EL condicionada; pure premium `E[N]×E[Sev|X]`; métricas holdout 2024; proyección por empresa y clase) y **3.2.2** (justificación de distribuciones, tratamiento de exposición con offset `log(n_trabajadores)`, validación de ajuste/capacidad predictiva). Staging: `data/staging/S03/modelo_*.parquet`. Leer **antes** de iniciar cualquier tarea en S03-3.3 (proyección de portafolio), S03-3.4 (recomendación) o S05 que reutilice costo esperado / LR predicho.
+>
+> **Referencia autoritativa 9 (Proyección de portafolio S03-3.3):** `sections/S03-Reto_de_Negocio/3_3_Proyeccion de portafolio/results/proyeccion_portafolio.md`
+> Sección **3.3.1** (siniestralidad vs primas; combined ratio = LR + ER; escenario base CR≈80% vs adverso CR≈102% con shock YoY histórico +36%; incertidumbre bootstrap+proceso; P(CR>1)≈8%; sensibilidad ER ±5 pp). Staging: `data/staging/S03/proyeccion_*.parquet`. Leer **antes** de iniciar cualquier tarea en S03-3.4 (documentación/recomendación) o S05/S07 que comunique resultado técnico o combined ratio.
+>
+> Leer los **nueve** documentos antes de iniciar cualquier tarea de modelado en S02, S03, S04 o S05.
 
 ### Feature Set Obligatorio (contrato EDA → S03)
 

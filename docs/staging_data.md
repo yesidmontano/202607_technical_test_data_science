@@ -114,6 +114,14 @@
 | [`modelo_pred_clase.parquet`](#101-modelo_pred_claseparquet) | S03 – 3.2.1 Modelado freq/sev | `data/staging/S03/` | 10 | 16 |
 | [`modelo_metricas.parquet`](#102-modelo_metricasparquet) | S03 – 3.2.1 Modelado freq/sev | `data/staging/S03/` | 4 | 34 |
 | [`modelo_resumen.parquet`](#103-modelo_resumenparquet) | S03 – 3.2.1 Modelado freq/sev | `data/staging/S03/` | 1 | 18 |
+| [`proyeccion_escenarios.parquet`](#104-proyeccion_escenariosparquet) | S03 – 3.3.1 Proyección portafolio | `data/staging/S03/` | 2 | 11 |
+| [`proyeccion_empresa.parquet`](#105-proyeccion_empresaparquet) | S03 – 3.3.1 Proyección portafolio | `data/staging/S03/` | 8 842 | 14 |
+| [`proyeccion_clase.parquet`](#106-proyeccion_claseparquet) | S03 – 3.3.1 Proyección portafolio | `data/staging/S03/` | 10 | 20 |
+| [`proyeccion_incertidumbre.parquet`](#107-proyeccion_incertidumbreparquet) | S03 – 3.3.1 Proyección portafolio | `data/staging/S03/` | 5 | 10 |
+| [`proyeccion_sensibilidad_er.parquet`](#108-proyeccion_sensibilidad_erparquet) | S03 – 3.3.1 Proyección portafolio | `data/staging/S03/` | 6 | 5 |
+| [`proyeccion_historico_anual.parquet`](#109-proyeccion_historico_anualparquet) | S03 – 3.3.1 Proyección portafolio | `data/staging/S03/` | 7 | 7 |
+| [`proyeccion_bootstrap_draws.parquet`](#110-proyeccion_bootstrap_drawsparquet) | S03 – 3.3.1 Proyección portafolio | `data/staging/S03/` | 5 000 | 6 |
+| [`proyeccion_resumen.parquet`](#111-proyeccion_resumenparquet) | S03 – 3.3.1 Proyección portafolio | `data/staging/S03/` | 1 | 24 |
 
 ---
 
@@ -1502,9 +1510,9 @@ Escenarios: `a_listwise`, `b_imputado`, `c_imputado_flag`.
 | S01 – 1.5 Baseline | `temporal_empresa_anio`, `baseline_predicciones`, `baseline_metricas`, `baseline_confusion` | Definición y cuantificación del predictor baseline |
 | S02 – 2.2 Modelamiento | `panel_ciclo_at_trimestral`, `var_*`, `estacionariedad_*`, `ccf_*`, `coint_robustez`, `especificacion_definitiva` | Relación dinámica ciclo↔AT; spec definitiva |
 | S02 – 2.3 Nowcast | `nowcast_panel_ragged`, `nowcast_*_metricas`, `nowcast_forward_2025T1`, `nowcast_resumen_final` | Producción nowcast; comparación RF/BSTS/DFM |
-| S03 – Reto de negocio | `supuestos_*`, `modelo_pred_empresa`, `modelo_pred_clase`, `modelo_resumen`, `temporal_empresa_anio`, `siniestros_tratados`, `baseline_metricas` | Costo esperado; proyección portafolio; recomendación tarifaria |
+| S03 – Reto de negocio | `modelo_pred_*`, `proyeccion_*`, `supuestos_*` | Costo esperado; proyección CR base/adverso; recomendación |
 | S04 – Inferencia causal | `empresa_siniestralidad_completa` / `_tratada`, `hip_p10_retencion_top10` | Grupo tratado / control; estabilidad del target |
-| S05 – Recomendador | `modelo_pred_empresa`, `supuestos_prima_vs_costo_segmento`, `hip_p10_retencion_top10` | Priorizar empresas/segmentos con LR pred>1 y Top 10% |
+| S05 – Recomendador | `proyeccion_empresa`, `modelo_pred_empresa`, `supuestos_prima_vs_costo_segmento` | Priorizar LR/CR altos y Top costo esperado |
 
 ---
 
@@ -1736,4 +1744,72 @@ Campos agregados: `n_empresas`, `freq_pred_*`, `sev_pred_media`, `costo_pred_sum
 
 ---
 
-*Actualizado por: `S01 – 1.2–1.5` + `S02 – 2.1–2.3` + `S03 – 3.1.2` + `S03 – 3.2.1` — Prueba Técnica Grupo SURA.*
+## 104. `proyeccion_escenarios.parquet`
+
+**Ruta:** `data/staging/S03/proyeccion_escenarios.parquet`
+**Script origen:** `sections/S03-Reto_de_Negocio/3_3_Proyeccion de portafolio/code/01-proyeccion/01-proyeccion.py`
+**Granularidad:** Una fila por escenario (`base`, `adverso`).
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `escenario` / `anio_proyeccion` | — | Identificador (proyección 2025) |
+| `primas_devengadas` | `numérico` | Suma `prima_anual` (empresas con prima>0) |
+| `siniestralidad_esperada` / `n_siniestros_esperados` | `numérico` | E[Costo] y E[N] del modelo 3.2.1 (adverso = base×(1+shock)) |
+| `loss_ratio` | `numérico` | Siniestralidad / primas |
+| `expense_ratio` | `numérico` | Supuesto operativo (base 25%; adverso 27%) |
+| `combined_ratio` | `numérico` | `LR + ER` |
+| `resultado_tecnico` | `numérico` | Primas − siniestros − gastos |
+| `shock_siniestralidad` | `numérico` | 0 en base; máx YoY histórico en adverso |
+| `descripcion` | `texto` | Definición del escenario |
+
+---
+
+## 105. `proyeccion_empresa.parquet`
+
+**Ruta:** `data/staging/S03/proyeccion_empresa.parquet`
+**Granularidad:** Empresa × escenario (8 842 = 4 421 × 2).
+**Base:** `modelo_pred_empresa` (`horizonte=proximo_anio`) filtrado a `prima_anual > 0`.
+
+Campos: perfil (`clase_riesgo`, `sector`, `segmento`), `prima_anual`, `freq_pred`, `sev_pred`, `costo_pred`, `loss_ratio_pred`, `expense`, `combined_ratio`, `resultado_tecnico`, `insuficiente_pred`, `escenario`.
+
+---
+
+## 106. `proyeccion_clase.parquet`
+
+**Ruta:** `data/staging/S03/proyeccion_clase.parquet`
+**Granularidad:** Clase de riesgo × escenario (10).
+
+Agregados de primas, siniestralidad, LR, CR, resultado técnico y share de costo por clase bajo cada escenario.
+
+---
+
+## 107. `proyeccion_incertidumbre.parquet`
+
+**Ruta:** `data/staging/S03/proyeccion_incertidumbre.parquet`
+**Granularidad:** Una fila por (fuente × métrica) — 5 filas.
+
+| Campo | Descripción |
+|---|---|
+| `fuente` | `modelo_bootstrap_residuos` · `proceso_yoy_historico` · `combinada_modelo_proceso` |
+| `metrica` | `siniestralidad` · `loss_ratio` · `combined_ratio` |
+| `n_boot` | Réplicas (5 000) |
+| `p05`…`p95` / `mean` / `std` | Cuantiles e momentos de la distribución simulada |
+
+---
+
+## 108–110. Sensibilidad, histórico y draws
+
+- **`proyeccion_sensibilidad_er.parquet`** (6×5): CR y resultado bajo ER ∈ {20%, 25%, 30%} × {base, adverso}.
+- **`proyeccion_historico_anual.parquet`** (7×7): costo, LR y CR(ER=25%) 2018–2024 + YoY.
+- **`proyeccion_bootstrap_draws.parquet`** (5 000×6): trayectorias individuales de bootstrap (auditoría / reuso).
+
+---
+
+## 111. `proyeccion_resumen.parquet`
+
+**Ruta:** `data/staging/S03/proyeccion_resumen.parquet`
+**Granularidad:** Una fila con KPIs ejecutivos (CR base/adverso, IC90 siniestralidad y CR, P(CR>1), shock YoY, σ histórica).
+
+---
+
+*Actualizado por: `S01 – 1.2–1.5` + `S02 – 2.1–2.3` + `S03 – 3.1.2` + `S03 – 3.2.1` + `S03 – 3.3.1` — Prueba Técnica Grupo SURA.*
