@@ -130,6 +130,14 @@
 | [`causal_pretrends.parquet`](#117-causal_pretrendsparquet) | S04 – 4.2.1 Estimación causal | `data/staging/S04/` | 1 | 5 |
 | [`causal_robustez.parquet`](#118-causal_robustezparquet) | S04 – 4.2.1 Estimación causal | `data/staging/S04/` | 4 | 14 |
 | [`causal_resumen.parquet`](#119-causal_resumenparquet) | S04 – 4.2.1 Estimación causal | `data/staging/S04/` | 1 | 24 |
+| [`valor_economico_inputs.parquet`](#120-valor_economico_inputsparquet) | S04 – 4.3.1 Valor económico | `data/staging/S04/` | 1 | 17 |
+| [`valor_economico_empresa.parquet`](#121-valor_economico_empresaparquet) | S04 – 4.3.1 Valor económico | `data/staging/S04/` | 1 802 | 14 |
+| [`valor_economico_anual.parquet`](#122-valor_economico_anualparquet) | S04 – 4.3.1 Valor económico | `data/staging/S04/` | 6 | 19 |
+| [`valor_economico_escenarios.parquet`](#123-valor_economico_escenariosparquet) | S04 – 4.3.1 Valor económico | `data/staging/S04/` | 12 | 7 |
+| [`valor_economico_robustez.parquet`](#124-valor_economico_robustezparquet) | S04 – 4.3.1 Valor económico | `data/staging/S04/` | 3 | 7 |
+| [`valor_economico_supuestos.parquet`](#125-valor_economico_supuestosparquet) | S04 – 4.3.1 Valor económico | `data/staging/S04/` | 6 | 6 |
+| [`valor_economico_credibilidad.parquet`](#126-valor_economico_credibilidadparquet) | S04 – 4.3.1 Valor económico | `data/staging/S04/` | 1 | 6 |
+| [`valor_economico_resumen.parquet`](#127-valor_economico_resumenparquet) | S04 – 4.3.1 Valor económico | `data/staging/S04/` | 1 | 21 |
 
 ---
 
@@ -1519,7 +1527,7 @@ Escenarios: `a_listwise`, `b_imputado`, `c_imputado_flag`.
 | S02 – 2.2 Modelamiento | `panel_ciclo_at_trimestral`, `var_*`, `estacionariedad_*`, `ccf_*`, `coint_robustez`, `especificacion_definitiva` | Relación dinámica ciclo↔AT; spec definitiva |
 | S02 – 2.3 Nowcast | `nowcast_panel_ragged`, `nowcast_*_metricas`, `nowcast_forward_2025T1`, `nowcast_resumen_final` | Producción nowcast; comparación RF/BSTS/DFM |
 | S03 – Reto de negocio | `modelo_pred_*`, `proyeccion_*`, `supuestos_*` | Costo esperado; proyección CR base/adverso; recomendación |
-| S04 – Inferencia causal | `causal_panel`, `causal_att_*`, `causal_resumen`, `causal_robustez` | DiD CS; ATT programa; robustez; input a 4.3 valor económico |
+| S04 – Inferencia causal | `causal_*`, `valor_economico_*` | DiD CS; ATT; monetización claims evitados; supuestos/credibilidad |
 | S05 – Recomendador | `proyeccion_empresa`, `modelo_pred_empresa`, `supuestos_prima_vs_costo_segmento` | Priorizar LR/CR altos y Top costo esperado |
 
 ---
@@ -1925,4 +1933,89 @@ Incluye ATT simple/group, IC95, baseline de frecuencia pre-tratamiento de tratad
 
 ---
 
-*Actualizado por: `S01 – 1.2–1.5` + `S02 – 2.1–2.3` + `S03 – 3.1–3.3` + `S04 – 4.2.1` — Prueba Técnica Grupo SURA.*
+## 120. `valor_economico_inputs.parquet`
+
+**Ruta:** `data/staging/S04/valor_economico_inputs.parquet`
+**Script origen:** `sections/S04-Impacto_Inferencia_Causal/4_3_Efecto a valor economico/code/01-val_economico/01-val_economico.py`
+**Granularidad:** Una fila con parámetros del puente ATT → COP.
+
+| Campo | Descripción |
+|---|---|
+| `att_simple` / `att_se` / IC95 | ATT de frecuencia 4.2.1 y precisión |
+| `exposicion_trab_post_total` / `exposicion_trab_pleno_anual` | Trabajadores·año post; media 2022–2024 |
+| `costo_p25` / `median` / `mean` / `p75` | Distribución de `costo_total_w` en siniestros de tratadas |
+| `formula` | `valor = (−ATT/100) × n_trabajadores × E[costo\|siniestro]` |
+
+---
+
+## 121. `valor_economico_empresa.parquet`
+
+**Ruta:** `data/staging/S04/valor_economico_empresa.parquet`
+**Granularidad:** Una fila por empresa tratada (1 802).
+
+Valor bruto acumulado post-adopción escalado por exposición de la empresa (ATT homogéneo × `n_trabajadores`). Campos: `siniestros_evitados`, `valor_cop_mean`, `valor_cop_median`, promedios anuales, perfil (`clase_riesgo`, `sector`, `segmento`, `programa`).
+
+---
+
+## 122. `valor_economico_anual.parquet`
+
+**Ruta:** `data/staging/S04/valor_economico_anual.parquet`
+**Granularidad:** Una fila por año calendario 2019–2024.
+
+Exposición de tratadas en post, siniestros evitados (punto / banda ATT) y valor en COP bajo escenarios de costo (p25/median/mean/p75).
+
+---
+
+## 123. `valor_economico_escenarios.parquet`
+
+**Ruta:** `data/staging/S04/valor_economico_escenarios.parquet`
+**Granularidad:** 12 filas = 3 escenarios ATT (`att_efecto_mayor` / `point` / `att_efecto_menor`) × 4 costos unitarios.
+
+Valor total post y run-rate anual pleno por celda de sensibilidad.
+
+---
+
+## 124. `valor_economico_robustez.parquet`
+
+**Ruta:** `data/staging/S04/valor_economico_robustez.parquet`
+**Granularidad:** Una fila por spec de frecuencia 4.2 (principal, excluir 2020, not-yet-treated).
+
+Traduce cada ATT de robustez a siniestros evitados y valor @ mean/median.
+
+---
+
+## 125. `valor_economico_supuestos.parquet`
+
+**Ruta:** `data/staging/S04/valor_economico_supuestos.parquet`
+**Granularidad:** Seis supuestos (S1–S6) de identificación y monetización.
+
+| Campo | Descripción |
+|---|---|
+| `id` / `supuesto` / `rol` | Identificador; texto; `identificacion` / `monetizacion` / `interpretacion` |
+| `evidencia_a_favor` | Qué respalda el supuesto en 4.1–4.2 |
+| `como_se_rompe` | Condición de falla |
+| `impacto_en_valor` | Cómo sesga los COP reportados |
+
+---
+
+## 126. `valor_economico_credibilidad.parquet`
+
+**Ruta:** `data/staging/S04/valor_economico_credibilidad.parquet`
+**Granularidad:** Una fila — veredicto de causalidad frecuencia vs pesos.
+
+Niveles: `nivel_causal_frecuencia=moderado_alto`, `nivel_causal_pesos=moderado`; justificación y guía operativa (no presentar como ROI neto).
+
+---
+
+## 127. `valor_economico_resumen.parquet`
+
+**Ruta:** `data/staging/S04/valor_economico_resumen.parquet`
+**Granularidad:** Una fila con KPIs ejecutivos de monetización.
+
+Incluye siniestros evitados totales/anuales, valor total y run-rate pleno @ mean/median con banda del ATT, flags de credibilidad y `es_roi_neto=0`.
+
+> **Contrato hacia S07 / Dirección:** reportar **≈1.26 B COP/año** (run-rate pleno @ costo medio) con banda ATT **[0.50, 2.02] B**; aclarar valor bruto ≠ ROI.
+
+---
+
+*Actualizado por: `S01 – 1.2–1.5` + `S02 – 2.1–2.3` + `S03 – 3.1–3.3` + `S04 – 4.2.1` + `S04 – 4.3.1` — Prueba Técnica Grupo SURA.*

@@ -314,7 +314,10 @@ import sura_brand as sb
 > **Referencia autoritativa 12 (Estimación del efecto causal S04-4.2):** `sections/S04-Impacto_Inferencia_Causal/4_2_Implementacion y estamacion de efecto/results/estimacion_efecto.md`
 > Sección **4.2.1** — implementación CS doubly robust (`csdid`); ATT simple frecuencia **≈ −0.428** (SE bootstrap; ~−11.7% vs baseline pre); event-study con pre-trends OK; robustez excluir 2020 / not-yet-treated / `costo_por_trab`. Staging: `data/staging/S04/causal_*.parquet` (#112–119). Leer **antes** de iniciar cualquier tarea en S04-4.3 (monetización) o S07 que comunique impacto del programa.
 >
-> Leer los **doce** documentos antes de iniciar cualquier tarea de modelado en S02, S03, S04 o S05.
+> **Referencia autoritativa 13 (Valor económico del efecto S04-4.3):** `sections/S04-Impacto_Inferencia_Causal/4_3_Efecto a valor economico/results/efecto_economico.md`
+> Sección **4.3.1** — puente `valor=(−ATT/100)×exposición×E[costo|siniestro]`; run-rate pleno ≈ **1.26 B COP/año** @ costo medio (banda ATT **[0.50, 2.02] B**); @ mediana ≈0.56 B/año; valor bruto ≠ ROI; credibilidad frecuencia moderado–alto / pesos moderado; supuestos S1–S6 de ruptura. Staging: `data/staging/S04/valor_economico_*.parquet` (#120–127). Resumen ejecutivo: `docs/summaries/S04_Resumen_Ejecutivo.md`. Leer **antes** de S07 (comunicación) o decisiones de expansión del programa.
+>
+> Leer los **trece** documentos antes de iniciar cualquier tarea de modelado en S02, S03, S04 o S05.
 
 ### Feature Set Obligatorio (contrato EDA → S03)
 

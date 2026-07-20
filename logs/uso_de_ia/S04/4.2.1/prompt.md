@@ -1,5 +1,3 @@
-# Prompt — 4.2.1
-
 A partir de los resultados de 4.1 (Ver sections/S04-Impacto_Inferencia_Causal/4_1_Estrategia de identificacion causal/results/estrategia_identificacion_causal.md), implementar la estrategia de identificación causal y estimar el efecto del programa sobre las empresas tratadas, con errores estándar apropiados a la estructura de los datos. Incluir al menos una prueba de robustez. Guarda el codigo en sections/S04-Impacto_Inferencia_Causal/4_2_Implementacion y estamacion de efecto/code/01-estimacion.
 
 Transversal:
