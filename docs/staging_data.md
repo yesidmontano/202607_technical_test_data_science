@@ -2142,4 +2142,76 @@ Incluye tamaños warm/cold, densidad, hit-rates A/B/C, diseño sugerido por scor
 
 ---
 
-*Actualizado por: `S01 – 1.2–1.5` + `S02 – 2.1–2.3` + `S03 – 3.1–3.3` + `S04 – 4.2.1` + `S04 – 4.3.1` + `S05 – 5.1.1` — Prueba Técnica Grupo SURA.*
+## 140. `prototipo_split_temporal.parquet`
+
+**Ruta:** `data/staging/S05/prototipo_split_temporal.parquet`
+**Script origen:** `sections/S05-Sistema_Recomendador/5_2_Implementacion de prototipo/code/01-prototipo/01-prototipo.py`
+**Granularidad:** Una fila por métrica del split train≤2023 / test 2024.
+
+Incluye conteos de eventos/pares, warm train, true cold, empresas con GT de nuevas adopciones y mediana de ítems GT.
+
+---
+
+## 141. `prototipo_alpha_curve.parquet`
+
+**Ruta:** `data/staging/S05/prototipo_alpha_curve.parquet`
+**Granularidad:** Una fila por α ∈ {0.0, 0.1, …, 1.0} (11).
+
+NDCG@5 / Recall@5 / ΔRisk@5 en warm y cold_sim; coverage y `% K válidas` en true_cold. Base de la calibración de α.
+
+---
+
+## 142. `prototipo_metricas.parquet`
+
+**Ruta:** `data/staging/S05/prototipo_metricas.parquet`
+**Granularidad:** Una fila por (modelo, cohorte).
+
+Modelos: `C_hibrido` @ α\*, `popularidad`, `A_contenido`, `B_cf`. Cohortes: `warm`, `cold_sim`, `true_cold`.
+
+| Campo | Descripción |
+|---|---|
+| `ndcg_at_5` / `recall_at_5` | Ranking sobre nuevas adopciones 2024 |
+| `delta_risk_at_5` | Risk@5(modelo) − Risk@5(popularidad) |
+| `coverage` | Fracción del catálogo (40) que aparece en algún top-5 |
+| `pct_with_k_valid` | % empresas con exactamente K recomendaciones finitas |
+
+---
+
+## 143. `prototipo_resumen.parquet`
+
+**Ruta:** `data/staging/S05/prototipo_resumen.parquet`
+**Granularidad:** Una fila — KPIs ejecutivos del prototipo.
+
+Incluye `alpha_star=0.70`, regla de selección, métricas primarias warm/cold_sim, guardrails true_cold y baselines de popularidad.
+
+> **Contrato hacia 5.3:** usar `alpha_star` y `prototipo_recomendaciones` como configuración de referencia.
+
+---
+
+## 144. `prototipo_recomendaciones.parquet`
+
+**Ruta:** `data/staging/S05/prototipo_recomendaciones.parquet`
+**Granularidad:** Una fila por (empresa, rank) — 25 000 = 5 000 × top-5.
+
+| Campo | Descripción |
+|---|---|
+| `id_empresa` / `id_servicio` / `rank` | Recomendación ordenada |
+| `score` | Score híbrido @ α\* |
+| `modo` | `warm` o `cold` |
+| `alpha` | α\* usado |
+| `categoria` / `servicio` | Atributos de catálogo |
+
+---
+
+## 145. `prototipo_limitaciones.parquet`
+
+**Ruta:** `data/staging/S05/prototipo_limitaciones.parquet`
+**Granularidad:** Seis limitaciones (L1–L6) de la evaluación offline.
+
+| Campo | Descripción |
+|---|---|
+| `id` / `limitacion` / `impacto` | Identificador; texto; consecuencia operativa |
+
+---
+
+*Actualizado por: `S01 – 1.2–1.5` + `S02 – 2.1–2.3` + `S03 – 3.1–3.3` + `S04 – 4.2.1` + `S04 – 4.3.1` + `S05 – 5.1.1` + `S05 – 5.2.1` — Prueba Técnica Grupo SURA.*
