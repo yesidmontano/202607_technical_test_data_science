@@ -2018,4 +2018,128 @@ Incluye siniestros evitados totales/anuales, valor total y run-rate pleno @ mean
 
 ---
 
-*Actualizado por: `S01 – 1.2–1.5` + `S02 – 2.1–2.3` + `S03 – 3.1–3.3` + `S04 – 4.2.1` + `S04 – 4.3.1` — Prueba Técnica Grupo SURA.*
+## 128. `recomendador_perfil_interaccion.parquet`
+
+**Ruta:** `data/staging/S05/recomendador_perfil_interaccion.parquet`
+**Script origen:** `sections/S05-Sistema_Recomendador/5_1_Diseño de recomendador/code/01-diseños/01-diseños.py`
+**Granularidad:** Una fila por métrica de perfil (15).
+
+KPIs de la matriz implícita empresa×servicio: tamaños warm/cold, densidad, mediana de servicios/usos por empresa, reuso, rango temporal 2022–2024.
+
+---
+
+## 129. `recomendador_coldstart_sector.parquet`
+
+**Ruta:** `data/staging/S05/recomendador_coldstart_sector.parquet`
+**Granularidad:** Una fila por `sector`.
+
+Conteo de empresas, empresas sin histórico (`n_cold`) y `% cold` por sector.
+
+---
+
+## 130. `recomendador_coldstart_clase.parquet`
+
+**Ruta:** `data/staging/S05/recomendador_coldstart_clase.parquet`
+**Granularidad:** Una fila por `clase_riesgo` (1–5).
+
+Misma estructura que #129 a nivel clase de riesgo.
+
+---
+
+## 131. `recomendador_contenido_diagnostico.parquet`
+
+**Ruta:** `data/staging/S05/recomendador_contenido_diagnostico.parquet`
+**Granularidad:** Una fila por métrica (6).
+
+Diagnóstico de señal content-based: servicios dirigidos a sector vs clase, % empresas con match, mediana de servicios match, % usos históricos alineados a `dirigido_a`, % canal=modalidad.
+
+---
+
+## 132. `recomendador_catalogo_enriquecido.parquet`
+
+**Ruta:** `data/staging/S05/recomendador_catalogo_enriquecido.parquet`
+**Granularidad:** Una fila por servicio (40).
+
+Catálogo + `n_usos` histórico + `tipo_target` (`sector` / `clase_riesgo` / `otro`).
+
+---
+
+## 133. `recomendador_cf_diagnostico.parquet`
+
+**Ruta:** `data/staging/S05/recomendador_cf_diagnostico.parquet`
+**Granularidad:** Una fila por métrica CF (shape, nnz, densidad, similitud media top-5 item–item).
+
+---
+
+## 134. `recomendador_item_neighbors.parquet`
+
+**Ruta:** `data/staging/S05/recomendador_item_neighbors.parquet`
+**Granularidad:** Top-5 vecinos coseno por servicio (200 filas = 40×5).
+
+| Campo | Descripción |
+|---|---|
+| `id_servicio` / `vecino` | Par item–item |
+| `similitud` | Coseno sobre vectores de empresas (feedback `log1p(n_usos)`) |
+| `rank` | 1…5 |
+
+---
+
+## 135. `recomendador_diseños_evaluacion.parquet`
+
+**Ruta:** `data/staging/S05/recomendador_diseños_evaluacion.parquet`
+**Granularidad:** Una fila por diseño candidato (A/B/C).
+
+Proxies leave-one-out Hit@5 (n=800 warm), flags de cold-start / historial / riesgo, explicabilidad y `score_decision` multi-criterio.
+
+---
+
+## 136. `recomendador_diseños_fichas.parquet`
+
+**Ruta:** `data/staging/S05/recomendador_diseños_fichas.parquet`
+**Granularidad:** Una fila por diseño (3) — especificación cualitativa.
+
+Nombre, familia, señales, cold/warm, objetivos adopción/riesgo, complejidad, stack sugerido, riesgo principal y criterio de elección.
+
+---
+
+## 137. `recomendador_empresas_features.parquet`
+
+**Ruta:** `data/staging/S05/recomendador_empresas_features.parquet`
+**Granularidad:** Una fila por empresa (5 000).
+
+| Campo | Descripción |
+|---|---|
+| `es_cold` | 1 si sin filas en `uso_servicios` |
+| `n_svc_match_contenido` / `tiene_match_contenido` | Cobertura content-based |
+| `n_servicios_hist` / `n_usos_hist` | Intensidad de histórico |
+| `score_riesgo_s03` | `costo_pred` holdout 2024 (S03) |
+
+> **Contrato hacia 5.2:** features de empresa para rama cold y re-rank de riesgo.
+
+---
+
+## 138. `recomendador_interacciones.parquet`
+
+**Ruta:** `data/staging/S05/recomendador_interacciones.parquet`
+**Granularidad:** Una fila por par empresa–servicio observado (45 492).
+
+| Campo | Descripción |
+|---|---|
+| `id_empresa` / `id_servicio` | Par |
+| `n_usos` | Conteo de eventos |
+| `primera` / `ultima` | Fechas min/max de uso |
+
+> **Contrato hacia 5.2:** matriz implícita / splits temporales.
+
+---
+
+## 139. `recomendador_diseños_resumen.parquet`
+
+**Ruta:** `data/staging/S05/recomendador_diseños_resumen.parquet`
+**Granularidad:** Una fila — KPIs ejecutivos del diseño 5.1.1.
+
+Incluye tamaños warm/cold, densidad, hit-rates A/B/C, diseño sugerido por score multi-criterio (`C_hibrido_adopcion_riesgo`).
+
+---
+
+*Actualizado por: `S01 – 1.2–1.5` + `S02 – 2.1–2.3` + `S03 – 3.1–3.3` + `S04 – 4.2.1` + `S04 – 4.3.1` + `S05 – 5.1.1` — Prueba Técnica Grupo SURA.*
