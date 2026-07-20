@@ -276,7 +276,7 @@ import sura_brand as sb
 
 ---
 
-## Condicionantes del Modelado (EDA + Pruebas de Hipótesis + Datos Faltantes + Caracterización S02 + Modelamiento de relaciones S02 + Reto de negocio S03 + Inferencia causal S04 → S02-S05)
+## Condicionantes del Modelado (EDA + Pruebas de Hipótesis + Datos Faltantes + Caracterización S02 + Modelamiento de relaciones S02 + Reto de negocio S03 + Inferencia causal S04 + Recomendador S05 → S02-S06)
 
 > **Referencia autoritativa 1 (EDA):** `sections/S01-Metodologia_EDA_Analisis/1_2_EDA/results/Insights_EDA.md`
 > Sección **"Síntesis Consolidada – Lo que Condiciona el Modelado"** (19 condicionantes).
@@ -317,7 +317,16 @@ import sura_brand as sb
 > **Referencia autoritativa 13 (Valor económico del efecto S04-4.3):** `sections/S04-Impacto_Inferencia_Causal/4_3_Efecto a valor economico/results/efecto_economico.md`
 > Sección **4.3.1** — puente `valor=(−ATT/100)×exposición×E[costo|siniestro]`; run-rate pleno ≈ **1.26 B COP/año** @ costo medio (banda ATT **[0.50, 2.02] B**); @ mediana ≈0.56 B/año; valor bruto ≠ ROI; credibilidad frecuencia moderado–alto / pesos moderado; supuestos S1–S6 de ruptura. Staging: `data/staging/S04/valor_economico_*.parquet` (#120–127). Resumen ejecutivo: `docs/summaries/S04_Resumen_Ejecutivo.md`. Leer **antes** de S07 (comunicación) o decisiones de expansión del programa.
 >
-> Leer los **trece** documentos antes de iniciar cualquier tarea de modelado en S02, S03, S04 o S05.
+> **Referencia autoritativa 14 (Diseño del recomendador S05-5.1):** `sections/S05-Sistema_Recomendador/5_1_Diseño de recomendador/results/diseño_recomendador.md`
+> Sección **5.1.1** — tres diseños (A contenido, B CF item–item, C híbrido adopción×riesgo); datos: 5 000 emp / 10% cold / densidad warm 25%; elección **C**. Staging: `data/staging/S05/recomendador_*.parquet` (#128–139). Leer **antes** de iniciar cualquier tarea en S05-5.2 (prototipo) o S05-5.3 (producción).
+>
+> **Referencia autoritativa 15 (Prototipo del recomendador S05-5.2):** `sections/S05-Sistema_Recomendador/5_2_Implementacion de prototipo/results/prototipo_recomendador.md`
+> Sección **5.2.1** — prototipo C; split temporal train≤2023/test 2024; **α\*=0.70**; warm NDCG@5≈0.40 · Recall@5≈0.49 · ΔRisk@5≈+0.17; guardrails true cold 100% K válidas / coverage 95%; trade-off vs B; limitaciones offline L1–L6. Staging: `data/staging/S05/prototipo_*.parquet` (#140–145). Leer **antes** de S05-5.3, S06 (producto) o S07 que comunique el recomendador.
+>
+> **Referencia autoritativa 16 (Paso a producción S05-5.3):** `sections/S05-Sistema_Recomendador/5_3_Propuesta paso a produccion/results/paso_produccion.md`
+> Sección **5.3** — Fabric (datos/feature store) + Azure ML (registro, batch endpoint, drift); impacto real vía A/B y Power BI. Resumen ejecutivo: `docs/summaries/S05_Resumen_Ejecutivo.md`. Leer **antes** de S06 (arquitectura de producto) o de operacionalizar el recomendador.
+>
+> Leer los **dieciséis** documentos antes de iniciar cualquier tarea de modelado en S02, S03, S04, S05 o S06.
 
 ### Feature Set Obligatorio (contrato EDA → S03)
 
