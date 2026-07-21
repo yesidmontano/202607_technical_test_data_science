@@ -7,8 +7,8 @@ seaborn==0.13.2
 scikit-learn==1.9.0
 statsmodels>=0.14.0
 csdid>=0.2.0
-# Editable Git install with no remote (sura-brand==0.1.0)
--e /Users/yesidmontano/Development/202607_technical_test_data_science/packages/sura_brand
+# Manual de marca programático (instalación editable local)
+-e ./packages/sura_brand
 # Asistente RAG (S02-2.4)
 google-adk>=1.0.0
 google-genai>=1.0.0
