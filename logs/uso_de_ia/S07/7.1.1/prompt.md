@@ -1,0 +1,1 @@
+El archivo 'sections/S07-Comunicacion/7_1_Resumen ejecutivo/resources/resumen_manual_stakeholder.md' contiene el informe a stakeholders que he realizado, crea una un standalone html de 1 pagina estilo work a partir de este informe. Debe mantener el manual de marca de sura_brand.

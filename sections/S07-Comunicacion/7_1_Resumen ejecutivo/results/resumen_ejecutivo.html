@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Resumen ejecutivo — Junta Directiva | Grupo SURA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --azul-sura: #0033A0;
+      --aqua-sura: #00AEC7;
+      --azul-profundo: #001E60;
+      --aqua-alterno: #05C3DE;
+      --amarillo-sura: #E3E829;
+      --gris-claro: #C7C9C7;
+      --gris-medio: #6B6D6F;
+      --blanco: #FFFFFF;
+      --negro: #1A1A1A;
+      --positivo: #00875A;
+      --negativo: #DE350B;
+      --advertencia: #FF8B00;
+      --fondo: #FAFAFA;
+      --borde: #E5E5E5;
+      --font-display: "Barlow", "Helvetica Neue", Arial, sans-serif;
+      --font-body: "Inter", "Segoe UI", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    @page {
+      size: A4;
+      margin: 12mm 14mm;
+    }
+
+    html, body {
+      background: #E8ECF0;
+      color: var(--negro);
+      font-family: var(--font-body);
+      font-size: 10.5px;
+      line-height: 1.45;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      max-width: 100%;
+      background: var(--fondo);
+      box-shadow: 0 8px 32px rgba(0, 30, 96, 0.12);
+      display: flex;
+      flex-direction: column;
+      padding: 16mm 16mm 12mm;
+      position: relative;
+    }
+
+    .page::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--azul-sura) 0%, var(--aqua-sura) 55%, var(--amarillo-sura) 100%);
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1.5px solid var(--azul-sura);
+      margin-bottom: 12px;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand img {
+      height: 28px;
+      width: auto;
+      display: block;
+    }
+
+    .brand-meta {
+      font-family: var(--font-display);
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gris-medio);
+      margin-top: 4px;
+    }
+
+    .doc-meta {
+      text-align: right;
+      font-size: 9.5px;
+      color: var(--gris-medio);
+      line-height: 1.4;
+    }
+
+    .doc-meta strong {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--azul-profundo);
+      letter-spacing: 0.02em;
+    }
+
+    h1 {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--azul-profundo);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 2px;
+    }
+
+    .subtitle {
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--aqua-sura);
+      margin-bottom: 10px;
+    }
+
+    /* Key message */
+    .key-message {
+      background: var(--azul-profundo);
+      color: var(--blanco);
+      padding: 10px 14px;
+      margin-bottom: 12px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px;
+      align-items: start;
+    }
+
+    .key-message .label {
+      font-family: var(--font-display);
+      font-size: 8.5px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--aqua-alterno);
+      padding-top: 2px;
+      white-space: nowrap;
+    }
+
+    .key-message p {
+      font-size: 11.5px;
+      font-weight: 500;
+      line-height: 1.4;
+      color: #F0F4F8;
+    }
+
+    .key-message strong {
+      color: var(--amarillo-sura);
+      font-weight: 600;
+    }
+
+    /* KPIs */
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .kpi {
+      background: var(--blanco);
+      border: 1px solid var(--borde);
+      border-top: 3px solid var(--azul-sura);
+      padding: 8px 10px;
+    }
+
+    .kpi.stress { border-top-color: var(--negativo); }
+    .kpi.prevention { border-top-color: var(--positivo); }
+
+    .kpi .kpi-label {
+      font-family: var(--font-display);
+      font-size: 8.5px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gris-medio);
+      margin-bottom: 4px;
+    }
+
+    .kpi .kpi-value {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--azul-sura);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+
+    .kpi.stress .kpi-value { color: var(--negativo); }
+    .kpi.prevention .kpi-value { color: var(--positivo); }
+
+    .kpi .kpi-note {
+      font-size: 9px;
+      color: var(--gris-medio);
+      margin-top: 3px;
+      line-height: 1.3;
+    }
+
+    /* Sections */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 12px;
+      margin-bottom: 10px;
+      flex: 1;
+    }
+
+    section h2 {
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--azul-sura);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--gris-claro);
+      padding-bottom: 4px;
+      margin-bottom: 7px;
+    }
+
+    .findings p {
+      margin-bottom: 6px;
+      color: var(--negro);
+      font-size: 10.5px;
+    }
+
+    .findings p:last-child { margin-bottom: 0; }
+
+    .findings strong {
+      color: var(--azul-profundo);
+      font-weight: 600;
+    }
+
+    .highlight-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 8px 0 2px;
+    }
+
+    .chip {
+      font-family: var(--font-display);
+      font-size: 9.5px;
+      font-weight: 600;
+      color: var(--azul-profundo);
+      background: rgba(0, 174, 199, 0.10);
+      border: 1px solid rgba(0, 174, 199, 0.35);
+      padding: 3px 8px;
+    }
+
+    /* Recommendations */
+    ol.actions {
+      list-style: none;
+      counter-reset: step;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    ol.actions li {
+      counter-increment: step;
+      display: grid;
+      grid-template-columns: 22px 1fr;
+      gap: 8px;
+      align-items: start;
+    }
+
+    ol.actions li::before {
+      content: counter(step, decimal-leading-zero);
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 11px;
+      color: var(--aqua-sura);
+      line-height: 1.3;
+    }
+
+    ol.actions li .title {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 10.5px;
+      color: var(--azul-profundo);
+      display: block;
+      margin-bottom: 1px;
+    }
+
+    ol.actions li p {
+      font-size: 10px;
+      color: var(--negro);
+      line-height: 1.35;
+    }
+
+    /* Assumptions / Risks */
+    .bottom {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 2px;
+    }
+
+    ul.plain {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    ul.plain li {
+      position: relative;
+      padding-left: 10px;
+      font-size: 9.5px;
+      line-height: 1.35;
+      color: var(--negro);
+    }
+
+    ul.plain li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.45em;
+      width: 4px;
+      height: 4px;
+      background: var(--aqua-sura);
+    }
+
+    .risks li::before {
+      background: var(--advertencia);
+    }
+
+    ul.plain strong {
+      font-weight: 600;
+      color: var(--azul-profundo);
+    }
+
+    /* Footer */
+    footer {
+      margin-top: auto;
+      padding-top: 8px;
+      border-top: 1px solid var(--borde);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      font-size: 8.5px;
+      color: var(--gris-medio);
+      font-family: var(--font-display);
+    }
+
+    footer .accent {
+      color: var(--azul-sura);
+      font-weight: 600;
+    }
+
+    @media print {
+      html, body {
+        background: white;
+        padding: 0;
+      }
+      body { display: block; }
+      .page {
+        box-shadow: none;
+        width: 100%;
+        min-height: auto;
+        padding: 0;
+      }
+      .page::before { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .key-message, .kpi, .chip { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    }
+
+    @media screen and (max-width: 720px) {
+      body { padding: 0; }
+      .page { width: 100%; min-height: auto; padding: 20px 18px 16px; }
+      .kpis, .grid-2, .bottom { grid-template-columns: 1fr; }
+      header { flex-direction: column; }
+      .doc-meta { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+  <article class="page">
+    <header>
+      <div class="brand">
+        <img src="data:image/png;base64,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" alt="SURA" />
+        <div class="brand-meta">Grupo SURA · Dirección de Analítica</div>
+      </div>
+      <div class="doc-meta">
+        <strong>Confidencial — Junta Directiva</strong>
+        Resumen ejecutivo · 1 página<br />
+        Portafolio ARL y programa de prevención<br />
+        Hallazgos Secciones 3 y 4
+      </div>
+    </header>
+
+    <h1>Resumen ejecutivo</h1>
+    <p class="subtitle">Resultado técnico del portafolio y valor del programa de prevención</p>
+
+    <aside class="key-message">
+      <span class="label">Mensaje clave</span>
+      <p>
+        El portafolio tiene margen, pero concentrado y vulnerable. La acción de valor es
+        <strong>ajustar suscripción y tarifa donde la prima no alcanza</strong>, y
+        <strong>sostener y expandir prevención</strong> donde ya bajó la frecuencia de siniestros.
+      </p>
+    </aside>
+
+    <div class="kpis">
+      <div class="kpi">
+        <div class="kpi-label">Portafolio · Base</div>
+        <div class="kpi-value">+5,7 B</div>
+        <div class="kpi-note">Resultado técnico · Combined ratio ≈ 80%</div>
+      </div>
+      <div class="kpi stress">
+        <div class="kpi-label">Portafolio · Estrés</div>
+        <div class="kpi-value">−0,6 B</div>
+        <div class="kpi-note">Peor año histórico · Combined ratio ≈ 102%</div>
+      </div>
+      <div class="kpi prevention">
+        <div class="kpi-label">Prevención · Valor bruto</div>
+        <div class="kpi-value">1,3 B/año</div>
+        <div class="kpi-note">Claims evitados · Banda 0,5–2,0 B · No es ROI neto</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <section class="findings">
+        <h2>Qué encontramos</h2>
+        <p>
+          En el escenario base, por cada peso de prima el costo de siniestros más gastos
+          administrativos se sitúa cerca del <strong>80%</strong>, con resultado técnico positivo
+          de alrededor de <strong>5,7 mil millones de pesos</strong>. Ese margen
+          <strong>no es automático</strong>: un año como el peor observado puede llevar el
+          resultado a negativo (~−0,6 mil millones).
+        </p>
+        <p>
+          La prima, en promedio, ordena bien el riesgo, pero hay bolsas donde
+          <strong>no cubre el costo esperado</strong>: unas <strong>169 empresas</strong> y
+          <strong>25 segmentos</strong> (clase × sector × tamaño), con mayor presión en
+          microempresas y clases de riesgo 4 y 5 (~72% del costo esperado).
+        </p>
+        <div class="highlight-row">
+          <span class="chip">169 empresas insuficientes</span>
+          <span class="chip">25 segmentos a corregir</span>
+          <span class="chip">~1.800 empresas en prevención</span>
+          <span class="chip">~12% menos frecuencia</span>
+        </div>
+        <p style="margin-top:8px">
+          El programa de prevención <strong>sí redujo la frecuencia</strong> de siniestros de
+          quienes lo adoptaron (~12% frente a su nivel anterior). En régimen pleno eso equivale
+          a unos <strong>1,3 mil millones de pesos al año</strong> en claims evitados (valor bruto).
+        </p>
+      </section>
+
+      <section>
+        <h2>Recomendación accionable</h2>
+        <ol class="actions">
+          <li>
+            <div>
+              <span class="title">Suscripción — corto plazo</span>
+              <p>Condicionar o restringir nuevas afiliaciones y aumentos de exposición en empresas de costo esperado alto y donde la prima no cubre, con foco en micro y clases 4–5.</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <span class="title">Tarifa — próximo ciclo</span>
+              <p>Revisar al alza solo los 25 segmentos donde históricamente la prima no alcanza. No mover la tarifa promedio de todo el portafolio.</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <span class="title">Prevención</span>
+              <p>Priorizar expansión donde la evidencia es más clara (adopciones 2019–2021) y dar seguimiento a cohortes recientes y al efecto a mediano plazo.</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <span class="title">Monitoreo</span>
+              <p>Planificar con el escenario base (~80%) y usar el escenario adverso (resultado en rojo) como umbral de alerta para reservas y acciones preventivas.</p>
+            </div>
+          </li>
+        </ol>
+      </section>
+    </div>
+
+    <div class="bottom">
+      <section>
+        <h2>Supuestos clave</h2>
+        <ul class="plain">
+          <li>La composición del portafolio se mantiene similar a la reciente.</li>
+          <li>Gastos administrativos ≈ <strong>25%</strong> de la prima (27% en adverso); no observados en los datos.</li>
+          <li>Prima del próximo año como referencia estática (sin cambio mid-year).</li>
+          <li>Valor del programa vía caída en frecuencia y costo medio por siniestro; <strong>no incluye costo de operar el programa</strong>.</li>
+        </ul>
+      </section>
+      <section>
+        <h2>Riesgos</h2>
+        <ul class="plain risks">
+          <li>Un año de siniestralidad fuerte <strong>puede borrar el margen</strong> del escenario base.</li>
+          <li>El resultado técnico depende del supuesto de gastos; conviene sensibilizarlo.</li>
+          <li>Eventos muy graves o mortales pueden quedar subestimados a nivel empresa.</li>
+          <li>Beneficio del programa es <strong>bruto</strong>: el ROI neto puede ser menor o nulo.</li>
+          <li>Extrapolaciones a empresas muy distintas u horizontes lejanos son más inciertas.</li>
+        </ul>
+      </section>
+    </div>
+
+    <footer>
+      <span><span class="accent">sura_brand</span> · Identidad visual Grupo SURA · Azul #0033A0 · Aqua #00AEC7</span>
+      <span>Prueba técnica · Analítica · Documento de 1 página</span>
+    </footer>
+  </article>
+</body>
+</html>

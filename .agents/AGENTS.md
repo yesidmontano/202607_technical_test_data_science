@@ -276,7 +276,7 @@ import sura_brand as sb
 
 ---
 
-## Condicionantes del Modelado (EDA + Pruebas de Hipótesis + Datos Faltantes + Caracterización S02 + Modelamiento de relaciones S02 + Reto de negocio S03 + Inferencia causal S04 + Recomendador S05 → S02-S06)
+## Condicionantes del Modelado (EDA + Pruebas de Hipótesis + Datos Faltantes + Caracterización S02 + Modelamiento de relaciones S02 + Reto de negocio S03 + Inferencia causal S04 + Recomendador S05 + Modelo a producto S06 → S02-S06)
 
 > **Referencia autoritativa 1 (EDA):** `sections/S01-Metodologia_EDA_Analisis/1_2_EDA/results/Insights_EDA.md`
 > Sección **"Síntesis Consolidada – Lo que Condiciona el Modelado"** (19 condicionantes).
@@ -326,7 +326,13 @@ import sura_brand as sb
 > **Referencia autoritativa 16 (Paso a producción S05-5.3):** `sections/S05-Sistema_Recomendador/5_3_Propuesta paso a produccion/results/paso_produccion.md`
 > Sección **5.3** — Fabric (datos/feature store) + Azure ML (registro, batch endpoint, drift); impacto real vía A/B y Power BI. Resumen ejecutivo: `docs/summaries/S05_Resumen_Ejecutivo.md`. Leer **antes** de S06 (arquitectura de producto) o de operacionalizar el recomendador.
 >
-> Leer los **dieciséis** documentos antes de iniciar cualquier tarea de modelado en S02, S03, S04, S05 o S06.
+> **Referencia autoritativa 17 (Arquitectura de producción S06-6.1):** `sections/S06-Modelo_a_Producto/6_1_Arquitectura de produccion/results/arquitectura_producto.md`
+> Sección **6.1.1** — Nowcast + RAG en Azure/Databricks/Fabric: ingesta Fabric+ADLS, Feature Store + AI Search, Azure ML Registry, Nowcast batch on-demand, RAG web service (LangChain + Azure AI Foundry). Leer **antes** de S06-6.2 (operación) o S07 que comunique el paso a producto.
+>
+> **Referencia autoritativa 18 (Operación del modelo S06-6.2):** `sections/S06-Modelo_a_Producto/6_2_Definicion operacion de modelo/results/operacion_modelo.md`
+> Sección **6.2.1** — monitoreo (MAE/RMSE/MAPE + IC Nowcast; latencia/citas/alucinaciones RAG), drift, alertas, disparadores de reentrenamiento/reindex, gobierno datos–código–modelo. Resumen ejecutivo: `docs/summaries/S06_Resumen_Ejecutivo.md`. Leer **antes** de S07 (comunicación) o de operar el producto en producción.
+>
+> Leer los **dieciocho** documentos antes de iniciar cualquier tarea de modelado en S02, S03, S04, S05 o S06.
 
 ### Feature Set Obligatorio (contrato EDA → S03)
 
